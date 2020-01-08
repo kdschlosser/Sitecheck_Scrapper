@@ -1,1 +1,22 @@
 pyppeteerport.code-workspace
+node_modules/
+creds.js
+localvars.js
+.vs/
+.vs/slnx.sqlite
+*.txt
+.txt
+trash/
+/.vs/
+*vcxproj*
+*.sln
+Projects/*/Dailychecks/*
+env/build.js
+editsession++
+arkit.svg
+*.json
+users/dan.edens/projects.json
+data/*
+*.code-workspace
+Documentation/mdworkspace.mdproj
+_pyppeteer_sitecheck_scrapper - Shortcut.lnk
