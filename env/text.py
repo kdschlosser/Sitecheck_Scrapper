@@ -2,9 +2,9 @@ debug = 0
 from datetime import datetime
 today = datetime.today()
 todaymonthday = today.strftime("%m_%d")
-egg.todaymonthday = todaymonthday
-egg.tessoutname = today.strftime("%m_%d")
-egg.tessoutname = todaymonthday
+todaymonthday = todaymonthday
+tessoutname = today.strftime("%m_%d")
+tessoutname = todaymonthday
 
 month = today.getMonth() + 1
 day = today.getDate()
@@ -16,7 +16,7 @@ if day <= 10:
     day = '0' + day
 
 nowdate = year+"-"+month+"-"+day+" "+hour+":"+minute+":"+second
-filedate = year+"-"+month+"-"+dayimport
+filedate = year+"-"+month+"-"+day
 
 pathtonote = __dirname + '/_' + filedate + '/Notes.txt'
 outputfile = '_sitecheck.txt'
