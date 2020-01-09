@@ -1,22 +1,28 @@
 #Daily Sitecheck Web Scrapper V. 4.0.0
 import sys
 import asyncio
+import json
 from pyppeteer import launch
-sys.path.append('/env/')
-from env import sites,text
+from env import sites,text,creds
 
 
 
+# parse file
+# print(obj[2])
+class Config:
+    def _init_ (self):
+        pass
 
+    def loadProjects (user): 
+        #let proj = __dirname + '/users/'+user+'/projects.json'
+        with open('env/projects.json', 'r') as userdata:
+            data=userdata.read()
+            projectlist = json.loads(data)
+            return projectlist
 
-
-
-
-
-
-
-
-
+# 
+projects = Config.loadProjects('dan.edens')
+print(projects)
 # async def main():
     
     # browser = await launch(headless=False)
