@@ -10,7 +10,7 @@ defaultfile = 'notes.txt'
 # parse file
 # print(obj[2])
 class Debug:
-    def log(data, file)
+    def log(data, file):
         if not file:
             file = defaultfile
         else:
@@ -23,6 +23,16 @@ class Debug:
             pass
         elif debug == 3:
             pass
+        return
+
+    def askQuestion(query):    
+        readline.createInterface
+        input = process.stdin
+        output = process.stdout
+        return
+    
+    def checkExists(file):
+        pass
         
 class Config:
     def _init_ (self):
@@ -46,9 +56,17 @@ class Report:
     def genCsv(data):
         pass
 
-
-
-
+class Ampadmin:
+    async def login(page):
+        await page.goto(url)
+        await page.type(LOCAL.amp.logincss, CREDS.username)
+        await page.type(LOCAL.amp.pwcss, CREDS.password)
+        await page.click(LOCAL.amp.loginbutton)
+        await page.setViewport({ width: 1600, height: 900 })
+        await page.waitFor(50)
+        return page
+  
+  
 projects = Config.loadProjects('dan.edens')
 print(projects)
 
