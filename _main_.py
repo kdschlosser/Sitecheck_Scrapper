@@ -13,7 +13,7 @@ self = ''
 
 # print(obj[2])
 class Debug():
-    def _init_(self, data, wfile):
+    def __init__(self, data, wfile):
         self.data = data
         if not wfile:
             wfile = 'notes.txt'
@@ -42,7 +42,7 @@ class Debug():
         pass
         
 class Config():
-    def _init_ (self, user, path):
+    def __init__ (self, user, path):
         self.user = user
         self.path = path
 
@@ -61,14 +61,14 @@ class Config():
         return streams
 
 class Report():
-    def _init_(self, data):
+    def __init__(self, data):
         self.data = data
         
     def genCsv(self):
         pass
 
 class Ampadmin():
-    def _init_(self, url, page):
+    def __init__(self, url, page):
         self.url = url
         self.page = page
 
@@ -81,11 +81,14 @@ class Ampadmin():
         await self.page.waitFor(50)
         return self.page
   
-  
-projects = Config.loadProjects(self, 'dan.edens')
-print(projects)
+#  Gives User directior to look for project.json
+# projects = Config.loadProjects('dan.edens')
+# print(projects)
 
 class qvWebpage():
+    def __init__(self, parameter_list):
+        pass
+    
     async def Login(self, page):
         try:
             await page.goto(sites.qv.urlstring)
