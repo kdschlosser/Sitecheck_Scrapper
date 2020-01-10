@@ -94,7 +94,7 @@ class qvWebpage():
         self.Oldfile = Oldfile
 
     
-    async def Login(self, page):
+    async def Login(self):
         try:
             await self.page.goto(sites.qv.urlstring)
         except: #ERR_ADDRESS_UNREACHABLE
@@ -106,17 +106,14 @@ class qvWebpage():
         await self.page.waitFor(2000)
         return self.page
 
-#     static async gotoProject(page, namenum) {
-#         group('Project');
-#         await self.page.click(sites.qv.menuprojects);
-#         await self.page.waitFor(200);
-#         await self.page.hover(sites.qv.scrollbar);
-#         await self.page.waitFor(500);
-#         await self.page.click(sites.qv.Qvprojectpre + namenum + sites.qv.Qvprojectpost);
-#         await self.page.waitFor(500);
-#         groupend('Project');
-#         return self.page;
-#     };
+    async def gotoProject(self):
+        await self.page.click(sites.qv.menuprojects)
+        await self.page.waitFor(200)
+        await self.page.hover(sites.qv.scrollbar)
+        await self.page.waitFor(500)
+        await self.page.click(sites.qv.Qvprojectpre + self.namenum + sites.qv.Qvprojectpost)
+        await self.page.waitFor(500)
+        return self.page
 
 
 #     static async gotoView(planarray, Upfile, Warnfile, Oldfile, page) {
