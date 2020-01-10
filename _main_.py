@@ -3,7 +3,7 @@ import sys
 import asyncio
 import json
 from pyppeteer import launch
-from env import sites,text,creds
+from env import sites, text, creds
 
 #temp for build
 debug = 0
@@ -14,7 +14,7 @@ defaultfile = 'notes.txt'
 
 # print(obj[2])
 class Debug:
-    def log(data, file):
+    def log(self, data, file):
         if not file:
             file = defaultfile
         else:
@@ -42,14 +42,14 @@ class Config:
     def _init_ (self):
         pass
 
-    def loadProjects (user): 
+    def loadProjects (self, user): 
         #let proj = __dirname + '/users/'+user+'/projects.json'
         with open('env/projects.json', 'r') as userdata:
             data=userdata.read()
             projectlist = json.loads(data)
             return projectlist
 
-    def makeStream(path):
+    def makeStream(self, path):
         #check path exists
         for x in path:
             print(x)
@@ -57,15 +57,15 @@ class Config:
         return streams
 
 class Report:
-    def genCsv(data):
+    def genCsv(self, data):
         pass
 
 class Ampadmin:
-    async def login(self, page):
+    async def login(self, url, page):
         await page.goto(url)
-        await page.type(LOCAL.amp.logincss, CREDS.username)
-        await page.type(LOCAL.amp.pwcss, CREDS.password)
-        await page.click(LOCAL.amp.loginbutton)
+        await page.type(sites.selectors.amp.logincss, creds.credentials.username)
+        await page.type(sites.selectors.amp.pwcss, creds.credentials.password)
+        await page.click(sites.selectors.amp.loginbutton)
         # await page.setViewport(width(1600) height(900))
         await page.waitFor(50)
         return page
@@ -77,23 +77,23 @@ print(projects)
 class qvWebpage:
     async def Login(self, page):
         try:
-            await page.goto(LOCAL.qv.urlstring)
+            await page.goto(sites.qv.urlstring)
         except ERR_ADDRESS_UNREACHABLE:
             print('url error')
-        await page.type(LOCAL.qv.logincss, CREDS.qvuser)
-        await page.type(LOCAL.qv.pwcss, CREDS.qvpass)
-        await page.click(LOCAL.qv.loginbutton)
+        await page.type(sites.qv.logincss, creds.credentials.qvuser)
+        await page.type(sites.qv.pwcss, creds.credentials.qvpass)
+        await page.click(sites.qv.loginbutton)
         # await page.setViewport(width: 1600, height: 900)
         await page.waitFor(2000)
         return page
 
 #     static async gotoProject(page, namenum) {
 #         group('Project');
-#         await page.click(LOCAL.qv.menuprojects);
+#         await page.click(sites.qv.menuprojects);
 #         await page.waitFor(200);
-#         await page.hover(LOCAL.qv.scrollbar);
+#         await page.hover(sites.qv.scrollbar);
 #         await page.waitFor(500);
-#         await page.click(LOCAL.qv.Qvprojectpre + namenum + LOCAL.qv.Qvprojectpost);
+#         await page.click(sites.qv.Qvprojectpre + namenum + sites.qv.Qvprojectpost);
 #         await page.waitFor(500);
 #         groupend('Project');
 #         return page;
@@ -107,11 +107,11 @@ class qvWebpage:
 #             await Debug.print(TEXT.loginmessage + view + '\n', Warnfile);
 #             await Debug.print(TEXT.loginmessage + view + '\n', Oldfile);
 #             if (view != '0') {
-#                 await page.click(LOCAL.qv.views);
+#                 await page.click(sites.qv.views);
 #                 await page.waitFor(500);
-#                 await page.hover(LOCAL.qv.scrollbar2);
+#                 await page.hover(sites.qv.scrollbar2);
 #                 await page.waitFor(200);
-#                 await page.click(LOCAL.qv.thumb+view);
+#                 await page.click(sites.qv.thumb+view);
 #             } else {};
 #             await page.waitFor(1000);
 #             for (let targetchild of TEXT.sensorarray) {
@@ -126,7 +126,7 @@ class qvWebpage:
 #         try {
 #             await page.hover(sensor);
 #             group('Sensor: ' + sensor);
-#             const link = await page.$(LOCAL.qv.hoverbox);
+#             const link = await page.$(sites.qv.hoverbox);
 #             const txt =  await page.evaluate(link => link.innerHTML, link);
 #             let spltd = txt.split('<br>');
 #             let data = '\nSensor name: ' + spltd[0];
