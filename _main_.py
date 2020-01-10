@@ -5,9 +5,13 @@ import json
 from pyppeteer import launch
 from env import sites,text,creds
 
+#temp for build
+debug = 0
 defaultfile = 'notes.txt'
 
-# parse file
+#end temp
+
+
 # print(obj[2])
 class Debug:
     def log(data, file):
@@ -57,12 +61,12 @@ class Report:
         pass
 
 class Ampadmin:
-    async def login(page):
+    async def login(self, page):
         await page.goto(url)
         await page.type(LOCAL.amp.logincss, CREDS.username)
         await page.type(LOCAL.amp.pwcss, CREDS.password)
         await page.click(LOCAL.amp.loginbutton)
-        await page.setViewport({ width: 1600, height: 900 })
+        # await page.setViewport(width(1600) height(900))
         await page.waitFor(50)
         return page
   
@@ -70,11 +74,92 @@ class Ampadmin:
 projects = Config.loadProjects('dan.edens')
 print(projects)
 
+class qvWebpage:
+    async def Login(self, page):
+        try:
+            await page.goto(LOCAL.qv.urlstring)
+        except ERR_ADDRESS_UNREACHABLE:
+            print('url error')
+        await page.type(LOCAL.qv.logincss, CREDS.qvuser)
+        await page.type(LOCAL.qv.pwcss, CREDS.qvpass)
+        await page.click(LOCAL.qv.loginbutton)
+        # await page.setViewport(width: 1600, height: 900)
+        await page.waitFor(2000)
+        return page
 
+#     static async gotoProject(page, namenum) {
+#         group('Project');
+#         await page.click(LOCAL.qv.menuprojects);
+#         await page.waitFor(200);
+#         await page.hover(LOCAL.qv.scrollbar);
+#         await page.waitFor(500);
+#         await page.click(LOCAL.qv.Qvprojectpre + namenum + LOCAL.qv.Qvprojectpost);
+#         await page.waitFor(500);
+#         groupend('Project');
+#         return page;
+#     };
+
+
+#     static async gotoView(planarray, Upfile, Warnfile, Oldfile, page) {
+#         for (let view of planarray) {
+#             group('Planview ' + view);
+#             await Debug.print(TEXT.loginmessage + view + '\n', Upfile);
+#             await Debug.print(TEXT.loginmessage + view + '\n', Warnfile);
+#             await Debug.print(TEXT.loginmessage + view + '\n', Oldfile);
+#             if (view != '0') {
+#                 await page.click(LOCAL.qv.views);
+#                 await page.waitFor(500);
+#                 await page.hover(LOCAL.qv.scrollbar2);
+#                 await page.waitFor(200);
+#                 await page.click(LOCAL.qv.thumb+view);
+#             } else {};
+#             await page.waitFor(1000);
+#             for (let targetchild of TEXT.sensorarray) {
+#                 await qvWebpage.getLastupdate(targetchild, Upfile, Warnfile, Oldfile, page)};
+#             groupend('Planview' + view);
+#         };
+#         return page;
+#     };
+
+#     static async getLastupdate(targetchild, Upfile, Warnfile, Oldfile, page) {
+#         let sensor = '#objects > img:nth-child(' + targetchild + ')';
+#         try {
+#             await page.hover(sensor);
+#             group('Sensor: ' + sensor);
+#             const link = await page.$(LOCAL.qv.hoverbox);
+#             const txt =  await page.evaluate(link => link.innerHTML, link);
+#             let spltd = txt.split('<br>');
+#             let data = '\nSensor name: ' + spltd[0];
+#             let date = spltd[3].split("data: ").pop();
+#             // await Debug.print(data + ' \nDate:\n' + date + '\n', Upfile);
+#             const pdate = Date.parse(date);
+#             const pnowdate = Date.parse(TEXT.nowdate);
+#             const diff = Math.abs(pnowdate - pdate);
+#             if (diff < watchdog ) {
+#                 data += date;
+#                 if (verbose) {data += '\n' + TEXT.uptoDate};
+#                 await Debug.print(data, Upfile);
+#             } else if (diff > watchdog & diff < watchlimit) {
+#                 data += date;
+#                 if (verbose) {data += '\n' + TEXT.behindDate};
+#                 await Debug.print(data, Warnfile);
+#             } else {
+#                 data += date;
+#                 if (verbose) {data += '\n' + TEXT.oldDate};
+#                 await Debug.print(data, Oldfile);
+#             };
+#             groupend('Sensor: ' + targetchild);
+#         }
+#         except(UnhandledPromiseRejectionWarning) {};
+#         return;
+#     };
+# };
 
 # async def main():
     
-    # browser = await launch(headless=False)
+    # browser = await launch(headless=False
+    # args: [`--window-size=${options.width},${options.height}`]
+    # )
     # page = await browser.newPage()
 #     await page.goto('http://example.com')
 #     await page.screenshot({'path': 'example.png'})
