@@ -86,31 +86,36 @@ class Ampadmin():
 # print(projects)
 
 class qvWebpage():
-    def __init__(self, parameter_list):
-        pass
+    def __init__(self, page, namenum, Upfile, Warnfile, Oldfile):
+        self.page = page
+        self.namenum = namenum
+        self.Upfile = Upfile
+        self.Warnfile = Warnfile
+        self.Oldfile = Oldfile
+
     
     async def Login(self, page):
         try:
-            await page.goto(sites.qv.urlstring)
+            await self.page.goto(sites.qv.urlstring)
         except: #ERR_ADDRESS_UNREACHABLE
             print('url error')
-        await page.type(sites.qv.logincss, creds.credentials.qvuser)
-        await page.type(sites.qv.pwcss, creds.credentials.qvpass)
-        await page.click(sites.qv.loginbutton)
-        # await page.setViewport(width: 1600, height: 900)
-        await page.waitFor(2000)
-        return page
+        await self.page.type(sites.qv.logincss, creds.credentials.qvuser)
+        await self.page.type(sites.qv.pwcss, creds.credentials.qvpass)
+        await self.page.click(sites.qv.loginbutton)
+        # await self.page.setViewport(width: 1600, height: 900)
+        await self.page.waitFor(2000)
+        return self.page
 
 #     static async gotoProject(page, namenum) {
 #         group('Project');
-#         await page.click(sites.qv.menuprojects);
-#         await page.waitFor(200);
-#         await page.hover(sites.qv.scrollbar);
-#         await page.waitFor(500);
-#         await page.click(sites.qv.Qvprojectpre + namenum + sites.qv.Qvprojectpost);
-#         await page.waitFor(500);
+#         await self.page.click(sites.qv.menuprojects);
+#         await self.page.waitFor(200);
+#         await self.page.hover(sites.qv.scrollbar);
+#         await self.page.waitFor(500);
+#         await self.page.click(sites.qv.Qvprojectpre + namenum + sites.qv.Qvprojectpost);
+#         await self.page.waitFor(500);
 #         groupend('Project');
-#         return page;
+#         return self.page;
 #     };
 
 
@@ -121,27 +126,27 @@ class qvWebpage():
 #             await Debug.print(TEXT.loginmessage + view + '\n', Warnfile);
 #             await Debug.print(TEXT.loginmessage + view + '\n', Oldfile);
 #             if (view != '0') {
-#                 await page.click(sites.qv.views);
-#                 await page.waitFor(500);
-#                 await page.hover(sites.qv.scrollbar2);
-#                 await page.waitFor(200);
-#                 await page.click(sites.qv.thumb+view);
+#                 await self.page.click(sites.qv.views);
+#                 await self.page.waitFor(500);
+#                 await self.page.hover(sites.qv.scrollbar2);
+#                 await self.page.waitFor(200);
+#                 await self.page.click(sites.qv.thumb+view);
 #             } else {};
-#             await page.waitFor(1000);
+#             await self.page.waitFor(1000);
 #             for (let targetchild of TEXT.sensorarray) {
 #                 await qvWebpage.getLastupdate(targetchild, Upfile, Warnfile, Oldfile, page)};
 #             groupend('Planview' + view);
 #         };
-#         return page;
+#         return self.page;
 #     };
 
 #     static async getLastupdate(targetchild, Upfile, Warnfile, Oldfile, page) {
 #         let sensor = '#objects > img:nth-child(' + targetchild + ')';
 #         try {
-#             await page.hover(sensor);
+#             await self.page.hover(sensor);
 #             group('Sensor: ' + sensor);
-#             const link = await page.$(sites.qv.hoverbox);
-#             const txt =  await page.evaluate(link => link.innerHTML, link);
+#             const link = await self.page.$(sites.qv.hoverbox);
+#             const txt =  await self.page.evaluate(link => link.innerHTML, link);
 #             let spltd = txt.split('<br>');
 #             let data = '\nSensor name: ' + spltd[0];
 #             let date = spltd[3].split("data: ").pop();
