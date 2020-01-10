@@ -86,8 +86,9 @@ class Ampadmin():
 # print(projects)
 
 class qvWebpage():
-    def __init__(self, page, namenum, Upfile, Warnfile, Oldfile):
+    def __init__(self, page, planarray, namenum, Upfile, Warnfile, Oldfile):
         self.page = page
+        self.planarray = planarray
         self.namenum = namenum
         self.Upfile = Upfile
         self.Warnfile = Warnfile
@@ -116,30 +117,30 @@ class qvWebpage():
         return self.page
 
 
-#     static async gotoView(planarray, Upfile, Warnfile, Oldfile, page) {
-#         for (let view of planarray) {
-#             group('Planview ' + view);
-#             await Debug.print(TEXT.loginmessage + view + '\n', Upfile);
-#             await Debug.print(TEXT.loginmessage + view + '\n', Warnfile);
-#             await Debug.print(TEXT.loginmessage + view + '\n', Oldfile);
-#             if (view != '0') {
-#                 await self.page.click(sites.qv.views);
-#                 await self.page.waitFor(500);
-#                 await self.page.hover(sites.qv.scrollbar2);
-#                 await self.page.waitFor(200);
-#                 await self.page.click(sites.qv.thumb+view);
-#             } else {};
-#             await self.page.waitFor(1000);
-#             for (let targetchild of TEXT.sensorarray) {
-#                 await qvWebpage.getLastupdate(targetchild, Upfile, Warnfile, Oldfile, page)};
-#             groupend('Planview' + view);
-#         };
-#         return self.page;
-#     };
+    async def gotoView(self):
+        for view in self.planarray:
+            await Debug.print(TEXT.loginmessage + view + '\n', self.Upfile)
+            await Debug.print(TEXT.loginmessage + view + '\n', self.Warnfile)
+            await Debug.print(TEXT.loginmessage + view + '\n', self.Oldfile)
+            if view != '0':
+                await self.page.click(sites.qv.views)
+                await self.page.waitFor(500)
+                await self.page.hover(sites.qv.scrollbar2)
+                await self.page.waitFor(200)
+                await self.page.click(sites.qv.thumb+view)
+            else:
+                pass
+            
+            await self.page.waitFor(1000)
+            for targetchild in text.sensorarray:
+                await qvWebpage.getLastupdate(self, targetchild)
 
-#     static async getLastupdate(targetchild, Upfile, Warnfile, Oldfile, page) {
+            return self.page
+
+
+#     async def getLastupdate(self, targetchild):
 #         let sensor = '#objects > img:nth-child(' + targetchild + ')';
-#         try {
+#         try:
 #             await self.page.hover(sensor);
 #             group('Sensor: ' + sensor);
 #             const link = await self.page.$(sites.qv.hoverbox);
