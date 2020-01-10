@@ -119,9 +119,9 @@ class qvWebpage():
 
     async def gotoView(self):
         for view in self.planarray:
-            await Debug.print(TEXT.loginmessage + view + '\n', self.Upfile)
-            await Debug.print(TEXT.loginmessage + view + '\n', self.Warnfile)
-            await Debug.print(TEXT.loginmessage + view + '\n', self.Oldfile)
+            await Debug.print(text.loginmessage + view + '\n', self.Upfile)
+            await Debug.print(text.loginmessage + view + '\n', self.Warnfile)
+            await Debug.print(text.loginmessage + view + '\n', self.Oldfile)
             if view != '0':
                 await self.page.click(sites.qv.views)
                 await self.page.waitFor(500)
@@ -150,19 +150,19 @@ class qvWebpage():
 #             let date = spltd[3].split("data: ").pop();
 #             // await Debug.print(data + ' \nDate:\n' + date + '\n', Upfile);
 #             const pdate = Date.parse(date);
-#             const pnowdate = Date.parse(TEXT.nowdate);
+#             const pnowdate = Date.parse(text.nowdate);
 #             const diff = Math.abs(pnowdate - pdate);
 #             if (diff < watchdog ) {
 #                 data += date;
-#                 if (verbose) {data += '\n' + TEXT.uptoDate};
+#                 if (verbose) {data += '\n' + text.uptoDate};
 #                 await Debug.print(data, Upfile);
 #             } else if (diff > watchdog & diff < watchlimit) {
 #                 data += date;
-#                 if (verbose) {data += '\n' + TEXT.behindDate};
+#                 if (verbose) {data += '\n' + text.behindDate};
 #                 await Debug.print(data, Warnfile);
 #             } else {
 #                 data += date;
-#                 if (verbose) {data += '\n' + TEXT.oldDate};
+#                 if (verbose) {data += '\n' + text.oldDate};
 #                 await Debug.print(data, Oldfile);
 #             };
 #             groupend('Sensor: ' + targetchild);
