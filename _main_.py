@@ -7,18 +7,21 @@ from env import sites, text, creds
 
 #temp for build
 debug = 0
-defaultfile = 'notes.txt'
-
+self = ''
 #end temp
 
 
 # print(obj[2])
-class Debug:
-    def log(self, data, file):
-        if not file:
-            file = defaultfile
+class Debug():
+    def _init_(self, data, wfile):
+        self.data = data
+        if not wfile:
+            wfile = 'notes.txt'
         else:
             pass
+        self.wfile = wfile
+        
+    def log(self):
         if debug == 0:
             pass
         elif debug == 1:
@@ -29,56 +32,64 @@ class Debug:
             pass
         return
 
-    def askQuestion(query):    
-        readline.createInterface
-        input = process.stdin
-        output = process.stdout
+    def askQuestion(self, query):    
+        # readline.createInterface
+        # input = process.stdin
+        # output = process.stdout
         return
     
-    def checkExists(file):
+    def checkExists(self, file):
         pass
         
-class Config:
-    def _init_ (self):
-        pass
+class Config():
+    def _init_ (self, user, path):
+        self.user = user
+        self.path = path
 
-    def loadProjects (self, user): 
+    def loadProjects (self): 
         #let proj = __dirname + '/users/'+user+'/projects.json'
         with open('env/projects.json', 'r') as userdata:
             data=userdata.read()
             projectlist = json.loads(data)
             return projectlist
 
-    def makeStream(self, path):
+    def makeStream(self):
         #check path exists
-        for x in path:
+        for x in self.path:
             print(x)
             streams += x
         return streams
 
-class Report:
-    def genCsv(self, data):
+class Report():
+    def _init_(self, data):
+        self.data = data
+        
+    def genCsv(self):
         pass
 
-class Ampadmin:
-    async def login(self, url, page):
-        await page.goto(url)
-        await page.type(sites.selectors.amp.logincss, creds.credentials.username)
-        await page.type(sites.selectors.amp.pwcss, creds.credentials.password)
-        await page.click(sites.selectors.amp.loginbutton)
-        # await page.setViewport(width(1600) height(900))
-        await page.waitFor(50)
-        return page
+class Ampadmin():
+    def _init_(self, url, page):
+        self.url = url
+        self.page = page
+
+    async def login(self):
+        await self.page.goto(self.url)
+        await self.page.type(sites.selectors.amp.logincss, creds.credentials.username)
+        await self.page.type(sites.selectors.amp.pwcss, creds.credentials.password)
+        await self.page.click(sites.selectors.amp.loginbutton)
+        # await self.page.setViewport(width(1600) height(900))
+        await self.page.waitFor(50)
+        return self.page
   
   
-projects = Config.loadProjects('dan.edens')
+projects = Config.loadProjects(self, 'dan.edens')
 print(projects)
 
-class qvWebpage:
+class qvWebpage():
     async def Login(self, page):
         try:
             await page.goto(sites.qv.urlstring)
-        except ERR_ADDRESS_UNREACHABLE:
+        except: #ERR_ADDRESS_UNREACHABLE
             print('url error')
         await page.type(sites.qv.logincss, creds.credentials.qvuser)
         await page.type(sites.qv.pwcss, creds.credentials.qvpass)
