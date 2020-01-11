@@ -8,8 +8,8 @@ filedate = today.strftime("%Y-%m-%d")
 
 pathtonote = os.path.abspath(os.path.dirname(sys.argv[0])) + '/_' + filedate + '/Notes.txt'
 outputfile = '_sitecheck.txt'
-pathtoWarnfile = '_WatchdogFile.txt'
-pathtoOldfile = '_Watchdog_Old.txt'	
+Warnfile = '_WatchdogFile.txt'
+Oldfile = '_Watchdog_Old.txt'	
 outputjson = ''
 fileheader = 'Sitecheck Scan for: ' + filedate + '\nProject: '
 uptoDate = 'Most recent data is within 24 hours\n'

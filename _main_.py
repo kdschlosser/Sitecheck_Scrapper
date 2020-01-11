@@ -96,17 +96,16 @@ class Controller():
     async def hasAmp(self):
         self.project['url'] = 'https://' + self.project + sites.selectors.amp.urlstring
         self.project['page'] = await ampWebpage.Login(self)
-        ampnavigate = await ampWebpage.gotoPlanview(self)
-        await ampnavigate.close()
+        self.project['page'] = await ampWebpage.gotoPlanview(self)
+        await self.project['page'].close()
         return
 
-    # should the site runs themselves be static to ensure data is logged in order?
     async def hasQV(self):
         namenum = self.project['proj']
-        qvbuffer = await qvWebpage.Login(self.page)
-        qvproject = await qvWebpage.gotoProject(qvbuffer, namenum)
-        qvscrape = await qvWebpage.gotoView(planarray, Upfile, Warnfile, Oldfile, qvproject)
-        await qvscrape.close()
+        self.project['page'] = await qvWebpage.Login(self)
+        self.project['page'] = await qvWebpage.gotoProject(self)
+        self.project['page'] = await qvWebpage.gotoView(self)
+        await self.project['page'].close()
     
     async def hasTruelook(self):
         pass
@@ -118,8 +117,8 @@ class Ampadmin():
 
     async def login(self):
         await self.page.goto(self.url)
-        await self.page.type(sites.selectors.amp.logincss, creds.credentials.username)
-        await self.page.type(sites.selectors.amp.pwcss, creds.credentials.password)
+        await self.page.type(sites.selectors.amp.logincss, creds.username)
+        await self.page.type(sites.selectors.amp.pwcss, creds.password)
         await self.page.click(sites.selectors.amp.loginbutton)
         # await self.page.setViewport(width(1600) height(900))
         await self.page.waitFor(50)
@@ -130,13 +129,14 @@ class Ampadmin():
 # print(projects)
 class ampWebpage():
     def __init__(self, project):
+        print(project)
         self.page = project['page']
         
 
     async def Login(self):
         try:
             await self.page.goto(self.project['url'])
-        except ERR_ADDRESS_UNREACHABLE: 
+        except: # ERR_ADDRESS_UNREACHABLE: 
             print('url error')
         await self.page.type(sites.selectors.amp.logincss, creds.username)
         await self.page.type(sites.selectors.amp.pwcss, creds.password)
@@ -148,7 +148,7 @@ class ampWebpage():
     async def gotoPlanview(self): #url, planarray, Upfile, Oldfile, Warnfile, page):
         for view in self.planarray:
             if self.project['check']: 
-               ans = await Debug.askQuestion("Check over Planview?\nNote:\n").then(Debug.print(ans))
+               ans = await Debug.askQuestion(self, "Check over Planview?\nNote:\n").then(Debug.print(ans))
             await self.page.goto(url + sites.selectors.amp.planview + view)
             for targetchild in text.sensorarray:
                 await ampWebpage.getLastupdate(self, targetchild)
@@ -217,8 +217,8 @@ class qvWebpage():
             await self.page.goto(sites.qv.urlstring)
         except: #ERR_ADDRESS_UNREACHABLE
             print('url error')
-        await self.page.type(sites.qv.logincss, creds.credentials.qvuser)
-        await self.page.type(sites.qv.pwcss, creds.credentials.qvpass)
+        await self.page.type(sites.qv.logincss, creds.qvuser)
+        await self.page.type(sites.qv.pwcss, creds.qvpass)
         await self.page.click(sites.qv.loginbutton)
         # await self.page.setViewport(width: 1600, height: 900)
         await self.page.waitFor(2000)
@@ -299,15 +299,15 @@ async def main():
         #Need to add promise push here instead in on load page
         promises = []
         if project['skip'] != 'true':
-            usercheckpath = '\\users\\'+ creds.credentials.user + '\\dailychecks\\' + text.filedate + '\\'
-            pathtofile = conFig.groupFile(self, usercheckpath, project)
-            allpaths = [pathtofile+text.outputfile, pathtofile+text.pathtoOldfile, pathtofile+text.pathtoWarnfile]
+            usercheckpath = '\\users\\'+ creds.user + '\\dailychecks\\' + text.filedate + '\\'
+            pre_ = conFig.groupFile(self, usercheckpath, project)
+            allpaths = [pre_+text.outputfile, pre_+text.Oldfile, pre_+text.Warnfile]
             # print(allpaths[0])             
             project['streams'] = await conFig.makeStream(self, allpaths)
             # print(project['streams'])
             project['page'] = browser.newPage()
             promises.append(Controller(project))
-        await promises
+        # promises
     print('\n' + text.exitmessage)
     await browser.close()
 if __name__ == '__main__':
