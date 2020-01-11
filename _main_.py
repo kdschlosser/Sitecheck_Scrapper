@@ -8,6 +8,8 @@ from env import sites, text, creds
 #temp for build
 debug = 0
 self = ''
+watchdog = 86400000
+watchlimit = watchdog * 7
 #end temp
 
 
@@ -15,10 +17,10 @@ self = ''
 class Debug():
     def __init__(self, data, wfile):
         self.data = data
-        if not wfile:
-            self.wfile = 'notes.txt'
-        else:
-            self.wfile = wfile
+        self.wfile = 'notes.txt'
+        # if not wfile:
+        # else:
+        #     self.wfile = wfile
         
     def log(self):
         if debug == 0:
@@ -46,7 +48,7 @@ class Config():
         self.path = path
 
     def loadProjects (self): 
-        #let proj = __dirname + '/users/'+user+'/projects.json'
+        #proj = __dirname + '/users/'+user+'/projects.json'
         with open('env/projects.json', 'r') as userdata:
             data=userdata.read()
             projectlist = json.loads(data)
@@ -118,9 +120,10 @@ class qvWebpage():
 
     async def gotoView(self):
         for view in self.planarray:
-            await Debug.log(text.loginmessage + view + '\n', self.Upfile)
-            await Debug.log(text.loginmessage + view + '\n', self.Warnfile)
-            await Debug.log(text.loginmessage + view + '\n', self.Oldfile)
+            # loginmsg = text.loginmessage + view
+            # await Debug.log(loginmsg, self.Upfile)
+            # await Debug.log(loginmsg, self.Warnfile)
+            # await Debug.log(loginmsg, self.Oldfile)
             if view != '0':
                 await self.page.click(sites.qv.views)
                 await self.page.waitFor(500)
@@ -137,39 +140,38 @@ class qvWebpage():
             return self.page
 
 
-#     async def getLastupdate(self, targetchild):
-#         let sensor = '#objects > img:nth-child(' + targetchild + ')';
-#         try:
-#             await self.page.hover(sensor);
-#             group('Sensor: ' + sensor);
-#             const link = await self.page.$(sites.qv.hoverbox);
-#             const txt =  await self.page.evaluate(link => link.innerHTML, link);
-#             let spltd = txt.split('<br>');
-#             let data = '\nSensor name: ' + spltd[0];
-#             let date = spltd[3].split("data: ").pop();
-#             // await Debug.log(data + ' \nDate:\n' + date + '\n', Upfile);
-#             const pdate = Date.parse(date);
-#             const pnowdate = Date.parse(text.nowdate);
-#             const diff = Math.abs(pnowdate - pdate);
-#             if (diff < watchdog ) {
-#                 data += date;
-#                 if (verbose) {data += '\n' + text.uptoDate};
-#                 await Debug.log(data, Upfile);
-#             } else if (diff > watchdog & diff < watchlimit) {
-#                 data += date;
-#                 if (verbose) {data += '\n' + text.behindDate};
-#                 await Debug.log(data, Warnfile);
-#             } else {
-#                 data += date;
-#                 if (verbose) {data += '\n' + text.oldDate};
-#                 await Debug.log(data, Oldfile);
-#             };
-#             groupend('Sensor: ' + targetchild);
-#         }
-#         except(UnhandledPromiseRejectionWarning) {};
-#         return;
-#     };
-# };
+    async def getLastupdate(self, targetchild):
+        sensor = '#objects > img:nth-child(' + targetchild + ')'
+        try:
+            await self.page.hover(sensor)
+            link = await self.page.querySelector(sites.qv.hoverbox)
+            txt =  await self.page.evaluate(link.innerHTML, link)
+            spltd = txt.split('<br>')
+            data = '\nSensor name: ' + spltd[0]
+            date = spltd[3].split("data: ").pop()
+            # await Debug.log(data + ' \nDate:\n' + date + '\n', Upfile)
+            pdate = '' #Date.parse(date)
+            pnowdate = '' #Date.parse(text.nowdate)
+            diff = pnowdate - pdate
+            if diff <= watchdog:
+                data += date
+                # if verbose:
+                #     data += '\n' + text.uptoDate
+                # await Debug.log(data, Upfile)
+            elif diff >= watchdog and diff <= watchlimit:
+                data += date
+                # if verbose: 
+                #     data += '\n' + text.behindDate
+                # await Debug.log(data, Warnfile)
+            else:
+                data += date
+                # if verbose: 
+                #     data += '\n' + text.oldDate
+                
+                # await Debug.log(data, Oldfile)
+        except: #(UnhandledPromiseRejectionWarning):
+            pass
+        return
 
 # async def main():
     
