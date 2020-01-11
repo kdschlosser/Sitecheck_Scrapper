@@ -88,25 +88,16 @@ class Controller():
             
     async def hasAmp(self):
         url = 'https://' + self.project + sites.selectors.amp.urlstring
-        # verboselog('Url: ' + url)
         ampbuffer = await ampWebpage.Login(url, self.page)
-        # await Debug.log(text.preloginmessage + project, Upfile)
-        # await Debug.log(text.preloginmessage + project, Warnfile)
-        # await Debug.log(text.preloginmessage + project, Oldfile)
         # ampnavigate = await ampWebpage.gotoPlanview(url, planarray, Upfile, Oldfile, Warnfile, ampbuffer)
         await ampnavigate.close()
         return
 
+    # should the site runs themselves be static to ensure data is logged in order?
     async def hasQV(self):
         namenum = self.project['proj']
-        qvbuffer = await qvWebpage.Login(page)
-        # await Debug.log('\n' + text.postloginmessage, Upfile)
-        # await Debug.log('\n' + text.postloginmessage, Warnfile)
-        # await Debug.log('\n' + text.postloginmessage, Oldfile)
+        qvbuffer = await qvWebpage.Login(self.page)
         qvproject = await qvWebpage.gotoProject(qvbuffer, namenum)
-        # await Debug.log('\nProject Switched to ' + project, Upfile)
-        # await Debug.log('\nProject Switched to ' + project, Warnfile)
-        # await Debug.log('\nProject Switched to ' + project, Oldfile)
         qvscrape = await qvWebpage.gotoView(planarray, Upfile, Warnfile, Oldfile, qvproject)
         await qvscrape.close()
     
