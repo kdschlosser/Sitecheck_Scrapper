@@ -68,9 +68,9 @@ class conFig():
     def groupFile(self, usercheckpath, project):
         pathlib.Path(usercheckpath).mkdir(parents=True, exist_ok=True)
         if project['group'] == 'true':
-            c = usercheckpath + 'all_'
+            c = str(usercheckpath) + 'all_'
         else:
-            c = usercheckpath + project + '_'
+            c = str(usercheckpath) + str(project['name']) + '_'
         return c
 
 class Report():
@@ -226,24 +226,16 @@ async def main():
         #Need to add promise push here instead of on load page
         promises = []
         if project['skip'] != 'true':
-            # name = project['name']
-            # planarray = project['planarray']
             usercheckpath = '\\users\\'+ creds.credentials.user + '\\dailychecks\\' + text.filedate + '\\'
-            # pathlib.Path(usercheckpath).mkdir(parents=True, exist_ok=True)
             pathtofile = conFig.groupFile(self, usercheckpath, project)
             allpaths = [pathtofile+text.outputfile, pathtofile+text.pathtoOldfile, pathtofile+text.pathtoWarnfile]
             # print(allpaths[0])             
             project['streams'] = await conFig.makeStream(self, allpaths)
+            print(project['streams'])
             project['page'] = browser.newPage()
             promises.append(Controller(project))
             # await Promise.all(promises)
-    await browser.close()
-    # groupend('Main')
-    # if (verbose) {group('exitmsg')}
     print('\n' + text.exitmessage)
-    # if (verbose) {groupend('exitmsg')}
-    # if (preformance) {console.log(new Date().toISOString())}
-
     # browser = await launch(headless=False)
     # args: [`--window-size=${options.width},${options.height}`
     # page = await browser.newPage()
