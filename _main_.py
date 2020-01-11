@@ -68,7 +68,19 @@ class Report():
     def genCsv(self):
         pass
 
-
+class Controller():
+    def __init__(self):
+        pass
+    
+    async def hasAmp(self):
+        pass
+    
+    async def hasQV(self):
+        pass
+    
+    async def hasTruelook(self):
+        pass
+    
 class Ampadmin():
     def __init__(self, url, page):
         self.url = url
