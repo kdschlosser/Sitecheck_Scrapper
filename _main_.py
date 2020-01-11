@@ -69,14 +69,32 @@ class Report():
         pass
 
 class Controller():
-    def __init__(self):
+    def __init__(self, project):
         pass
     
     async def hasAmp(self):
-        pass
-    
+        url = 'https://' + project + LOCAL.amp.urlstring
+        # verboselog('Url: ' + url)
+        ampbuffer = await ampWebpage.Login(url, page)
+        # await Debug.print(text.preloginmessage + project, Upfile)
+        # await Debug.print(text.preloginmessage + project, Warnfile)
+        # await Debug.print(text.preloginmessage + project, Oldfile)
+        ampnavigate = await ampWebpage.gotoPlanview(url, planarray, Upfile, Oldfile, Warnfile, ampbuffer)
+        await ampnavigate.close()
+        return
+
     async def hasQV(self):
-        pass
+        namenum = projects[elem].proj
+        qvbuffer = await qvWebpage.Login(page)
+        # await Debug.print('\n' + text.postloginmessage, Upfile)
+        # await Debug.print('\n' + text.postloginmessage, Warnfile)
+        # await Debug.print('\n' + text.postloginmessage, Oldfile)
+        qvproject = await qvWebpage.gotoProject(qvbuffer, namenum)
+        # await Debug.print('\nProject Switched to ' + project, Upfile)
+        # await Debug.print('\nProject Switched to ' + project, Warnfile)
+        # await Debug.print('\nProject Switched to ' + project, Oldfile)
+        qvscrape = await qvWebpage.gotoView(planarray, Upfile, Warnfile, Oldfile, qvproject)
+        await qvscrape.close()
     
     async def hasTruelook(self):
         pass
@@ -218,36 +236,16 @@ async def main():
                 # await Debug.print('Project:'+project+text.scanplan+planarray+'\n'+text.hasSitemessage + projects[elem].hassite + '\n', Upfile)
                 # await Debug.print('Project:'+project+text.scanplan+planarray+'\n'+text.hasSitemessage + projects[elem].hassite + '\n', Warnfile)
                 # await Debug.print('Project:'+project+text.scanplan+planarray+'\n'+text.hasSitemessage + projects[elem].hassite + '\n', Oldfile)
-                promises.push(browser.newPage().then(
+                promises.append(browser.newPage().then(
                     async page => {
                         if projects[elem].hassite == 'amp':
-                            if (preformance) {console.log(new Date().toISOString())}
-                            url = 'https://' + project + LOCAL.amp.urlstring
-                            # verboselog('Url: ' + url)
-                            ampbuffer = await ampWebpage.Login(url, page)
-                            # await Debug.print(text.preloginmessage + project, Upfile)
-                            # await Debug.print(text.preloginmessage + project, Warnfile)
-                            # await Debug.print(text.preloginmessage + project, Oldfile)
-                            ampnavigate = await ampWebpage.gotoPlanview(url, planarray, Upfile, Oldfile, Warnfile, ampbuffer)
-                            await ampnavigate.close()
-                            }
+                            pass
                         elif projects[elem].hassite == 'qv':
-                            namenum = projects[elem].proj
-                            qvbuffer = await qvWebpage.Login(page)
-                            # await Debug.print('\n' + text.postloginmessage, Upfile)
-                            # await Debug.print('\n' + text.postloginmessage, Warnfile)
-                            # await Debug.print('\n' + text.postloginmessage, Oldfile)
-                            qvproject = await qvWebpage.gotoProject(qvbuffer, namenum)
-                            # await Debug.print('\nProject Switched to ' + project, Upfile)
-                            # await Debug.print('\nProject Switched to ' + project, Warnfile)
-                            # await Debug.print('\nProject Switched to ' + project, Oldfile)
-                            qvscrape = await qvWebpage.gotoView(planarray, Upfile, Warnfile, Oldfile, qvproject)
-                            await qvscrape.close()
+                            pass
                         elif projects[elem].hassite == 'truelook': 
                             print('Truelook in develpment')
+                )
                 await Promise.all(promises)
-        }
-    }
     await browser.close()
     groupend('Main')
     if (verbose) {group('exitmsg')}
@@ -255,23 +253,23 @@ async def main():
     if (verbose) {groupend('exitmsg')}
     if (preformance) {console.log(new Date().toISOString())}
 
-    # browser = await launch(headless=False)
-    # args: [`--window-size=${options.width},${options.height}`]
-    # )
-    # page = await browser.newPage()
-#     await page.goto('http://example.com')
-#     await page.screenshot({'path': 'example.png'})
+    browser = await launch(headless=False)
+    args: [`--window-size=${options.width},${options.height}`]
+    )
+    page = await browser.newPage()
+    await page.goto('http://example.com')
+    await page.screenshot({'path': 'example.png'})
 
-#     dimensions = await page.evaluate('''() => {
-#         return {
-#             width: document.documentElement.clientWidth,
-#             height: document.documentElement.clientHeight,
-#             deviceScaleFactor: window.devicePixelRatio,
-#         }
-#     }''')
+    dimensions = await page.evaluate('''() => {
+        return {
+            width: document.documentElement.clientWidth,
+            height: document.documentElement.clientHeight,
+            deviceScaleFactor: window.devicePixelRatio,
+        }
+    }''')
 
-#     print(dimensions)
-#     # >>> {'width': 800, 'height': 600, 'deviceScaleFactor': 1}
-#     await browser.close()
+    print(dimensions)
+    # >>> {'width': 800, 'height': 600, 'deviceScaleFactor': 1}
+    await browser.close()
 if __name__ == '__main__':
     asyncio.get_event_loop().run_until_complete(main(), debug=True)
