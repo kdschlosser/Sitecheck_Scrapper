@@ -70,8 +70,18 @@ class Report():
 
 class Controller():
     def __init__(self, project):
+        self.project = project
         pass
-    
+
+    async def filterSIte(self):
+        if self.hassite == 'amp':
+            Controller.hasAmp(self)
+        elif self.hassite == 'qv':
+            Controller.hasQv(self)
+        elif self.hassite == 'truelook': 
+            Controller.hasTruelook(self)
+            
+            
     async def hasAmp(self):
         url = 'https://' + project + LOCAL.amp.urlstring
         # verboselog('Url: ' + url)
@@ -236,15 +246,7 @@ async def main():
                 # await Debug.print('Project:'+project+text.scanplan+planarray+'\n'+text.hasSitemessage + projects[elem].hassite + '\n', Upfile)
                 # await Debug.print('Project:'+project+text.scanplan+planarray+'\n'+text.hasSitemessage + projects[elem].hassite + '\n', Warnfile)
                 # await Debug.print('Project:'+project+text.scanplan+planarray+'\n'+text.hasSitemessage + projects[elem].hassite + '\n', Oldfile)
-                promises.append(browser.newPage().then(
-                    async page => {
-                        if projects[elem].hassite == 'amp':
-                            pass
-                        elif projects[elem].hassite == 'qv':
-                            pass
-                        elif projects[elem].hassite == 'truelook': 
-                            print('Truelook in develpment')
-                )
+                promises.append(browser.newPage().then()
                 await Promise.all(promises)
     await browser.close()
     groupend('Main')
@@ -253,7 +255,7 @@ async def main():
     if (verbose) {groupend('exitmsg')}
     if (preformance) {console.log(new Date().toISOString())}
 
-    browser = await launch(headless=False)
+    browser = await launch(headless=False, 
     args: [`--window-size=${options.width},${options.height}`]
     )
     page = await browser.newPage()
