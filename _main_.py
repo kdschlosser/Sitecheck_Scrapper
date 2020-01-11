@@ -85,22 +85,22 @@ class Report():
 
 class Controller():
     def __init__(self, project):
-        self = project
+        self.project = project
 
     async def filterSite(self):
-        if self['hassite'] == 'amp':
+        if self.project['hassite'] == 'amp':
             Controller.hasAmp(self)
-        elif self['hassite'] == 'qv':
+        elif self.project['hassite'] == 'qv':
             Controller.hasQV(self)
-        elif self['hassite'] == 'truelook': 
+        elif self.project['hassite'] == 'truelook': 
             Controller.hasTruelook(self)
             
             
     async def hasAmp(self):
-       self['url'] = 'https://' + self['name'] + sites.selectors.amp.urlstring
-       self['page'] = await ampWebpage.Login(self)
-       self['page'] = await ampWebpage.gotoPlanview(self)
-        await self.['page'].close()
+        self.project['url'] = 'https://' + self.project['name'] + sites.selectors.amp.urlstring
+        self.project['page'] = await ampWebpage.Login(self)
+        self.project['page'] = await ampWebpage.gotoPlanview(self)
+        await self.project['page'].close()
         return
 
     async def hasQV(self):
