@@ -173,9 +173,9 @@ class qvWebpage():
             pass
         return
 
-# async def main():
-    
-    # browser = await launch(headless=False
+async def main():
+    pass
+    # browser = await launch(headless=False)
     # args: [`--window-size=${options.width},${options.height}`]
     # )
     # page = await browser.newPage()
@@ -194,4 +194,4 @@ class qvWebpage():
 #     # >>> {'width': 800, 'height': 600, 'deviceScaleFactor': 1}
 #     await browser.close()
 
-# asyncio.get_event_loop().run_until_complete(main())
+asyncio.get_event_loop().run_until_complete(main())
