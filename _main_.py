@@ -73,9 +73,8 @@ class Report():
         pass
 
 class Controller():
-    def __init__(self, project, page):
+    def __init__(self, project):
         self.project = project
-        self.page = page
 
     async def filterSite(self):
         if self.project['hassite'] == 'amp':
@@ -88,7 +87,7 @@ class Controller():
             
     async def hasAmp(self):
         url = 'https://' + self.project + sites.selectors.amp.urlstring
-        ampbuffer = await ampWebpage.Login(url, self.page)
+        ampbuffer = await ampWebpage.Login(self, url)
         # ampnavigate = await ampWebpage.gotoPlanview(url, planarray, Upfile, Oldfile, Warnfile, ampbuffer)
         await ampnavigate.close()
         return
@@ -235,8 +234,8 @@ async def main():
             # await Debug.log('Project:'+project+text.scanplan+planarray+'\n'+text.hasSitemessage + projects[elem]['hassite'] + '\n', Upfile)
             # await Debug.log('Project:'+project+text.scanplan+planarray+'\n'+text.hasSitemessage + projects[elem]['hassite'] + '\n', Warnfile)
             # await Debug.log('Project:'+project+text.scanplan+planarray+'\n'+text.hasSitemessage + projects[elem]['hassite'] + '\n', Oldfile)
-            page = browser.newPage()
-            promises.append(Controller.filterSite(page))
+            project['page'] = browser.newPage()
+            promises.append(Controller(project))
             # await Promise.all(promises)
     await browser.close()
     # groupend('Main')
