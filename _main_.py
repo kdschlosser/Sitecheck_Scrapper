@@ -96,6 +96,7 @@ class Controller():
     async def hasAmp(self):
         url = 'https://' + self.project + sites.selectors.amp.urlstring
         ampbuffer = await ampWebpage.Login(self, url)
+        
         # ampnavigate = await ampWebpage.gotoPlanview(url, planarray, Upfile, Oldfile, Warnfile, ampbuffer)
         await ampnavigate.close()
         return
@@ -128,6 +129,87 @@ class Ampadmin():
 #  Gives User directior to look for project.json
 # projects = Config.loadProjects('dan.edens')
 # print(projects)
+class ampWebpage():
+    def __init__(self, page):
+        self.page = page
+        pass
+    
+    async def Login(self):
+        try:
+            await self.page.goto(url)
+        except(ERR_ADDRESS_UNREACHABLE): 
+            print('url error')
+        await self.page.type(sites.selectors.amp.logincss, creds.username)
+        await self.page.type(sites.selectors.amp.pwcss, creds.password)
+        await self.page.click(sites.selectors.amp.loginbutton)
+        # await self.page.setViewport({ width: 1600, height: 900 })
+        await self.page.waitFor(50)
+        return self.page
+
+    async def gotoPlanview(self): #url, planarray, Upfile, Oldfile, Warnfile, page):
+        for view in self.planarray:
+            group('Planview ' + view)
+            if check: 
+               ans = await Debug.askQuestion("Check over Planview?\nNote:\n").then(Debug.print(ans))
+            await Debug.print(text.loginmessage + view + '\nUrl:' + url + sites.selectors.amp.planview + view, Upfile)
+            await Debug.print(text.loginmessage + view + '\nUrl:' + url + sites.selectors.amp.planview + view, Warnfile)
+            await Debug.print(text.loginmessage + view + '\nUrl:' + url + sites.selectors.amp.planview + view, Oldfile)
+            await page.goto(url + sites.selectors.amp.planview + view)
+            for targetchild in text.sensorarray:
+                await ampWebpage.getLastupdate(targetchild, Upfile, Oldfile, Warnfile, page)}
+            groupend('Planview')
+        }
+        return page
+    }
+
+    async def getLastupdate(self, targetchild): #, Upfile, Oldfile, Warnfile, page):
+        for typeofsensorbox in sites.selectors.amp.label:
+            namesel = 'body > div:nth-child(' + typeofsensorbox + ') > div:nth-child(' + targetchild + sites.selectors.amp.title
+            valuesel = 'body > div:nth-child(' + typeofsensorbox + ') > div:nth-child(' + targetchild + sites.selectors.amp.sensor
+                name = await page.querySelector(namesel)
+                link = await page.querySelector(valuesel)
+            try:
+                sensor =  await page.evaluate(name.textContent, name)
+                value =  await page.evaluate(link.textContent, link)
+                date = await page.evaluate(link.title, link)
+                group('Sensor: ' + targetchild)
+                data = '\nSensor name: ' + sensor
+                data += '\nLast Updated on AMP: '
+                if getvalue:
+                    data += '\nCurrent value: ' + value
+                
+                pdate = Date.parse(date)
+                pnowdate = Date.parse(text.nowdate)
+                diff = Math.abs(pnowdate - pdate)
+                if (diff < watchdog :
+                    data += date
+                    if (verbose:data += '\n' + text.uptoDate}
+                    await Debug.print(data, Upfile)
+                } else if (diff > watchdog & diff < watchlimit:
+                    data += date
+                    if (verbose:data += '\n' + text.behindDate}
+                    await Debug.print(data, Warnfile)
+                } else {
+                    data += date
+                    if (verbose:data += '\n' + text.oldDate}
+                    await Debug.print(data, Oldfile)
+                }
+                groupend('Sensor: ' + targetchild)
+            }
+            except(error:
+                exception = error.message.split(':')
+                if (exception[0] = 'No node found for selector':
+                } else if (exception[0] = 'Evaluation failed':
+                } else if (exception[0] = 'UnhandledPromiseRejectionWarning':
+                } else {
+                    console.log('Caught:', error.message)
+                    await Debug.askQuestion('Will cont when ready')}
+                }
+        }
+            return page
+    }
+}
+
 
 class qvWebpage():
     def __init__(self, page, planarray, namenum, Upfile, Warnfile, Oldfile):
@@ -223,7 +305,7 @@ async def main():
     k = 0
     for project in projects:
         # print(project)
-        #Need to add promise push here instead of on load page
+        #Need to add promise push here instead in on load page
         promises = []
         if project['skip'] != 'true':
             usercheckpath = '\\users\\'+ creds.credentials.user + '\\dailychecks\\' + text.filedate + '\\'
@@ -231,27 +313,11 @@ async def main():
             allpaths = [pathtofile+text.outputfile, pathtofile+text.pathtoOldfile, pathtofile+text.pathtoWarnfile]
             # print(allpaths[0])             
             project['streams'] = await conFig.makeStream(self, allpaths)
-            print(project['streams'])
+            # print(project['streams'])
             project['page'] = browser.newPage()
             promises.append(Controller(project))
-            # await Promise.all(promises)
+        await promises
     print('\n' + text.exitmessage)
-    # browser = await launch(headless=False)
-    # args: [`--window-size=${options.width},${options.height}`
-    # page = await browser.newPage()
-    # await page.goto('http://example.com')
-    # await page.screenshot({'path': 'example.png'})
-
-    # dimensions = await page.evaluate('''() => {
-    #     return {
-    #         width: document.documentElement.clientWidth,
-    #         height: document.documentElement.clientHeight,
-    #         deviceScaleFactor: window.devicePixelRatio,
-    #     }
-    # }''')
-
-    # print(dimensions)
-    # >>> {'width': 800, 'height': 600, 'deviceScaleFactor': 1}
     await browser.close()
 if __name__ == '__main__':
     pass
