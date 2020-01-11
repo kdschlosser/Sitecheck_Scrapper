@@ -1,6 +1,7 @@
 #Daily Sitecheck Web Scrapper V. 4.0.0
 import sys
 import asyncio
+import pathlib
 import json
 from pyppeteer import launch
 from env import sites, text, creds
@@ -10,6 +11,8 @@ debug = 0
 self = ''
 watchdog = 86400000
 watchlimit = watchdog * 7
+user = 'dan.edens'
+split = 'false'
 #end temp
 
 
@@ -42,21 +45,22 @@ class Debug():
     def checkExists(self, file):
         pass
         
-class Config():
-    def __init__ (self, user, path):
-        self.user = user
-        self.path = path
+class conFig():
+    def __init__ (self):
+        pass
+        # self.user = user
+        # self.path = path
 
-    def loadProjects (self): 
-        #proj = __dirname + '/users/'+user+'/projects.json'
+    def loadProjects(self, user): 
         with open('env/projects.json', 'r') as userdata:
             data=userdata.read()
             projectlist = json.loads(data)
             return projectlist
 
-    def makeStream(self):
+    async def makeStream(self, path):
         #check path exists
-        for x in self.path:
+        streams = ''
+        for x in path:
             print(x)
             streams += x
         return streams
@@ -73,12 +77,12 @@ class Controller():
         self.project = project
         pass
 
-    async def filterSIte(self):
-        if self.hassite == 'amp':
+    async def filterSite(self):
+        if self['hassite'] == 'amp':
             Controller.hasAmp(self)
-        elif self.hassite == 'qv':
+        elif self['hassite'] == 'qv':
             Controller.hasQv(self)
-        elif self.hassite == 'truelook': 
+        elif self['hassite'] == 'truelook': 
             Controller.hasTruelook(self)
             
             
@@ -86,9 +90,9 @@ class Controller():
         url = 'https://' + project + LOCAL.amp.urlstring
         # verboselog('Url: ' + url)
         ampbuffer = await ampWebpage.Login(url, page)
-        # await Debug.print(text.preloginmessage + project, Upfile)
-        # await Debug.print(text.preloginmessage + project, Warnfile)
-        # await Debug.print(text.preloginmessage + project, Oldfile)
+        # await Debug.log(text.preloginmessage + project, Upfile)
+        # await Debug.log(text.preloginmessage + project, Warnfile)
+        # await Debug.log(text.preloginmessage + project, Oldfile)
         ampnavigate = await ampWebpage.gotoPlanview(url, planarray, Upfile, Oldfile, Warnfile, ampbuffer)
         await ampnavigate.close()
         return
@@ -96,13 +100,13 @@ class Controller():
     async def hasQV(self):
         namenum = projects[elem].proj
         qvbuffer = await qvWebpage.Login(page)
-        # await Debug.print('\n' + text.postloginmessage, Upfile)
-        # await Debug.print('\n' + text.postloginmessage, Warnfile)
-        # await Debug.print('\n' + text.postloginmessage, Oldfile)
+        # await Debug.log('\n' + text.postloginmessage, Upfile)
+        # await Debug.log('\n' + text.postloginmessage, Warnfile)
+        # await Debug.log('\n' + text.postloginmessage, Oldfile)
         qvproject = await qvWebpage.gotoProject(qvbuffer, namenum)
-        # await Debug.print('\nProject Switched to ' + project, Upfile)
-        # await Debug.print('\nProject Switched to ' + project, Warnfile)
-        # await Debug.print('\nProject Switched to ' + project, Oldfile)
+        # await Debug.log('\nProject Switched to ' + project, Upfile)
+        # await Debug.log('\nProject Switched to ' + project, Warnfile)
+        # await Debug.log('\nProject Switched to ' + project, Oldfile)
         qvscrape = await qvWebpage.gotoView(planarray, Upfile, Warnfile, Oldfile, qvproject)
         await qvscrape.close()
     
@@ -215,63 +219,58 @@ class qvWebpage():
         return
 
 async def main():
-    pass
-    logging.basicConfig(level=logging.DEBUG)
-    projects = await conFig.loadProjects(user)
-    parallelBatches = projects.length 
-    #Math.ceil(projects.length / parallel
-    browser = await puppeteer.launch() #text.head
+    projects = conFig.loadProjects(self, 'dan.edens')
+    #projects = conFig.loadProjects(self, user) #production
+    browser = await launch() #text.head
     k = 0
-    for i in projects:
-        # i += parallel:
-        k =+ 1
-        # verboselog('\nBatch ' + k + ' of ' + parallelBatches)
+    for project in projects:
+        print(project)
+        #Need to add promise push here instead of on load page
         promises = []
-        for j in parallelBatches:
-        #this doesnt work in this format, will need to rework
-        #may drop parallel
-            elem = i + j
-            if projects[elem] != undefined and projects[elem].skip != true:
-                project = projects[elem].name
-                planarray = projects[elem].planarray
-                usercheckpath = __dirname + '\\users\\'+ creds.user + '\\dailychecks\\' + text.filedate + '\\'
-                await fs.promises.mkdir(usercheckpath, { recursive: true })
-                pathtofile = usercheckpath + '_all'
-                allpaths = [pathtofile+text.outputfile,pathtofile+text.pathtoOldfile,pathtofile+text.pathtoWarnfile]
-                streams = await conFig.makeStream(allpaths)
-                Upfile = streams[0] 
-                Oldfile = streams[1] 
-                Warnfile = streams[2]
-                # page = await browser.newPage()
-                # await Debug.print('Project:'+project+text.scanplan+planarray+'\n'+text.hasSitemessage + projects[elem].hassite + '\n', Upfile)
-                # await Debug.print('Project:'+project+text.scanplan+planarray+'\n'+text.hasSitemessage + projects[elem].hassite + '\n', Warnfile)
-                # await Debug.print('Project:'+project+text.scanplan+planarray+'\n'+text.hasSitemessage + projects[elem].hassite + '\n', Oldfile)
-                promises.append(browser.newPage().then()
-                await Promise.all(promises)
+        if project['skip'] != 'true':
+            name = project['name']
+            planarray = project['planarray']
+            usercheckpath = '\\users\\'+ creds.credentials.user + '\\dailychecks\\' + text.filedate + '\\'
+            pathlib.Path(usercheckpath).mkdir(parents=True, exist_ok=True)
+            # await fs.promises.mkdir(usercheckpath, { recursive: true })
+            pathtofile = usercheckpath + '_all'
+            allpaths = [pathtofile+text.outputfile,pathtofile+text.pathtoOldfile,pathtofile+text.pathtoWarnfile]
+            print(allpaths) 
+            streams = await conFig.makeStream(self, allpaths)
+            Upfile = streams[0] 
+            Oldfile = streams[1] 
+            Warnfile = streams[2]
+            # page = await browser.newPage()
+            # await Debug.log('Project:'+project+text.scanplan+planarray+'\n'+text.hasSitemessage + projects[elem]['hassite'] + '\n', Upfile)
+            # await Debug.log('Project:'+project+text.scanplan+planarray+'\n'+text.hasSitemessage + projects[elem]['hassite'] + '\n', Warnfile)
+            # await Debug.log('Project:'+project+text.scanplan+planarray+'\n'+text.hasSitemessage + projects[elem]['hassite'] + '\n', Oldfile)
+            page = browser.newPage()
+            promises.append(Controller.filterSite(page))
+            # await Promise.all(promises)
     await browser.close()
-    groupend('Main')
-    if (verbose) {group('exitmsg')}
-    console.log('\n' + text.exitmessage)
-    if (verbose) {groupend('exitmsg')}
-    if (preformance) {console.log(new Date().toISOString())}
+    # groupend('Main')
+    # if (verbose) {group('exitmsg')}
+    print('\n' + text.exitmessage)
+    # if (verbose) {groupend('exitmsg')}
+    # if (preformance) {console.log(new Date().toISOString())}
 
-    browser = await launch(headless=False, 
-    args: [`--window-size=${options.width},${options.height}`]
-    )
-    page = await browser.newPage()
-    await page.goto('http://example.com')
-    await page.screenshot({'path': 'example.png'})
+    # browser = await launch(headless=False)
+    # args: [`--window-size=${options.width},${options.height}`
+    # page = await browser.newPage()
+    # await page.goto('http://example.com')
+    # await page.screenshot({'path': 'example.png'})
 
-    dimensions = await page.evaluate('''() => {
-        return {
-            width: document.documentElement.clientWidth,
-            height: document.documentElement.clientHeight,
-            deviceScaleFactor: window.devicePixelRatio,
-        }
-    }''')
+    # dimensions = await page.evaluate('''() => {
+    #     return {
+    #         width: document.documentElement.clientWidth,
+    #         height: document.documentElement.clientHeight,
+    #         deviceScaleFactor: window.devicePixelRatio,
+    #     }
+    # }''')
 
-    print(dimensions)
+    # print(dimensions)
     # >>> {'width': 800, 'height': 600, 'deviceScaleFactor': 1}
     await browser.close()
 if __name__ == '__main__':
-    asyncio.get_event_loop().run_until_complete(main(), debug=True)
+    pass
+    asyncio.get_event_loop().run_until_complete(main()) #, debug=True
