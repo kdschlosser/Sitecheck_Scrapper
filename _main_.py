@@ -94,10 +94,9 @@ class Controller():
             
             
     async def hasAmp(self):
-        url = 'https://' + self.project + sites.selectors.amp.urlstring
-        ampbuffer = await ampWebpage.Login(self, url)
-        
-        # ampnavigate = await ampWebpage.gotoPlanview(url, planarray, Upfile, Oldfile, Warnfile, ampbuffer)
+        self.project['url'] = 'https://' + self.project + sites.selectors.amp.urlstring
+        self.project['page'] = await ampWebpage.Login(self)
+        ampnavigate = await ampWebpage.gotoPlanview(self)
         await ampnavigate.close()
         return
 
@@ -130,14 +129,14 @@ class Ampadmin():
 # projects = Config.loadProjects('dan.edens')
 # print(projects)
 class ampWebpage():
-    def __init__(self, page):
-        self.page = page
-        pass
-    
+    def __init__(self, project):
+        self.page = project['page']
+        
+
     async def Login(self):
         try:
-            await self.page.goto(url)
-        except(ERR_ADDRESS_UNREACHABLE): 
+            await self.page.goto(self.project['url'])
+        except ERR_ADDRESS_UNREACHABLE: 
             print('url error')
         await self.page.type(sites.selectors.amp.logincss, creds.username)
         await self.page.type(sites.selectors.amp.pwcss, creds.password)
@@ -148,26 +147,19 @@ class ampWebpage():
 
     async def gotoPlanview(self): #url, planarray, Upfile, Oldfile, Warnfile, page):
         for view in self.planarray:
-            group('Planview ' + view)
-            if check: 
+            if self.project['check']: 
                ans = await Debug.askQuestion("Check over Planview?\nNote:\n").then(Debug.print(ans))
-            await Debug.print(text.loginmessage + view + '\nUrl:' + url + sites.selectors.amp.planview + view, Upfile)
-            await Debug.print(text.loginmessage + view + '\nUrl:' + url + sites.selectors.amp.planview + view, Warnfile)
-            await Debug.print(text.loginmessage + view + '\nUrl:' + url + sites.selectors.amp.planview + view, Oldfile)
-            await page.goto(url + sites.selectors.amp.planview + view)
+            await self.page.goto(url + sites.selectors.amp.planview + view)
             for targetchild in text.sensorarray:
-                await ampWebpage.getLastupdate(targetchild, Upfile, Oldfile, Warnfile, page)}
-            groupend('Planview')
-        }
+                await ampWebpage.getLastupdate(self, targetchild)
         return page
-    }
 
     async def getLastupdate(self, targetchild): #, Upfile, Oldfile, Warnfile, page):
         for typeofsensorbox in sites.selectors.amp.label:
             namesel = 'body > div:nth-child(' + typeofsensorbox + ') > div:nth-child(' + targetchild + sites.selectors.amp.title
             valuesel = 'body > div:nth-child(' + typeofsensorbox + ') > div:nth-child(' + targetchild + sites.selectors.amp.sensor
-                name = await page.querySelector(namesel)
-                link = await page.querySelector(valuesel)
+            name = await page.querySelector(namesel)
+            link = await page.querySelector(valuesel)
             try:
                 sensor =  await page.evaluate(name.textContent, name)
                 value =  await page.evaluate(link.textContent, link)
@@ -181,34 +173,33 @@ class ampWebpage():
                 pdate = Date.parse(date)
                 pnowdate = Date.parse(text.nowdate)
                 diff = Math.abs(pnowdate - pdate)
-                if (diff < watchdog :
+                if diff <= watchdog:
                     data += date
-                    if (verbose:data += '\n' + text.uptoDate}
+                    if verbose:
+                        data += '\n' + text.uptoDate
                     await Debug.print(data, Upfile)
-                } else if (diff > watchdog & diff < watchlimit:
+                elif diff >= watchdog & diff <= watchlimit:
                     data += date
-                    if (verbose:data += '\n' + text.behindDate}
+                    if verbose:
+                        data += '\n' + text.behindDate
                     await Debug.print(data, Warnfile)
-                } else {
+                else:
                     data += date
-                    if (verbose:data += '\n' + text.oldDate}
+                    if verbose:
+                        data += '\n' + text.oldDate
                     await Debug.print(data, Oldfile)
-                }
-                groupend('Sensor: ' + targetchild)
-            }
-            except(error:
+            except error:
                 exception = error.message.split(':')
-                if (exception[0] = 'No node found for selector':
-                } else if (exception[0] = 'Evaluation failed':
-                } else if (exception[0] = 'UnhandledPromiseRejectionWarning':
-                } else {
+                if exception[0] == 'No node found for selector':
+                    pass
+                elif exception[0] == 'Evaluation failed':
+                    pass
+                elif exception[0] == 'UnhandledPromiseRejectionWarning':
+                    pass
+                else:
                     console.log('Caught:', error.message)
-                    await Debug.askQuestion('Will cont when ready')}
-                }
-        }
+                    await Debug.askQuestion('Will cont when ready')
             return page
-    }
-}
 
 
 class qvWebpage():
