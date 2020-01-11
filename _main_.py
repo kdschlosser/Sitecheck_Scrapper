@@ -234,16 +234,16 @@ async def main():
                         elif projects[elem].hassite == 'qv':
                             namenum = projects[elem].proj
                             qvbuffer = await qvWebpage.Login(page)
-                            await Debug.print('\n' + text.postloginmessage, Upfile)
-                            await Debug.print('\n' + text.postloginmessage, Warnfile)
-                            await Debug.print('\n' + text.postloginmessage, Oldfile)
+                            # await Debug.print('\n' + text.postloginmessage, Upfile)
+                            # await Debug.print('\n' + text.postloginmessage, Warnfile)
+                            # await Debug.print('\n' + text.postloginmessage, Oldfile)
                             qvproject = await qvWebpage.gotoProject(qvbuffer, namenum)
-                            await Debug.print('\nProject Switched to ' + project, Upfile)
-                            await Debug.print('\nProject Switched to ' + project, Warnfile)
-                            await Debug.print('\nProject Switched to ' + project, Oldfile)
+                            # await Debug.print('\nProject Switched to ' + project, Upfile)
+                            # await Debug.print('\nProject Switched to ' + project, Warnfile)
+                            # await Debug.print('\nProject Switched to ' + project, Oldfile)
                             qvscrape = await qvWebpage.gotoView(planarray, Upfile, Warnfile, Oldfile, qvproject)
                             await qvscrape.close()
-                        elif projects[elem].hassite == 'truelook' 
+                        elif projects[elem].hassite == 'truelook': 
                             print('Truelook in develpment')
                 await Promise.all(promises)
         }
@@ -273,5 +273,5 @@ async def main():
 #     print(dimensions)
 #     # >>> {'width': 800, 'height': 600, 'deviceScaleFactor': 1}
 #     await browser.close()
-
-asyncio.get_event_loop().run_until_complete(main(), debug=True)
+if __name__ == '__main__':
+    asyncio.get_event_loop().run_until_complete(main(), debug=True)
