@@ -65,6 +65,14 @@ class conFig():
         # print(streams)
         return streams
 
+    def groupFile(self, usercheckpath, project):
+        pathlib.Path(usercheckpath).mkdir(parents=True, exist_ok=True)
+        if project['group'] == 'true':
+            c = usercheckpath + 'all_'
+        else:
+            c = usercheckpath + project + '_'
+        return c
+
 class Report():
     def __init__(self, data):
         self.data = data
@@ -218,11 +226,11 @@ async def main():
         #Need to add promise push here instead of on load page
         promises = []
         if project['skip'] != 'true':
-            name = project['name']
-            planarray = project['planarray']
+            # name = project['name']
+            # planarray = project['planarray']
             usercheckpath = '\\users\\'+ creds.credentials.user + '\\dailychecks\\' + text.filedate + '\\'
-            pathlib.Path(usercheckpath).mkdir(parents=True, exist_ok=True)
-            pathtofile = usercheckpath + '_all'
+            # pathlib.Path(usercheckpath).mkdir(parents=True, exist_ok=True)
+            pathtofile = conFig.groupFile(self, usercheckpath, project)
             allpaths = [pathtofile+text.outputfile, pathtofile+text.pathtoOldfile, pathtofile+text.pathtoWarnfile]
             # print(allpaths[0])             
             project['streams'] = await conFig.makeStream(self, allpaths)
