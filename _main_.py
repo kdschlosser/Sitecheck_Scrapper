@@ -226,14 +226,10 @@ async def main():
             pathtofile = usercheckpath + '_all'
             allpaths = [pathtofile+text.outputfile,pathtofile+text.pathtoOldfile,pathtofile+text.pathtoWarnfile]
             print(allpaths) 
-            streams = await conFig.makeStream(self, allpaths)
-            Upfile = streams[0] 
-            Oldfile = streams[1] 
-            Warnfile = streams[2]
-            # page = await browser.newPage()
-            # await Debug.log('Project:'+project+text.scanplan+planarray+'\n'+text.hasSitemessage + projects[elem]['hassite'] + '\n', Upfile)
-            # await Debug.log('Project:'+project+text.scanplan+planarray+'\n'+text.hasSitemessage + projects[elem]['hassite'] + '\n', Warnfile)
-            # await Debug.log('Project:'+project+text.scanplan+planarray+'\n'+text.hasSitemessage + projects[elem]['hassite'] + '\n', Oldfile)
+            project['streams'] = await conFig.makeStream(self, allpaths)
+            # Upfile = streams[0] 
+            # Oldfile = streams[1] 
+            # Warnfile = streams[2]
             project['page'] = browser.newPage()
             promises.append(Controller(project))
             # await Promise.all(promises)
