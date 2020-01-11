@@ -60,6 +60,9 @@ class conFig():
         streams = {}
         count = 0
         for x in path:
+            print(x)
+            streams[count] = open(x, "a", encoding="utf-8")
+            count += 1
             streams[count] = io.StringIO('temp newfile message.\n')
             count += 1
         # print(streams)
@@ -67,7 +70,7 @@ class conFig():
 
     def groupFile(self, usercheckpath, project):
         pathlib.Path(usercheckpath).mkdir(parents=True, exist_ok=True)
-        if project['group'] == 'true':
+        if project['group'] == True: 
             c = str(usercheckpath) + 'all_'
         else:
             c = str(usercheckpath) + str(project['name']) + '_'
@@ -197,7 +200,7 @@ class ampWebpage():
                 elif exception[0] == 'UnhandledPromiseRejectionWarning':
                     pass
                 else:
-                    console.log('Caught:', error.message)
+                    print('Caught:', error.message)
                     await Debug.askQuestion('Will cont when ready')
             return page
 
@@ -299,8 +302,8 @@ async def main():
         #Need to add promise push here instead in on load page
         promises = []
         if project['skip'] != 'true':
-            usercheckpath = '\\users\\'+ creds.user + '\\dailychecks\\' + text.filedate + '\\'
-            pre_ = conFig.groupFile(self, usercheckpath, project)
+            checkpath = '\\users\\'+ creds.user + '\\dailychecks\\' + text.filedate + '\\'
+            pre_ = conFig.groupFile(self, checkpath, project)
             allpaths = [pre_+text.outputfile, pre_+text.Oldfile, pre_+text.Warnfile]
             # print(allpaths[0])             
             project['streams'] = await conFig.makeStream(self, allpaths)

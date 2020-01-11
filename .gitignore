@@ -21,3 +21,6 @@ data/*
 Documentation/mdworkspace.mdproj
 _pyppeteer_sitecheck_scrapper - Shortcut.lnk
 **.pyc
+env/**.pyc
+env/__pycache__/creds.cpython-37.pyc
+env/__pycache__/text.cpython-37.pyc
