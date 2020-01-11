@@ -73,9 +73,9 @@ class Report():
         pass
 
 class Controller():
-    def __init__(self, project):
+    def __init__(self, project, page):
         self.project = project
-        pass
+        self.page = page
 
     async def filterSite(self):
         if self.project['hassite'] == 'amp':
@@ -89,16 +89,16 @@ class Controller():
     async def hasAmp(self):
         url = 'https://' + self.project + sites.selectors.amp.urlstring
         # verboselog('Url: ' + url)
-        ampbuffer = await ampWebpage.Login(url, page)
+        ampbuffer = await ampWebpage.Login(url, self.page)
         # await Debug.log(text.preloginmessage + project, Upfile)
         # await Debug.log(text.preloginmessage + project, Warnfile)
         # await Debug.log(text.preloginmessage + project, Oldfile)
-        ampnavigate = await ampWebpage.gotoPlanview(url, planarray, Upfile, Oldfile, Warnfile, ampbuffer)
+        # ampnavigate = await ampWebpage.gotoPlanview(url, planarray, Upfile, Oldfile, Warnfile, ampbuffer)
         await ampnavigate.close()
         return
 
     async def hasQV(self):
-        namenum = projects[elem].proj
+        namenum = self.project['proj']
         qvbuffer = await qvWebpage.Login(page)
         # await Debug.log('\n' + text.postloginmessage, Upfile)
         # await Debug.log('\n' + text.postloginmessage, Warnfile)
