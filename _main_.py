@@ -78,16 +78,16 @@ class Controller():
         pass
 
     async def filterSite(self):
-        if self['hassite'] == 'amp':
+        if self.project['hassite'] == 'amp':
             Controller.hasAmp(self)
-        elif self['hassite'] == 'qv':
-            Controller.hasQv(self)
-        elif self['hassite'] == 'truelook': 
+        elif self.project['hassite'] == 'qv':
+            Controller.hasQV(self)
+        elif self.project['hassite'] == 'truelook': 
             Controller.hasTruelook(self)
             
             
     async def hasAmp(self):
-        url = 'https://' + project + LOCAL.amp.urlstring
+        url = 'https://' + self.project + sites.selectors.amp.urlstring
         # verboselog('Url: ' + url)
         ampbuffer = await ampWebpage.Login(url, page)
         # await Debug.log(text.preloginmessage + project, Upfile)
