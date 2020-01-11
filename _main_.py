@@ -1,5 +1,6 @@
 #Daily Sitecheck Web Scrapper V. 4.0.0
 import sys
+import io
 import asyncio
 import pathlib
 import json
@@ -60,8 +61,11 @@ class conFig():
     async def makeStream(self, path):
         #check path exists
         streams = ''
+        print(path)
+        count = 0
         for x in path:
-            print(x)
+            streams[count] = io.StringIO()
+            # print(x)
             streams += x
         return streams
 
@@ -214,7 +218,7 @@ async def main():
     browser = await launch() #text.head
     k = 0
     for project in projects:
-        print(project)
+        # print(project)
         #Need to add promise push here instead of on load page
         promises = []
         if project['skip'] != 'true':
@@ -222,14 +226,10 @@ async def main():
             planarray = project['planarray']
             usercheckpath = '\\users\\'+ creds.credentials.user + '\\dailychecks\\' + text.filedate + '\\'
             pathlib.Path(usercheckpath).mkdir(parents=True, exist_ok=True)
-            # await fs.promises.mkdir(usercheckpath, { recursive: true })
             pathtofile = usercheckpath + '_all'
-            allpaths = [pathtofile+text.outputfile,pathtofile+text.pathtoOldfile,pathtofile+text.pathtoWarnfile]
-            print(allpaths) 
+            allpaths = [pathtofile+text.outputfile, pathtofile+text.pathtoOldfile, pathtofile+text.pathtoWarnfile]
+            # print(allpaths[0])             
             project['streams'] = await conFig.makeStream(self, allpaths)
-            # Upfile = streams[0] 
-            # Oldfile = streams[1] 
-            # Warnfile = streams[2]
             project['page'] = browser.newPage()
             promises.append(Controller(project))
             # await Promise.all(promises)
