@@ -68,6 +68,7 @@ class Report():
     def genCsv(self):
         pass
 
+
 class Ampadmin():
     def __init__(self, url, page):
         self.url = url
@@ -175,6 +176,7 @@ class qvWebpage():
 
 async def main():
     pass
+    logging.basicConfig(level=logging.DEBUG)
     projects = await conFig.loadProjects(user)
     parallelBatches = projects.length 
     #Math.ceil(projects.length / parallel
@@ -200,13 +202,13 @@ async def main():
                 Upfile = streams[0] 
                 Oldfile = streams[1] 
                 Warnfile = streams[2]
-                page = await browser.newPage()
+                # page = await browser.newPage()
                 # await Debug.print('Project:'+project+text.scanplan+planarray+'\n'+text.hasSitemessage + projects[elem].hassite + '\n', Upfile)
                 # await Debug.print('Project:'+project+text.scanplan+planarray+'\n'+text.hasSitemessage + projects[elem].hassite + '\n', Warnfile)
                 # await Debug.print('Project:'+project+text.scanplan+planarray+'\n'+text.hasSitemessage + projects[elem].hassite + '\n', Oldfile)
                 promises.push(browser.newPage().then(
                     async page => {
-                        if (projects[elem].hassite == 'amp') {
+                        if projects[elem].hassite == 'amp':
                             if (preformance) {console.log(new Date().toISOString())}
                             url = 'https://' + project + LOCAL.amp.urlstring
                             # verboselog('Url: ' + url)
@@ -217,8 +219,7 @@ async def main():
                             ampnavigate = await ampWebpage.gotoPlanview(url, planarray, Upfile, Oldfile, Warnfile, ampbuffer)
                             await ampnavigate.close()
                             }
-                        else if (projects[elem].hassite == 'qv') {
-                            if (preformance) {console.log(new Date().toISOString())}
+                        elif projects[elem].hassite == 'qv':
                             namenum = projects[elem].proj
                             qvbuffer = await qvWebpage.Login(page)
                             await Debug.print('\n' + text.postloginmessage, Upfile)
@@ -230,11 +231,9 @@ async def main():
                             await Debug.print('\nProject Switched to ' + project, Oldfile)
                             qvscrape = await qvWebpage.gotoView(planarray, Upfile, Warnfile, Oldfile, qvproject)
                             await qvscrape.close()
-                            }
-                        else if (projects[elem].hassite == 'truelook') {console.log('Truelook in develpment')}
-                        }))
-            }
-            await Promise.all(promises)
+                        elif projects[elem].hassite == 'truelook' 
+                            print('Truelook in develpment')
+                await Promise.all(promises)
         }
     }
     await browser.close()
@@ -263,4 +262,4 @@ async def main():
 #     # >>> {'width': 800, 'height': 600, 'deviceScaleFactor': 1}
 #     await browser.close()
 
-asyncio.get_event_loop().run_until_complete(main())
+asyncio.get_event_loop().run_until_complete(main(), debug=True)
