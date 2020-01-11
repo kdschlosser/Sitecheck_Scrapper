@@ -85,22 +85,22 @@ class Report():
 
 class Controller():
     def __init__(self, project):
-        self.project = project
+        self = project
 
     async def filterSite(self):
-        if self.project['hassite'] == 'amp':
+        if self['hassite'] == 'amp':
             Controller.hasAmp(self)
-        elif self.project['hassite'] == 'qv':
+        elif self['hassite'] == 'qv':
             Controller.hasQV(self)
-        elif self.project['hassite'] == 'truelook': 
+        elif self['hassite'] == 'truelook': 
             Controller.hasTruelook(self)
             
             
     async def hasAmp(self):
-        self.project['url'] = 'https://' + self.project + sites.selectors.amp.urlstring
-        self.project['page'] = await ampWebpage.Login(self)
-        self.project['page'] = await ampWebpage.gotoPlanview(self)
-        await self.project['page'].close()
+       self['url'] = 'https://' + self['name'] + sites.selectors.amp.urlstring
+       self['page'] = await ampWebpage.Login(self)
+       self['page'] = await ampWebpage.gotoPlanview(self)
+        await self.['page'].close()
         return
 
     async def hasQV(self):
@@ -309,9 +309,10 @@ async def main():
             project['streams'] = await conFig.makeStream(self, allpaths)
             # print(project['streams'])
             project['page'] = browser.newPage()
-            promises.append(Controller(project))
+            promises.append(Controller.filterSite(project))
         # promises
     print('\n' + text.exitmessage)
+    # await page.close()
     await browser.close()
 if __name__ == '__main__':
     pass
