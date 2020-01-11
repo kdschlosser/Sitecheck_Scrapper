@@ -16,8 +16,6 @@ user = 'dan.edens'
 split = 'false'
 #end temp
 
-
-# print(obj[2])
 class Debug():
     def __init__(self, data, wfile):
         self.data = data
@@ -59,14 +57,12 @@ class conFig():
             return projectlist
 
     async def makeStream(self, path):
-        #check path exists
-        streams = ''
-        print(path)
+        streams = {}
         count = 0
         for x in path:
-            streams[count] = io.StringIO()
-            # print(x)
-            streams += x
+            streams[count] = io.StringIO('temp newfile message.\n')
+            count += 1
+        # print(streams)
         return streams
 
 class Report():
