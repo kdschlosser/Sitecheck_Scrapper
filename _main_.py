@@ -175,6 +175,75 @@ class qvWebpage():
 
 async def main():
     pass
+    projects = await conFig.loadProjects(user)
+    parallelBatches = projects.length 
+    #Math.ceil(projects.length / parallel
+    browser = await puppeteer.launch() #text.head
+    k = 0
+    for i in projects:
+        # i += parallel:
+        k =+ 1
+        # verboselog('\nBatch ' + k + ' of ' + parallelBatches)
+        promises = []
+        for j in parallelBatches:
+        #this doesnt work in this format, will need to rework
+        #may drop parallel
+            elem = i + j
+            if projects[elem] != undefined and projects[elem].skip != true:
+                project = projects[elem].name
+                planarray = projects[elem].planarray
+                usercheckpath = __dirname + '\\users\\'+ creds.user + '\\dailychecks\\' + text.filedate + '\\'
+                await fs.promises.mkdir(usercheckpath, { recursive: true })
+                pathtofile = usercheckpath + '_all'
+                allpaths = [pathtofile+text.outputfile,pathtofile+text.pathtoOldfile,pathtofile+text.pathtoWarnfile]
+                streams = await conFig.makeStream(allpaths)
+                Upfile = streams[0] 
+                Oldfile = streams[1] 
+                Warnfile = streams[2]
+                page = await browser.newPage()
+                # await Debug.print('Project:'+project+text.scanplan+planarray+'\n'+text.hasSitemessage + projects[elem].hassite + '\n', Upfile)
+                # await Debug.print('Project:'+project+text.scanplan+planarray+'\n'+text.hasSitemessage + projects[elem].hassite + '\n', Warnfile)
+                # await Debug.print('Project:'+project+text.scanplan+planarray+'\n'+text.hasSitemessage + projects[elem].hassite + '\n', Oldfile)
+                promises.push(browser.newPage().then(
+                    async page => {
+                        if (projects[elem].hassite == 'amp') {
+                            if (preformance) {console.log(new Date().toISOString())}
+                            url = 'https://' + project + LOCAL.amp.urlstring
+                            # verboselog('Url: ' + url)
+                            ampbuffer = await ampWebpage.Login(url, page)
+                            # await Debug.print(text.preloginmessage + project, Upfile)
+                            # await Debug.print(text.preloginmessage + project, Warnfile)
+                            # await Debug.print(text.preloginmessage + project, Oldfile)
+                            ampnavigate = await ampWebpage.gotoPlanview(url, planarray, Upfile, Oldfile, Warnfile, ampbuffer)
+                            await ampnavigate.close()
+                            }
+                        else if (projects[elem].hassite == 'qv') {
+                            if (preformance) {console.log(new Date().toISOString())}
+                            namenum = projects[elem].proj
+                            qvbuffer = await qvWebpage.Login(page)
+                            await Debug.print('\n' + text.postloginmessage, Upfile)
+                            await Debug.print('\n' + text.postloginmessage, Warnfile)
+                            await Debug.print('\n' + text.postloginmessage, Oldfile)
+                            qvproject = await qvWebpage.gotoProject(qvbuffer, namenum)
+                            await Debug.print('\nProject Switched to ' + project, Upfile)
+                            await Debug.print('\nProject Switched to ' + project, Warnfile)
+                            await Debug.print('\nProject Switched to ' + project, Oldfile)
+                            qvscrape = await qvWebpage.gotoView(planarray, Upfile, Warnfile, Oldfile, qvproject)
+                            await qvscrape.close()
+                            }
+                        else if (projects[elem].hassite == 'truelook') {console.log('Truelook in develpment')}
+                        }))
+            }
+            await Promise.all(promises)
+        }
+    }
+    await browser.close()
+    groupend('Main')
+    if (verbose) {group('exitmsg')}
+    console.log('\n' + text.exitmessage)
+    if (verbose) {groupend('exitmsg')}
+    if (preformance) {console.log(new Date().toISOString())}
+
     # browser = await launch(headless=False)
     # args: [`--window-size=${options.width},${options.height}`]
     # )
