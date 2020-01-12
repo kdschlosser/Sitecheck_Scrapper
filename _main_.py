@@ -4,11 +4,14 @@ import io
 import asyncio
 import pathlib
 import json
+import datetime
 from pyppeteer import launch
 from env import sites, text, creds
 
 #temp for build
 debug = 0
+verbose = True
+getvalue = True
 self = ''
 watchdog = 86400000
 watchlimit = watchdog * 7
@@ -97,14 +100,13 @@ class Controller():
             
             
     async def hasAmp(self):
-        self.project['url'] = 'https://' + self.project['name'] + sites.selectors.amp.urlstring
+        self.project['url'] = 'https://' + self.project['name'] + sites.amp.urlstring
         self.project['page'] = await ampWebpage.Login(self)
         self.project['page'] = await ampWebpage.gotoPlanview(self)
         await self.project['page'].close()
         return
 
     async def hasQV(self):
-        namenum = self.project['proj']
         self.project['page'] = await qvWebpage.Login(self)
         self.project['page'] = await qvWebpage.gotoProject(self)
         self.project['page'] = await qvWebpage.gotoView(self)
@@ -120,9 +122,9 @@ class Ampadmin():
 
     async def login(self):
         await self.page.goto(self.url)
-        await self.page.type(sites.selectors.amp.logincss, creds.username)
-        await self.page.type(sites.selectors.amp.pwcss, creds.password)
-        await self.page.click(sites.selectors.amp.loginbutton)
+        await self.page.type(sites.amp.logincss, creds.username)
+        await self.page.type(sites.amp.pwcss, creds.password)
+        await self.page.click(sites.amp.loginbutton)
         # await self.page.setViewport(width(1600) height(900))
         await self.page.waitFor(50)
         return self.page
@@ -132,77 +134,78 @@ class Ampadmin():
 # print(projects)
 class ampWebpage():
     def __init__(self, project):
-        print(project)
+        self.project = project
         self.page = project['page']
+        self.url = project['url']
+        self.planarray = project['planarray']
         
 
     async def Login(self):
         try:
-            await self.page.goto(self.project['url'])
+            await self.page.goto(self.url)
         except: # ERR_ADDRESS_UNREACHABLE: 
             print('url error')
-        await self.page.type(sites.selectors.amp.logincss, creds.username)
-        await self.page.type(sites.selectors.amp.pwcss, creds.password)
-        await self.page.click(sites.selectors.amp.loginbutton)
-        # await self.page.setViewport({ width: 1600, height: 900 })
+        await self.page.type(sites.amp.logincss, creds.username)
+        await self.page.type(sites.amp.pwcss, creds.password)
+        await self.page.click(sites.amp.loginbutton)
         await self.page.waitFor(50)
         return self.page
 
     async def gotoPlanview(self): #url, planarray, Upfile, Oldfile, Warnfile, page):
         for view in self.planarray:
             if self.project['check']: 
-               ans = await Debug.askQuestion(self, "Check over Planview?\nNote:\n").then(Debug.print(ans))
-            await self.page.goto(url + sites.selectors.amp.planview + view)
+               ans = await Debug.askQuestion(self, "Check over Planview?\nNote:\n").then(Debug.log(ans))
+            await self.page.goto(self.url + sites.amp.planview + view)
             for targetchild in text.sensorarray:
                 await ampWebpage.getLastupdate(self, targetchild)
-        return page
+        return self.page
 
     async def getLastupdate(self, targetchild): #, Upfile, Oldfile, Warnfile, page):
-        for typeofsensorbox in sites.selectors.amp.label:
-            namesel = 'body > div:nth-child(' + typeofsensorbox + ') > div:nth-child(' + targetchild + sites.selectors.amp.title
-            valuesel = 'body > div:nth-child(' + typeofsensorbox + ') > div:nth-child(' + targetchild + sites.selectors.amp.sensor
-            name = await page.querySelector(namesel)
-            link = await page.querySelector(valuesel)
+        for typeofsensorbox in sites.amp.label:
+            namesel = 'body > div:nth-child(' + typeofsensorbox + ') > div:nth-child(' + targetchild + sites.amp.title
+            valuesel = 'body > div:nth-child(' + typeofsensorbox + ') > div:nth-child(' + targetchild + sites.amp.sensor
+            name = await self.page.querySelector(namesel)
+            link = await self.page.querySelector(valuesel)
             try:
-                sensor =  await page.evaluate(name.textContent, name)
-                value =  await page.evaluate(link.textContent, link)
-                date = await page.evaluate(link.title, link)
-                group('Sensor: ' + targetchild)
+                sensor =  await self.page.evaluate(name.textContent, name)
+                value =  await self.page.evaluate(link.textContent, link)
+                date = await self.page.evaluate(link.title, link)
                 data = '\nSensor name: ' + sensor
                 data += '\nLast Updated on AMP: '
                 if getvalue:
                     data += '\nCurrent value: ' + value
                 
-                pdate = Date.parse(date)
-                pnowdate = Date.parse(text.nowdate)
-                diff = Math.abs(pnowdate - pdate)
+                # TODO pdate = datetime.parse(date)
+                # pnowdate = datetime.parse(text.nowdate)
+                # diff = pnowdate - pdate
+                diff = 10000
                 if diff <= watchdog:
                     data += date
                     if verbose:
                         data += '\n' + text.uptoDate
-                    await Debug.print(data, Upfile)
+                    # await Debug.log(data, Upfile)
                 elif diff >= watchdog & diff <= watchlimit:
                     data += date
                     if verbose:
                         data += '\n' + text.behindDate
-                    await Debug.print(data, Warnfile)
+                    # await Debug.log(data, Warnfile)
                 else:
                     data += date
                     if verbose:
                         data += '\n' + text.oldDate
-                    await Debug.print(data, Oldfile)
-            except error:
-                exception = error.message.split(':')
-                if exception[0] == 'No node found for selector':
-                    pass
-                elif exception[0] == 'Evaluation failed':
-                    pass
-                elif exception[0] == 'UnhandledPromiseRejectionWarning':
-                    pass
-                else:
-                    print('Caught:', error.message)
-                    await Debug.askQuestion('Will cont when ready')
-            return page
+                    # await Debug.log(data, Oldfile)
+            except Exception as error:
+                # exception = error.split(':')
+                # if exception[0] == 'No node found for selector':
+                #     pass
+                # elif exception[0] == 'Evaluation failed':
+                #     pass
+                # elif exception[0] == 'UnhandledPromiseRejectionWarning':
+                #     pass
+                # else:
+                print('Caught:'+error)
+                await Debug.askQuestion(self, 'Will cont when ready')
+            return self.page
 
 
 class qvWebpage():
@@ -296,11 +299,9 @@ async def main():
     projects = conFig.loadProjects(self, 'dan.edens')
     #projects = conFig.loadProjects(self, user) #production
     browser = await launch() #text.head
-    k = 0
     for project in projects:
         # print(project)
         #Need to add promise push here instead in on load page
-        promises = []
         if project['skip'] != 'true':
             checkpath = '\\users\\'+ creds.user + '\\dailychecks\\' + text.filedate + '\\'
             pre_ = conFig.groupFile(self, checkpath, project)
@@ -309,11 +310,10 @@ async def main():
             project['streams'] = await conFig.makeStream(self, allpaths)
             # print(project['streams'])
             project['page'] = browser.newPage()
-            promises.append(Controller.filterSite(project))
-        # promises
+            Controller.filterSite(project)
     print('\n' + text.exitmessage)
-    # await page.close()
     await browser.close()
+
 if __name__ == '__main__':
     pass
     asyncio.get_event_loop().run_until_complete(main()) #, debug=True

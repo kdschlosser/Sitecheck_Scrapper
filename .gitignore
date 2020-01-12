@@ -24,3 +24,5 @@ _pyppeteer_sitecheck_scrapper - Shortcut.lnk
 env/**.pyc
 env/__pycache__/creds.cpython-37.pyc
 env/__pycache__/text.cpython-37.pyc
+env/__pycache__/sites.cpython-37.pyc
+env/__pycache__/sites.cpython-37.pyc
