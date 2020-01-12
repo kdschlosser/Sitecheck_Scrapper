@@ -195,14 +195,6 @@ class ampWebpage():
                         data += '\n' + text.oldDate
                     # await Debug.log(data, Oldfile)
             except Exception as error:
-                # exception = error.split(':')
-                # if exception[0] == 'No node found for selector':
-                #     pass
-                # elif exception[0] == 'Evaluation failed':
-                #     pass
-                # elif exception[0] == 'UnhandledPromiseRejectionWarning':
-                #     pass
-                # else:
                 print('Caught:'+error)
                 await Debug.askQuestion(self, 'Will cont when ready')
             return self.page
