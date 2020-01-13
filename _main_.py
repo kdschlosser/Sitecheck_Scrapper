@@ -117,7 +117,8 @@ class Controller():
             print (project.page)
             await Controller.hasAmp(self, project)
         elif project.hassite == 'qv':
-            Controller.hasQV(self, project)
+            pass
+            # Controller.hasQV(self, project)
         elif project.hassite == 'truelook': 
             Controller.hasTruelook(self, project)
             
@@ -125,15 +126,20 @@ class Controller():
     async def hasAmp(self, project):
         project.url = 'https://' + project.name + sites.amp.urlstring
         project.page = await ampWebpage.Login(project)
+        await project.page.waitFor(50)
         project.page = await ampWebpage.gotoPlanview(project)
-        project.page.close()
+        await project.page.waitFor(50)
+        await project.page.close()
         return
 
     def hasQV(self, project):
-        project['page'] = qvWebpage.Login(project)
-        project['page'] = qvWebpage.gotoProject(project)
-        project['page'] = qvWebpage.gotoView(project)
-        project['page'].close()
+        project.page = await qvWebpage.Login(project)
+        await project.page.waitFor(50)
+        project.page = await qvWebpage.gotoProject(project)
+        await project.page.waitFor(50)
+        project.page = await qvWebpage.gotoView(project)
+        await project.page.waitFor(50)
+        await project.page.close()
     
     def hasTruelook(self, project):
         pass
@@ -174,10 +180,13 @@ class ampWebpage():
             await self.page.goto(self.url)
         except: # ERR_ADDRESS_UNREACHABLE: 
             print('url error')
+        await self.page.waitFor(300)
         await self.page.type(sites.amp.logincss, creds.username)
+        await self.page.waitFor(300)
         await self.page.type(sites.amp.pwcss, creds.password)
+        await self.page.waitFor(300)
         await self.page.click(sites.amp.loginbutton)
-        await self.page.waitFor(50)
+        await self.page.waitFor(300)
         return self.page
 
     async def gotoPlanview(self): #url, planarray, Upfile, Oldfile, Warnfile, page):
@@ -191,14 +200,19 @@ class ampWebpage():
 
     async def getLastupdate(self, targetchild): #, Upfile, Oldfile, Warnfile, page):
         for typeofsensorbox in sites.amp.label:
-            namesel = 'body > div:nth-child(' + typeofsensorbox + ') > div:nth-child(' + targetchild + sites.amp.title
-            valuesel = 'body > div:nth-child(' + typeofsensorbox + ') > div:nth-child(' + targetchild + sites.amp.sensor
-            name = await self.page.querySelector(namesel)
-            link = await self.page.querySelector(valuesel)
-            try:
+            namesel = str('body > div:nth-child(' + typeofsensorbox + ') > div:nth-child(' + targetchild + sites.amp.title)
+            valuesel = str('body > div:nth-child(' + typeofsensorbox + ') > div:nth-child(' + targetchild + sites.amp.sensor)
+            name = await self.page.J(namesel)
+            link = await self.page.J(valuesel)
+            if name == None:
+                pass
+            else: 
+                # print(link)        
+            # try:
                 sensor =  await self.page.evaluate('(name) => name.textContent', name)
                 value =  await self.page.evaluate('(link) => link.textContent', link)
                 date = await self.page.evaluate('(link) => link.title', link)
+                print(sensor, value)
                 data = '\nSensor name: ' + sensor
                 data += '\nLast Updated on AMP: '
                 if getvalue:
@@ -212,22 +226,23 @@ class ampWebpage():
                     data += date
                     if verbose:
                         data += '\n' + text.uptoDate
-                    # await Debug.log(data, Upfile)
+                    print(data)
                 elif diff >= watchdog & diff <= watchlimit:
                     data += date
                     if verbose:
                         data += '\n' + text.behindDate
-                    # await Debug.log(data, Warnfile)
+                    print(data)
                 else:
                     data += date
                     if verbose:
                         data += '\n' + text.oldDate
-                    # await Debug.log(data, Oldfile)
-            except:
-                print('Caught:')
-                pass
-                # await Debug.askQuestion(self, 'Will cont when ready')
-            return self.page
+                    print(data)
+                
+            # except:
+            #     print('Caught:')
+            #     pass
+            #     await Debug.askQuestion(self, 'Will cont when ready')
+        return self.page
 
 
 class qvWebpage():
@@ -289,7 +304,7 @@ class qvWebpage():
         try:
             await self.page.hover(sensor)
             link = await self.page.querySelector(sites.qv.hoverbox)
-            txt =  await self.page.evaluate(link.innerHTML, link)
+            txt =  await self.page.evaluate('(link) => link.innerHTML', link)
             spltd = txt.split('<br>')
             data = '\nSensor name: ' + spltd[0]
             date = spltd[3].split("data: ").pop()
@@ -334,7 +349,7 @@ async def main():
             checkpath = '\\users\\'+ creds.user + '\\dailychecks\\' + text.filedate + '\\'
             pre_ = conFig.groupFile(self, checkpath, project)
             allpaths = [pre_+text.outputfile, pre_+text.Oldfile, pre_+text.Warnfile]
-            streams = await conFig.makeStream(self, allpaths)
+            project.streams = await conFig.makeStream(self, allpaths)
             project.page = await browser.newPage()
             print(project.name)
             await Controller.filterSite(self, project)
