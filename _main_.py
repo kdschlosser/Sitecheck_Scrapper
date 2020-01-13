@@ -116,9 +116,10 @@ class Controller():
         if project.hassite == 'amp':
             print (project.page)
             await Controller.hasAmp(self, project)
+            
         elif project.hassite == 'qv':
-            pass
-            # Controller.hasQV(self, project)
+            # pass
+            await Controller.hasQV(self, project)
         elif project.hassite == 'truelook': 
             Controller.hasTruelook(self, project)
             
@@ -132,7 +133,7 @@ class Controller():
         await project.page.close()
         return
 
-    def hasQV(self, project):
+    async def hasQV(self, project):
         project.page = await qvWebpage.Login(project)
         await project.page.waitFor(50)
         project.page = await qvWebpage.gotoProject(project)
@@ -186,7 +187,7 @@ class ampWebpage():
         await self.page.type(sites.amp.pwcss, creds.password)
         await self.page.waitFor(300)
         await self.page.click(sites.amp.loginbutton)
-        await self.page.waitFor(300)
+        await self.page.waitFor(2000)
         return self.page
 
     async def gotoPlanview(self): #url, planarray, Upfile, Oldfile, Warnfile, page):
@@ -246,13 +247,17 @@ class ampWebpage():
 
 
 class qvWebpage():
-    def __init__(self, page, planarray, namenum, Upfile, Warnfile, Oldfile):
-        self.page = page
-        self.planarray = planarray
-        self.namenum = namenum
-        self.Upfile = Upfile
-        self.Warnfile = Warnfile
-        self.Oldfile = Oldfile
+    def __init__(self, project):
+        self.page = project.page
+        self.planarray = project.planarray
+        self.namenum = project.namenum
+        self.Upfile = project.Upfile
+        self.Warnfile = project.Warnfile
+        self.Oldfile = project.Oldfile
+        self.project = project
+        self.check = project.check
+        self.url = project.url
+        self.planarray = project.planarray
 
     
     async def Login(self):
@@ -261,7 +266,9 @@ class qvWebpage():
         except: #ERR_ADDRESS_UNREACHABLE
             print('url error')
         await self.page.type(sites.qv.logincss, creds.qvuser)
+        await self.page.waitFor(300)
         await self.page.type(sites.qv.pwcss, creds.qvpass)
+        await self.page.waitFor(300)
         await self.page.click(sites.qv.loginbutton)
         # await self.page.setViewport(width: 1600, height: 900)
         await self.page.waitFor(2000)
@@ -279,10 +286,6 @@ class qvWebpage():
 
     async def gotoView(self):
         for view in self.planarray:
-            # loginmsg = text.loginmessage + view
-            # await Debug.log(loginmsg, self.Upfile)
-            # await Debug.log(loginmsg, self.Warnfile)
-            # await Debug.log(loginmsg, self.Oldfile)
             if view != '0':
                 await self.page.click(sites.qv.views)
                 await self.page.waitFor(500)
@@ -353,6 +356,7 @@ async def main():
             project.page = await browser.newPage()
             print(project.name)
             await Controller.filterSite(self, project)
+            return
     await browser.close()
 
 if __name__ == '__main__':
