@@ -19,6 +19,14 @@ user = 'dan.edens'
 split = 'false'
 #end temp
 
+async def get_browser():
+    return await launch({"headless": False})
+
+async def get_page(browser, url):
+    page = await browser.newPage()
+    await page.goto(url)
+    return page
+
 class Debug():
     def __init__(self, data, wfile):
         self.data = data
@@ -46,13 +54,25 @@ class Debug():
     
     def checkExists(self, file):
         pass
-        
+
+class data:
+    #parse json dict into object
+    def __init__(self, project):
+        self.skip = project['skip']
+        self.group = project['group']
+        self.name = project['name']
+        self.check = False
+        self.proj = project['proj']
+        self.planarray = project['planarray']
+        self.hassite = project['hassite']
+        return
+
 class conFig():
     def __init__ (self):
         pass
         # self.user = user
         # self.path = path
-
+    
     def loadProjects(self, user): 
         with open('env/projects.json', 'r') as userdata:
             data=userdata.read()
@@ -63,7 +83,7 @@ class conFig():
         streams = {}
         count = 0
         for x in path:
-            print(x)
+            # print(x)
             streams[count] = open(x, "a", encoding="utf-8")
             count += 1
             streams[count] = io.StringIO('temp newfile message.\n')
@@ -73,10 +93,10 @@ class conFig():
 
     def groupFile(self, usercheckpath, project):
         pathlib.Path(usercheckpath).mkdir(parents=True, exist_ok=True)
-        if project['group'] == True: 
+        if project.group == True: 
             c = str(usercheckpath) + 'all_'
         else:
-            c = str(usercheckpath) + str(project['name']) + '_'
+            c = str(usercheckpath) + str(project.name) + '_'
         return c
 
 class Report():
@@ -88,31 +108,34 @@ class Report():
 
 class Controller():
     def __init__(self, project):
-        self.project = project
-
-    async def filterSite(self):
-        if self.project['hassite'] == 'amp':
-            Controller.hasAmp(self)
-        elif self.project['hassite'] == 'qv':
-            Controller.hasQV(self)
-        elif self.project['hassite'] == 'truelook': 
-            Controller.hasTruelook(self)
+        # self.page = ''
+        self.name = project.name
+        # self.project = project
+    
+    async def filterSite(self, project):
+        if project.hassite == 'amp':
+            print (project.page)
+            await Controller.hasAmp(self, project)
+        elif project.hassite == 'qv':
+            Controller.hasQV(self, project)
+        elif project.hassite == 'truelook': 
+            Controller.hasTruelook(self, project)
             
             
-    async def hasAmp(self):
-        self.project['url'] = 'https://' + self.project['name'] + sites.amp.urlstring
-        self.project['page'] = await ampWebpage.Login(self)
-        self.project['page'] = await ampWebpage.gotoPlanview(self)
-        await self.project['page'].close()
+    async def hasAmp(self, project):
+        project.url = 'https://' + project.name + sites.amp.urlstring
+        project.page = await ampWebpage.Login(project)
+        project.page = await ampWebpage.gotoPlanview(project)
+        project.page.close()
         return
 
-    async def hasQV(self):
-        self.project['page'] = await qvWebpage.Login(self)
-        self.project['page'] = await qvWebpage.gotoProject(self)
-        self.project['page'] = await qvWebpage.gotoView(self)
-        await self.project['page'].close()
+    def hasQV(self, project):
+        project['page'] = qvWebpage.Login(project)
+        project['page'] = qvWebpage.gotoProject(project)
+        project['page'] = qvWebpage.gotoView(project)
+        project['page'].close()
     
-    async def hasTruelook(self):
+    def hasTruelook(self, project):
         pass
     
 class Ampadmin():
@@ -134,10 +157,16 @@ class Ampadmin():
 # print(projects)
 class ampWebpage():
     def __init__(self, project):
+        self.page = project.page
+        self.planarray = project.planarray
+        self.namenum = project.namenum
+        self.Upfile = project.Upfile
+        self.Warnfile = project.Warnfile
+        self.Oldfile = project.Oldfile
         self.project = project
-        self.page = project['page']
-        self.url = project['url']
-        self.planarray = project['planarray']
+        self.check = project.check
+        self.url = project.url
+        self.planarray = project.planarray
         
 
     async def Login(self):
@@ -153,7 +182,7 @@ class ampWebpage():
 
     async def gotoPlanview(self): #url, planarray, Upfile, Oldfile, Warnfile, page):
         for view in self.planarray:
-            if self.project['check']: 
+            if self.check: 
                ans = await Debug.askQuestion(self, "Check over Planview?\nNote:\n").then(Debug.log(ans))
             await self.page.goto(self.url + sites.amp.planview + view)
             for targetchild in text.sensorarray:
@@ -167,9 +196,9 @@ class ampWebpage():
             name = await self.page.querySelector(namesel)
             link = await self.page.querySelector(valuesel)
             try:
-                sensor =  await self.page.evaluate(name.textContent, name)
-                value =  await self.page.evaluate(link.textContent, link)
-                date = await self.page.evaluate(link.title, link)
+                sensor =  await self.page.evaluate('(name) => name.textContent', name)
+                value =  await self.page.evaluate('(link) => link.textContent', link)
+                date = await self.page.evaluate('(link) => link.title', link)
                 data = '\nSensor name: ' + sensor
                 data += '\nLast Updated on AMP: '
                 if getvalue:
@@ -194,9 +223,10 @@ class ampWebpage():
                     if verbose:
                         data += '\n' + text.oldDate
                     # await Debug.log(data, Oldfile)
-            except Exception as error:
-                print('Caught:'+error)
-                await Debug.askQuestion(self, 'Will cont when ready')
+            except:
+                print('Caught:')
+                pass
+                # await Debug.askQuestion(self, 'Will cont when ready')
             return self.page
 
 
@@ -288,24 +318,30 @@ class qvWebpage():
         return
 
 async def main():
-    projects = conFig.loadProjects(self, 'dan.edens')
-    #projects = conFig.loadProjects(self, user) #production
-    browser = await launch() #text.head
-    for project in projects:
-        # print(project)
-        #Need to add promise push here instead in on load page
-        if project['skip'] != 'true':
+    # Retrieves list of projects from Json file as 'projects'
+    projects = conFig.loadProjects(self, 'dan.edens') 
+    
+    # Creates browser
+    browser = await get_browser() #text.head
+    
+    #cycles through each project as 'project'
+    for each in projects:
+        project = data(each)
+        # print(project.skip)
+        # TODO Need to add promise push here instead in on load page
+        if project.skip != 'true':
+            print(project)
             checkpath = '\\users\\'+ creds.user + '\\dailychecks\\' + text.filedate + '\\'
             pre_ = conFig.groupFile(self, checkpath, project)
             allpaths = [pre_+text.outputfile, pre_+text.Oldfile, pre_+text.Warnfile]
-            # print(allpaths[0])             
-            project['streams'] = await conFig.makeStream(self, allpaths)
-            # print(project['streams'])
-            project['page'] = browser.newPage()
-            Controller.filterSite(project)
-    print('\n' + text.exitmessage)
+            streams = await conFig.makeStream(self, allpaths)
+            project.page = await browser.newPage()
+            print(project.name)
+            await Controller.filterSite(self, project)
     await browser.close()
 
 if __name__ == '__main__':
     pass
-    asyncio.get_event_loop().run_until_complete(main()) #, debug=True
+    run = asyncio.get_event_loop().run_until_complete(main()) #, debug=True
+    # run.close()
+    print('\n' + text.exitmessage)
