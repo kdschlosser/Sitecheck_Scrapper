@@ -123,8 +123,10 @@ class Controller():
 
     async def EvalSite(self, browser, project):
         project = data(project)
-        print(project.name)  #remove later
-        if project.skip != 'true':
+        if project.skip == 'true':
+            print('Skipping project: '+project.name)
+        else:
+            print('Running project: '+project.name)  #remove later
             checkpath = '\\users\\'+ creds.user + '\\dailychecks\\' + text.filedate + '\\'
             pre_ = conFig.groupFile(self, checkpath, project)
             allpaths = [pre_+text.outputfile, pre_+text.Oldfile, pre_+text.Warnfile]
@@ -135,7 +137,6 @@ class Controller():
 
     async def filterSite(self, project):
         if project.hassite == 'amp':
-            print (project.page)
             await Controller.hasAmp(self, project)
         elif project.hassite == 'qv':
             await Controller.hasQV(self, project)
@@ -358,7 +359,7 @@ async def main():
     browser = await get_browser()
     futures = [asyncio.ensure_future(Controller.EvalSite(self, browser, project)) for project in projects]
     asyncio.gather(*futures)
-    await browser.close()
+    # await browser.close()
 
 if __name__ == '__main__':
     run = asyncio.get_event_loop().run_until_complete(main())
