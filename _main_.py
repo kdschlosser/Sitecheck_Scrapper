@@ -34,7 +34,7 @@ class Debug():
         # if not wfile:
         # else:
         #     self.wfile = wfile
-        
+
     def log(self):
         if debug == 0:
             pass
@@ -46,12 +46,12 @@ class Debug():
             pass
         return
 
-    def askQuestion(self, query):    
+    def askQuestion(self, query):
         # readline.createInterface
         # input = process.stdin
         # output = process.stdout
         return
-    
+
     def checkExists(self, file):
         pass
 
@@ -72,8 +72,8 @@ class conFig():
         pass
         # self.user = user
         # self.path = path
-    
-    def loadProjects(self, user): 
+
+    def loadProjects(self, user):
         with open('env/projects.json', 'r') as userdata:
             data=userdata.read()
             projectlist = json.loads(data)
@@ -93,7 +93,7 @@ class conFig():
 
     def groupFile(self, usercheckpath, project):
         pathlib.Path(usercheckpath).mkdir(parents=True, exist_ok=True)
-        if project.group == True: 
+        if project.group == True:
             c = str(usercheckpath) + 'all_'
         else:
             c = str(usercheckpath) + str(project.name) + '_'
@@ -102,7 +102,7 @@ class conFig():
 class Report():
     def __init__(self, data):
         self.data = data
-        
+
     def genCsv(self):
         pass
 
@@ -111,19 +111,19 @@ class Controller():
         # self.page = ''
         self.name = project.name
         # self.project = project
-    
+
     async def filterSite(self, project):
         if project.hassite == 'amp':
             print (project.page)
             await Controller.hasAmp(self, project)
-            
+
         elif project.hassite == 'qv':
             # pass
             await Controller.hasQV(self, project)
-        elif project.hassite == 'truelook': 
+        elif project.hassite == 'truelook':
             Controller.hasTruelook(self, project)
-            
-            
+
+
     async def hasAmp(self, project):
         project.url = 'https://' + project.name + sites.amp.urlstring
         project.page = await ampWebpage.Login(project)
@@ -141,10 +141,10 @@ class Controller():
         project.page = await qvWebpage.gotoView(project)
         await project.page.waitFor(50)
         await project.page.close()
-    
+
     def hasTruelook(self, project):
         pass
-    
+
 class Ampadmin():
     def __init__(self, url, page):
         self.url = url
@@ -158,7 +158,7 @@ class Ampadmin():
         # await self.page.setViewport(width(1600) height(900))
         await self.page.waitFor(50)
         return self.page
-  
+
 #  Gives User directior to look for project.json
 # projects = Config.loadProjects('dan.edens')
 # print(projects)
@@ -174,12 +174,12 @@ class ampWebpage():
         self.check = project.check
         self.url = project.url
         self.planarray = project.planarray
-        
+
 
     async def Login(self):
         try:
             await self.page.goto(self.url)
-        except: # ERR_ADDRESS_UNREACHABLE: 
+        except: # ERR_ADDRESS_UNREACHABLE:
             print('url error')
         await self.page.waitFor(300)
         await self.page.type(sites.amp.logincss, creds.username)
@@ -192,7 +192,7 @@ class ampWebpage():
 
     async def gotoPlanview(self): #url, planarray, Upfile, Oldfile, Warnfile, page):
         for view in self.planarray:
-            if self.check: 
+            if self.check:
                ans = await Debug.askQuestion(self, "Check over Planview?\nNote:\n").then(Debug.log(ans))
             await self.page.goto(self.url + sites.amp.planview + view)
             for targetchild in text.sensorarray:
@@ -207,8 +207,8 @@ class ampWebpage():
             link = await self.page.J(valuesel)
             if name == None:
                 pass
-            else: 
-                # print(link)        
+            else:
+                # print(link)
             # try:
                 sensor =  await self.page.evaluate('(name) => name.textContent', name)
                 value =  await self.page.evaluate('(link) => link.textContent', link)
@@ -218,7 +218,7 @@ class ampWebpage():
                 data += '\nLast Updated on AMP: '
                 if getvalue:
                     data += '\nCurrent value: ' + value
-                
+
                 # TODO pdate = datetime.parse(date)
                 # pnowdate = datetime.parse(text.nowdate)
                 # diff = pnowdate - pdate
@@ -238,7 +238,7 @@ class ampWebpage():
                     if verbose:
                         data += '\n' + text.oldDate
                     print(data)
-                
+
             # except:
             #     print('Caught:')
             #     pass
@@ -259,7 +259,7 @@ class qvWebpage():
         self.url = project.url
         self.planarray = project.planarray
 
-    
+
     async def Login(self):
         try:
             await self.page.goto(sites.qv.urlstring)
@@ -294,7 +294,7 @@ class qvWebpage():
                 await self.page.click(sites.qv.thumb+view)
             else:
                 pass
-            
+
             await self.page.waitFor(1000)
             for targetchild in text.sensorarray:
                 await qvWebpage.getLastupdate(self, targetchild)
@@ -322,14 +322,14 @@ class qvWebpage():
                 # await Debug.log(data, Upfile)
             elif diff >= watchdog and diff <= watchlimit:
                 data += date
-                # if verbose: 
+                # if verbose:
                 #     data += '\n' + text.behindDate
                 # await Debug.log(data, Warnfile)
             else:
                 data += date
-                # if verbose: 
+                # if verbose:
                 #     data += '\n' + text.oldDate
-                
+
                 # await Debug.log(data, Oldfile)
         except: #(UnhandledPromiseRejectionWarning):
             pass
@@ -337,15 +337,16 @@ class qvWebpage():
 
 async def main():
     # Retrieves list of projects from Json file as 'projects'
-    projects = conFig.loadProjects(self, 'dan.edens') 
-    
+    projects = conFig.loadProjects(self, 'dan.edens')
+
     # Creates browser
     browser = await get_browser() #text.head
-    
+
     #cycles through each project as 'project'
     for each in projects:
         project = data(each)
-        # print(project.skip)
+        print(project.skip)
+        print('\n348')
         # TODO Need to add promise push here instead in on load page
         if project.skip != 'true':
             print(project)
@@ -356,11 +357,11 @@ async def main():
             project.page = await browser.newPage()
             print(project.name)
             await Controller.filterSite(self, project)
-            return
+
     await browser.close()
 
 if __name__ == '__main__':
-    pass
+    print('363')
     run = asyncio.get_event_loop().run_until_complete(main()) #, debug=True
-    # run.close()
+    print('365')
     print('\n' + text.exitmessage)
