@@ -19,6 +19,7 @@ watchdog = 86400000
 watchlimit = watchdog * 7
 user = 'dan.edens'
 split = 'false'
+global browser
 #end temp
 
 async def get_browser():
@@ -28,6 +29,7 @@ async def get_page(browser, url):
     page = await browser.newPage()
     await page.goto(url)
     return page
+
 
 def wait():
     m.getch()
@@ -116,9 +118,10 @@ class Report():
         pass
 
 class Controller():
-    def __init__(self, project):
+    def __init__(self, browser, project):
+        pass
         # self.page = ''
-        self.name = project.name
+        # self.name = project.name
         # self.project = project
 
     async def EvalSite(self, browser, project):
@@ -131,21 +134,26 @@ class Controller():
             pre_ = conFig.groupFile(self, checkpath, project)
             allpaths = [pre_+text.outputfile, pre_+text.Oldfile, pre_+text.Warnfile]
             project.streams = await conFig.makeStream(self, allpaths)
-            project.page = await browser.newPage()
-            await Controller.filterSite(self, project)
+            # print(project.streams)
+            # project.page = await browser.newPage()
+            # print(project.page)
             # wait()
+            await Controller.filterSite(self, browser, project)
 
-    async def filterSite(self, project):
+    async def filterSite(self, browser, project):
         if project.hassite == 'amp':
-            await Controller.hasAmp(self, project)
+            print('success')
+            await Controller.hasAmp(self, browser, project)
         elif project.hassite == 'qv':
-            await Controller.hasQV(self, project)
+            await Controller.hasQV(self, browser, project)
         elif project.hassite == 'truelook':
-            Controller.hasTruelook(self, project)
+            Controller.hasTruelook(self, browser, project)
 
 
-    async def hasAmp(self, project):
+    async def hasAmp(self, browser, project):
         project.url = 'https://' + project.name + sites.amp.urlstring
+        page = await browser.newPage()
+        #BREAK
         project.page = await ampWebpage.Login(project)
         await project.page.waitFor(50)
         await ampWebpage.gotoPlanview(project)
@@ -153,7 +161,7 @@ class Controller():
         await project.page.close()
         return
 
-    async def hasQV(self, project):
+    async def hasQV(self, browser, project):
         project.page = await qvWebpage.Login(project)
         await project.page.waitFor(50)
         project.page = await qvWebpage.gotoProject(project)
@@ -162,7 +170,7 @@ class Controller():
         await project.page.waitFor(50)
         await project.page.close()
 
-    def hasTruelook(self, project):
+    def hasTruelook(self, browser, project):
         pass
 
 class Ampadmin():
@@ -184,7 +192,7 @@ class Ampadmin():
 # print(projects)
 class ampWebpage():
     def __init__(self, project):
-        self.page = project.page
+        # self.page = project.page
         self.planarray = project.planarray
         self.namenum = project.namenum
         self.Upfile = project.Upfile
@@ -198,6 +206,7 @@ class ampWebpage():
 
     async def Login(self):
         try:
+            self.page = browser.newPage()
             await self.page.goto(self.url)
         except: # ERR_ADDRESS_UNREACHABLE:
             print('url error')
