@@ -131,10 +131,6 @@ class Controller():
             pre_ = conFig.groupFile(self, checkpath, project)
             allpaths = [pre_+text.outputfile, pre_+text.Oldfile, pre_+text.Warnfile]
             project.streams = await conFig.makeStream(self, allpaths)
-            # print(project.streams)
-            # project.page = await browser.newPage()
-            # print(project.page)
-            # wait()
             await Controller.filterSite(self, browser, project)
 
     async def filterSite(self, browser, project):
@@ -154,17 +150,18 @@ class Controller():
         await project.page.waitFor(50)
         await ampWebpage.gotoPlanview(project)
         await project.page.waitFor(50)
-        await project.page.close()
+        # await project.page.close()
         return
 
     async def hasQV(self, browser, project):
-        project.page = await qvWebpage.Login(project)
+        project.page = await browser.newPage()
+        await qvWebpage.Login(project)
         await project.page.waitFor(50)
         project.page = await qvWebpage.gotoProject(project)
         await project.page.waitFor(50)
         project.page = await qvWebpage.gotoView(project)
         await project.page.waitFor(50)
-        await project.page.close()
+        # await project.page.close()
 
     def hasTruelook(self, browser, project):
         pass
@@ -197,6 +194,7 @@ class ampWebpage():
         self.check = project.check
         self.url = project.url
         self.planarray = project.planarray
+        self.page = project.page
 
 
 
@@ -365,5 +363,5 @@ async def main():
 
 # If run occurs from directly running the program
 if __name__ == '__main__':
-    run = asyncio.get_event_loop().run_until_complete(main())
+    run = asyncio.run(main())
     print('\n' + text.exitmessage)
