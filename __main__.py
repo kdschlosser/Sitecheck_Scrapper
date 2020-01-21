@@ -19,11 +19,8 @@ watchdog = 86400000
 watchlimit = watchdog * 7
 user = 'dan.edens'
 split = 'false'
-global browser
 #end temp
 
-async def get_browser():
-    return await launch({"headless": False})
 
 async def get_page(browser, url):
     page = await browser.newPage()
@@ -118,13 +115,13 @@ class Report():
         pass
 
 class Controller():
-    def __init__(self, browser, project):
+    async def __init__(self, browser, project):
         pass
         # self.page = ''
         # self.name = project.name
         # self.project = project
 
-    async def EvalSite(self, browser, project):
+    async def EvalSite(self,  project, browser):
         project = data(project)
         if project.skip == 'true':
             print('Skipping project: '+project.name)
@@ -152,9 +149,8 @@ class Controller():
 
     async def hasAmp(self, browser, project):
         project.url = 'https://' + project.name + sites.amp.urlstring
-        page = await browser.newPage()
-        #BREAK
-        project.page = await ampWebpage.Login(project)
+        project.page = await browser.newPage()
+        await ampWebpage.Login(self, browser, project)
         await project.page.waitFor(50)
         await ampWebpage.gotoPlanview(project)
         await project.page.waitFor(50)
@@ -191,8 +187,7 @@ class Ampadmin():
 # projects = Config.loadProjects('dan.edens')
 # print(projects)
 class ampWebpage():
-    def __init__(self, project):
-        # self.page = project.page
+    async def __init__(self, browser, project):
         self.planarray = project.planarray
         self.namenum = project.namenum
         self.Upfile = project.Upfile
@@ -204,20 +199,17 @@ class ampWebpage():
         self.planarray = project.planarray
 
 
-    async def Login(self):
-        try:
-            self.page = browser.newPage()
-            await self.page.goto(self.url)
-        except: # ERR_ADDRESS_UNREACHABLE:
-            print('url error')
-        await self.page.waitFor(300)
-        await self.page.type(sites.amp.logincss, creds.username)
-        await self.page.waitFor(300)
-        await self.page.type(sites.amp.pwcss, creds.password)
-        await self.page.waitFor(300)
-        await self.page.click(sites.amp.loginbutton)
-        await self.page.waitFor(2000)
-        return self.page
+
+    async def Login(self, browser, project):
+        await project.page.goto(project.url)
+        await project.page.waitFor(300)
+        await project.page.type(sites.amp.logincss, creds.username)
+        await project.page.waitFor(300)
+        await project.page.type(sites.amp.pwcss, creds.password)
+        await project.page.waitFor(300)
+        await project.page.click(sites.amp.loginbutton)
+        await project.page.waitFor(2000)
+        return project.page
 
     async def gotoPlanview(self): #url, planarray, Upfile, Oldfile, Warnfile, page):
         print(self.planarray)
@@ -365,11 +357,13 @@ class qvWebpage():
 
 async def main():
     projects = conFig.loadProjects(self, 'dan.edens')
-    browser = await get_browser()
-    futures = [asyncio.ensure_future(Controller.EvalSite(self, browser, project)) for project in projects]
+    browser = await launch({"headless": False})
+
+    futures = [asyncio.ensure_future(await Controller.EvalSite(self, project, browser)) for project in projects]
     asyncio.gather(*futures)
     # await browser.close()
 
+# If run occurs from directly running the program
 if __name__ == '__main__':
     run = asyncio.get_event_loop().run_until_complete(main())
     print('\n' + text.exitmessage)
