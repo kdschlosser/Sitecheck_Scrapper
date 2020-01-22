@@ -11,6 +11,7 @@ from pyppeteer import launch
 from env import sites, text, creds
 
 #temp for build
+browser = await launch({"headless": False})
 debug = 0
 verbose = True
 getvalue = True
@@ -20,13 +21,6 @@ watchlimit = watchdog * 7
 user = 'dan.edens'
 split = 'false'
 #end temp
-
-
-async def get_page(browser, url):
-    page = await browser.newPage()
-    await page.goto(url)
-    return page
-
 
 def wait():
     m.getch()
@@ -111,14 +105,13 @@ class Report():
         pass
 
 class Controller():
-    async def __new__(self, project, browser):
+    async def __new__(self, project):
         project = processdata(project)
         self.project = project
         print(browser)
-        # self.browser = browser
-        await self.EvalSite(self, browser)
+        await self.EvalSite(self)
 
-    async def EvalSite(self, browser):
+    async def EvalSite(self):
         if self.project.skip == 'true':
             print('Skipping project: '+ self.project.name)
         else:
@@ -126,25 +119,25 @@ class Controller():
             allpaths = project_out_File(self)
             self.project.streams = await conFig.makeStream(self, allpaths)
             print(text.fileheader)
-            await self.filterSite(browser)
+            await self.filterSite()
 
-    async def filterSite(self, browser):
+    async def filterSite(self):
         if self.project.hassite == 'amp':
-            await self.hasAmp(browser)
+            await self.hasAmp()
         elif self.project.hassite == 'qv':
-            await self.hasQV(browser)
+            await self.hasQV()
 
-    async def hasAmp(self, browser):
+    async def hasAmp(self):
         self.project.url = 'https://' + self.project.name + '.geo-instruments.com/index.php'
         self.project.page = await browser.newPage()
-        await ampWebpage.Login(self, browser)
+        await ampWebpage.Login(self)
         await self.project.page.waitFor(50)
         await ampWebpage.gotoPlanview(self)
         await self.project.page.waitFor(50)
         # await self.project.page.close()
         return
 
-    async def hasQV(self, browser):
+    async def hasQV(self):
         self.project.page = await browser.newPage()
         # await qvWebpage.Login(self)
         await self.project.page.waitFor(50)
@@ -171,7 +164,7 @@ class Ampadmin():
         return self.page
 
 class ampWebpage():
-    async def __init__(self, browser, project):
+    async def __init__(self, project):
         self.planarray = project.planarray
         self.namenum = project.namenum
         self.Upfile = project.Upfile
@@ -185,7 +178,7 @@ class ampWebpage():
 
 
 
-    async def Login(self, browser):
+    async def Login(self):
         await self.page.goto(self.url)
         await self.page.waitFor(300)
         await self.page.type(sites.amp.logincss, creds.username)
@@ -342,10 +335,8 @@ class qvWebpage():
 async def main():
     #Returns List of project configs {[project],[project],[project]}
     projects = loadProjects()
-    #Creates Initial browser context
-    browser = await launch({"headless": False})
 
-    futures = [(Controller(project, browser)) for project in projects]
+    futures = [(Controller(project)) for project in projects]
     asyncio.gather(*futures)
     # await browser.close()
 
