@@ -59,7 +59,13 @@ class Debug():
     def checkExists(self, file):
         pass
 
-class processdata(list):
+def loadProjects():
+    with open('env/projects.json', 'r') as userdata:
+        data=userdata.read()
+        projects = json.loads(data)
+        return projects
+
+class processdata():
     def __init__(self, project):
         self.skip = project['skip']
         self.group = project['group']
@@ -69,7 +75,7 @@ class processdata(list):
         self.planarray = project['planarray']
         self.hassite = project['hassite']
 
-    def __repr__(self, project):
+    def __repr__(self):
         return(self)
 
 
@@ -78,12 +84,6 @@ class conFig():
         pass
         # self.user = user
         # self.path = path
-
-    def loadProjects():
-        with open('env/projects.json', 'r') as userdata:
-            data=userdata.read()
-            projects = json.loads(data)
-            return projects
 
     async def makeStream(self, path):
         streams = {}
@@ -346,7 +346,7 @@ class qvWebpage():
 
 async def main():
     #Returns List of project configs {[project],[project],[project]}
-    projects = conFig.loadProjects()
+    projects = loadProjects()
     #Creates Initial browser context
     browser = await launch({"headless": False})
 
