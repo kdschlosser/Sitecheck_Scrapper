@@ -9,9 +9,9 @@ import msvcrt as m
 from io import StringIO
 from pyppeteer import launch
 from env import sites, text, creds
-
+#pylint: disable=too-many-arguments
 #temp for build
-browser = await launch({"headless": False})
+browser = launch({"headless": False})
 debug = 0
 verbose = True
 getvalue = True
@@ -75,10 +75,11 @@ class processdata():
 
 class conFig():
     def __init__ (self):
-        self.streams = {}
-        self.count = 0
+        pass
 
     async def makeStream(self, path):
+        self.streams = {}
+        self.count = 0
         for x in path:
             self.streams[self.count] = open(x, "a", encoding="utf-8")
             self.count += 1
@@ -108,7 +109,6 @@ class Controller():
     async def __new__(self, project):
         project = processdata(project)
         self.project = project
-        print(browser)
         await self.EvalSite(self)
 
     async def EvalSite(self):
@@ -116,26 +116,28 @@ class Controller():
             print('Skipping project: '+ self.project.name)
         else:
             print('Running project: '+ self.project.name)  #remove later
-            allpaths = project_out_File(self)
-            self.project.streams = await conFig.makeStream(self, allpaths)
+            # allpaths = project_out_File(self)
+            # self.project.streams = await conFig.makeStream(self, allpaths)
             print(text.fileheader)
-            await self.filterSite()
+            await self.filterSite(self)
 
     async def filterSite(self):
         if self.project.hassite == 'amp':
-            await self.hasAmp()
+            await self.hasAmp(self)
         elif self.project.hassite == 'qv':
-            await self.hasQV()
+            await self.hasQV(self)
 
     async def hasAmp(self):
-        self.project.url = 'https://' + self.project.name + '.geo-instruments.com/index.php'
-        self.project.page = await browser.newPage()
+        self.url = 'https://' + self.project.name + '.geo-instruments.com/index.php'
+        browser = await launch({"headless": False})
+        self.page = await browser.newPage()
         await ampWebpage.Login(self)
-        await self.project.page.waitFor(50)
+        await self.page.waitFor(50)
         await ampWebpage.gotoPlanview(self)
-        await self.project.page.waitFor(50)
+        await self.page.waitFor(50)
+
         # await self.project.page.close()
-        return
+        # return
 
     async def hasQV(self):
         self.project.page = await browser.newPage()
@@ -149,34 +151,9 @@ class Controller():
         return
 
 
-class Ampadmin():
-    def __init__(self, url, page):
-        self.url = url
-        self.page = page
-
-    async def login(self):
-        await self.page.goto(self.url)
-        await self.page.type(sites.amp.logincss, creds.username)
-        await self.page.type(sites.amp.pwcss, creds.password)
-        await self.page.click(sites.amp.loginbutton)
-        # await self.page.setViewport(width(1600) height(900))
-        await self.page.waitFor(50)
-        return self.page
-
 class ampWebpage():
-    async def __init__(self, project):
-        self.planarray = project.planarray
-        self.namenum = project.namenum
-        self.Upfile = project.Upfile
-        self.Warnfile = project.Warnfile
-        self.Oldfile = project.Oldfile
-        self.project = project
-        self.check = project.check
-        self.url = project.url
-        self.planarray = project.planarray
-        self.page = project.page
-
-
+    async def __init__(self):
+        pass
 
     async def Login(self):
         await self.page.goto(self.url)
@@ -187,7 +164,6 @@ class ampWebpage():
         await self.page.waitFor(300)
         await self.page.click(sites.amp.loginbutton)
         await self.page.waitFor(2000)
-        return self
 
     async def gotoPlanview(self): #url, planarray, Upfile, Oldfile, Warnfile, page):
         print(text.scanplan + self.planarray)
@@ -335,9 +311,8 @@ class qvWebpage():
 async def main():
     #Returns List of project configs {[project],[project],[project]}
     projects = loadProjects()
-
     futures = [(Controller(project)) for project in projects]
-    asyncio.gather(*futures)
+    await asyncio.gather(*futures)
     # await browser.close()
 
 # If run occurs from directly running the program
