@@ -125,6 +125,7 @@ class Controller():
             print('Running project: '+ self.project.name)  #remove later
             allpaths = project_out_File(self)
             self.project.streams = await conFig.makeStream(self, allpaths)
+            print(text.fileheader)
             await self.filterSite(browser)
 
     async def filterSite(self, browser):
