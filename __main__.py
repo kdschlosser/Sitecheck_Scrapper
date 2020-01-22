@@ -82,10 +82,8 @@ class conFig():
     def loadProjects():
         with open('env/projects.json', 'r') as userdata:
             data=userdata.read()
-            projectlist = json.loads(data)
-            # data = StringIO(projectlist)
-            # print(projectlist[1])
-            return projectlist
+            projects = json.loads(data)
+            return projects
 
     async def makeStream(self, path):
         streams = {}
