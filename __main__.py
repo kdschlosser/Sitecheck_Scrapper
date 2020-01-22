@@ -97,13 +97,16 @@ class conFig():
         # print(streams)
         return streams
 
-def groupFile(self, usercheckpath):
-    pathlib.Path(usercheckpath).mkdir(parents=True, exist_ok=True)
+
+def project_out_File(self):
+    checkpath = '\\users\\'+ creds.user + '\\dailychecks\\' + text.filedate + '\\'
+    pathlib.Path(checkpath).mkdir(parents=True, exist_ok=True)
+    print(self.project.group)
     if self.project.group == True:
-        output_file = str(usercheckpath) + 'all_'
+        output_pre = str(checkpath) + 'all_'
     else:
-        output_file = str(usercheckpath) + str(self.project.name) + '_'
-    return output_file
+        output_pre = str(checkpath) + str(self.project.name) + '_'
+    return [output_pre+text.outputfile, output_pre+text.Oldfile, output_pre+text.Warnfile]
 
 class Report():
     def __init__(self, data):
@@ -124,9 +127,7 @@ class Controller():
             print('Skipping project: '+ self.project.name)
         else:
             print('Running project: '+ self.project.name)  #remove later
-            checkpath = '\\users\\'+ creds.user + '\\dailychecks\\' + text.filedate + '\\'
-            pre_ = groupFile(self, checkpath)
-            allpaths = [pre_+text.outputfile, pre_+text.Oldfile, pre_+text.Warnfile]
+            allpaths = project_out_File(self)
             self.project.streams = await conFig.makeStream(self, allpaths)
             await filterSite(self)
 
