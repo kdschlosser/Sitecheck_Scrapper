@@ -119,8 +119,7 @@ class Controller():
         self.browser = browser
         await self.EvalSite(self)
 
-    async def EvalSite(self,  project, browser):
-        project = processdata(project)
+    async def EvalSite(self):
         if project.skip == 'true':
             print('Skipping project: '+project.name)
         else:
@@ -129,7 +128,7 @@ class Controller():
             pre_ = conFig.groupFile(self, checkpath, project)
             allpaths = [pre_+text.outputfile, pre_+text.Oldfile, pre_+text.Warnfile]
             project.streams = await conFig.makeStream(self, allpaths)
-            await Controller.filterSite(self, browser, project)
+            await filterSite(self)
 
 async def filterSite(self):
     if self.project.hassite == 'amp':
@@ -350,7 +349,7 @@ async def main():
     #Creates Initial browser context
     browser = await launch({"headless": False})
 
-    futures = [asyncio.ensure_future(await Controller.EvalSite(self, project, browser)) for project in projects]
+    futures = [(Controller(project, browser)) for project in projects]
     asyncio.gather(*futures)
     # await browser.close()
 
