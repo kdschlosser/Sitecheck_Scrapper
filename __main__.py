@@ -97,13 +97,13 @@ class conFig():
         # print(streams)
         return streams
 
-    def groupFile(self, usercheckpath, project):
-        pathlib.Path(usercheckpath).mkdir(parents=True, exist_ok=True)
-        if project.group == True:
-            c = str(usercheckpath) + 'all_'
-        else:
-            c = str(usercheckpath) + str(project.name) + '_'
-        return c
+def groupFile(self, usercheckpath):
+    pathlib.Path(usercheckpath).mkdir(parents=True, exist_ok=True)
+    if self.project.group == True:
+        output_file = str(usercheckpath) + 'all_'
+    else:
+        output_file = str(usercheckpath) + str(self.project.name) + '_'
+    return output_file
 
 class Report():
     def __init__(self, data):
@@ -120,14 +120,14 @@ class Controller():
         await self.EvalSite(self)
 
     async def EvalSite(self):
-        if project.skip == 'true':
-            print('Skipping project: '+project.name)
+        if self.project.skip == 'true':
+            print('Skipping project: '+ self.project.name)
         else:
-            print('Running project: '+project.name)  #remove later
+            print('Running project: '+ self.project.name)  #remove later
             checkpath = '\\users\\'+ creds.user + '\\dailychecks\\' + text.filedate + '\\'
-            pre_ = conFig.groupFile(self, checkpath, project)
+            pre_ = groupFile(self, checkpath)
             allpaths = [pre_+text.outputfile, pre_+text.Oldfile, pre_+text.Warnfile]
-            project.streams = await conFig.makeStream(self, allpaths)
+            self.project.streams = await conFig.makeStream(self, allpaths)
             await filterSite(self)
 
 async def filterSite(self):
