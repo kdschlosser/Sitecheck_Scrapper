@@ -86,6 +86,7 @@ class conFig():
 
     async def makeStream(self, path):
         for x in path:
+            self.streams[self.count] = open(x, "a", encoding="utf-8")
             self.count += 1
             self.streams[self.count] = io.StringIO('temp newfile message.\n')
             self.count += 1
