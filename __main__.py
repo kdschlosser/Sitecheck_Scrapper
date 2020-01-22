@@ -111,39 +111,40 @@ class Report():
         pass
 
 class Controller():
-    async def __new__(self, browser, project):
+    async def __new__(self, project, browser):
         project = processdata(project)
         self.project = project
-        self.browser = browser
-        await self.EvalSite(self)
+        print(browser)
+        # self.browser = browser
+        await self.EvalSite(self, browser)
 
-    async def EvalSite(self):
+    async def EvalSite(self, browser):
         if self.project.skip == 'true':
             print('Skipping project: '+ self.project.name)
         else:
             print('Running project: '+ self.project.name)  #remove later
             allpaths = project_out_File(self)
             self.project.streams = await conFig.makeStream(self, allpaths)
-            await self.filterSite()
+            await self.filterSite(browser)
 
-    async def filterSite(self):
+    async def filterSite(self, browser):
         if self.project.hassite == 'amp':
-            await self.hasAmp()
+            await self.hasAmp(browser)
         elif self.project.hassite == 'qv':
-            await self.hasQV()
+            await self.hasQV(browser)
 
-    async def hasAmp(self):
+    async def hasAmp(self, browser):
         self.project.url = 'https://' + self.project.name + '.geo-instruments.com/index.php'
-        self.project.page = await self.browser.newPage()
-        # await ampWebpage.Login(self)
+        self.project.page = await browser.newPage()
+        await ampWebpage.Login(self, browser)
         await self.project.page.waitFor(50)
-        # await ampWebpage.gotoPlanview(self)
+        await ampWebpage.gotoPlanview(self)
         await self.project.page.waitFor(50)
         # await self.project.page.close()
         return
 
-    async def hasQV(self):
-        self.project.page = await self.browser.newPage()
+    async def hasQV(self, browser):
+        self.project.page = await browser.newPage()
         # await qvWebpage.Login(self)
         await self.project.page.waitFor(50)
         # self.project.page = await qvWebpage.gotoProject(self)
@@ -183,32 +184,31 @@ class ampWebpage():
 
 
 
-    async def Login(self, browser, project):
-        await project.page.goto(project.url)
-        await project.page.waitFor(300)
-        await project.page.type(sites.amp.logincss, creds.username)
-        await project.page.waitFor(300)
-        await project.page.type(sites.amp.pwcss, creds.password)
-        await project.page.waitFor(300)
-        await project.page.click(sites.amp.loginbutton)
-        await project.page.waitFor(2000)
-        return project.page
+    async def Login(self, browser):
+        await self.page.goto(self.url)
+        await self.page.waitFor(300)
+        await self.page.type(sites.amp.logincss, creds.username)
+        await self.page.waitFor(300)
+        await self.page.type(sites.amp.pwcss, creds.password)
+        await self.page.waitFor(300)
+        await self.page.click(sites.amp.loginbutton)
+        await self.page.waitFor(2000)
+        return self
 
     async def gotoPlanview(self): #url, planarray, Upfile, Oldfile, Warnfile, page):
-        print(self.planarray)
+        print(text.scanplan + self.planarray)
         for view in self.planarray:
             print(view)
-            # if self.check:
-            #    ans = await Debug.askQuestion(self, "Check over Planview?\nNote:\n").then(Debug.log(ans))
             await self.page.goto(self.url + sites.amp.planview + view)
             for targetchild in text.sensorarray:
-                await ampWebpage.getLastupdate(self, targetchild)
+                self.targetchild = targetchild
+                await ampWebpage.getLastupdate(self)
 
 
-    async def getLastupdate(self, targetchild): #, Upfile, Oldfile, Warnfile, page):
+    async def getLastupdate(self): #, Upfile, Oldfile, Warnfile, page):
         for typeofsensorbox in sites.amp.label:
-            namesel = str('body > div:nth-child(' + typeofsensorbox + ') > div:nth-child(' + targetchild + sites.amp.title)
-            valuesel = str('body > div:nth-child(' + typeofsensorbox + ') > div:nth-child(' + targetchild + sites.amp.sensor)
+            namesel = str('body > div:nth-child(' + typeofsensorbox + ') > div:nth-child(' + self.targetchild + sites.amp.title)
+            valuesel = str('body > div:nth-child(' + typeofsensorbox + ') > div:nth-child(' + self.targetchild + sites.amp.sensor)
             name = await self.page.J(namesel)
             link = await self.page.J(valuesel)
             if name == None:
