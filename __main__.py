@@ -113,11 +113,11 @@ class Report():
         pass
 
 class Controller():
-    async def __init__(self, browser, project):
-        pass
-        # self.page = ''
-        # self.name = project.name
-        # self.project = project
+    async def __new__(self, browser, project):
+        project = processdata(project)
+        self.project = project
+        self.browser = browser
+        await self.EvalSite(self)
 
     async def EvalSite(self,  project, browser):
         project = processdata(project)
@@ -131,33 +131,33 @@ class Controller():
             project.streams = await conFig.makeStream(self, allpaths)
             await Controller.filterSite(self, browser, project)
 
-    async def filterSite(self, browser, project):
-        if project.hassite == 'amp':
-            print('success')
-            await Controller.hasAmp(self, browser, project)
-        elif project.hassite == 'qv':
-            await Controller.hasQV(self, browser, project)
+async def filterSite(self):
+    if self.project.hassite == 'amp':
+        await Has_Site.hasAmp(self)
+    elif self.project.hassite == 'qv':
+        await Has_Site.hasQV(self)
 
-
-    async def hasAmp(self, browser, project):
-        project.url = 'https://' + project.name + sites.amp.urlstring
-        project.page = await browser.newPage()
-        await ampWebpage.Login(self, browser, project)
-        await project.page.waitFor(50)
-        await ampWebpage.gotoPlanview(project)
-        await project.page.waitFor(50)
-        # await project.page.close()
+class Has_Site():
+    async def hasAmp(self):
+        self.project.url = 'https://' + self.project.name + '.geo-instruments.com/index.php'
+        self.project.page = await self.browser.newPage()
+        # await ampWebpage.Login(self)
+        await self.project.page.waitFor(50)
+        # await ampWebpage.gotoPlanview(self)
+        await self.project.page.waitFor(50)
+        # await self.project.page.close()
         return
 
-    async def hasQV(self, browser, project):
-        project.page = await browser.newPage()
-        await qvWebpage.Login(project)
-        await project.page.waitFor(50)
-        project.page = await qvWebpage.gotoProject(project)
-        await project.page.waitFor(50)
-        project.page = await qvWebpage.gotoView(project)
-        await project.page.waitFor(50)
-        # await project.page.close()
+    async def hasQV(self):
+        self.project.page = await self.browser.newPage()
+        # await qvWebpage.Login(self)
+        await self.project.page.waitFor(50)
+        # self.project.page = await qvWebpage.gotoProject(self)
+        await self.project.page.waitFor(50)
+        # self.project.page = await qvWebpage.gotoView(self)
+        await self.project.page.waitFor(50)
+        # await self.project.page.close()
+        return
 
 
 class Ampadmin():
