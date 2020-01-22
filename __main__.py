@@ -120,7 +120,7 @@ class Controller():
         # self.project = project
 
     async def EvalSite(self,  project, browser):
-        project = data(project)
+        project = processdata(project)
         if project.skip == 'true':
             print('Skipping project: '+project.name)
         else:
