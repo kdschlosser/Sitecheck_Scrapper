@@ -82,19 +82,15 @@ class processdata():
 class conFig():
     def __init__ (self):
         pass
-        # self.user = user
-        # self.path = path
 
     async def makeStream(self, path):
         streams = {}
         count = 0
         for x in path:
-            # print(x)
             streams[count] = open(x, "a", encoding="utf-8")
             count += 1
             streams[count] = io.StringIO('temp newfile message.\n')
             count += 1
-        # print(streams)
         return streams
 
 
