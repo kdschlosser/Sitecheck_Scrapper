@@ -139,8 +139,6 @@ class Controller():
             await Controller.hasAmp(self, browser, project)
         elif project.hassite == 'qv':
             await Controller.hasQV(self, browser, project)
-        elif project.hassite == 'truelook':
-            Controller.hasTruelook(self, browser, project)
 
 
     async def hasAmp(self, browser, project):
@@ -163,8 +161,6 @@ class Controller():
         await project.page.waitFor(50)
         # await project.page.close()
 
-    def hasTruelook(self, browser, project):
-        pass
 
 class Ampadmin():
     def __init__(self, url, page):
@@ -180,9 +176,6 @@ class Ampadmin():
         await self.page.waitFor(50)
         return self.page
 
-#  Gives User directior to look for project.json
-# projects = Config.loadProjects('dan.edens')
-# print(projects)
 class ampWebpage():
     async def __init__(self, browser, project):
         self.planarray = project.planarray
