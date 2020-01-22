@@ -59,7 +59,7 @@ class Debug():
     def checkExists(self, file):
         pass
 
-class data():
+class processdata(list):
     def __init__(self, project):
         self.skip = project['skip']
         self.group = project['group']
@@ -69,7 +69,7 @@ class data():
         self.planarray = project['planarray']
         self.hassite = project['hassite']
 
-    def __repr__(self):
+    def __repr__(self, project):
         return(self)
 
 
@@ -79,7 +79,7 @@ class conFig():
         # self.user = user
         # self.path = path
 
-    def loadProjects(self, user):
+    def loadProjects():
         with open('env/projects.json', 'r') as userdata:
             data=userdata.read()
             projectlist = json.loads(data)
@@ -354,7 +354,9 @@ class qvWebpage():
         return
 
 async def main():
-    projects = conFig.loadProjects(self, 'dan.edens')
+    #Returns List of project configs {[project],[project],[project]}
+    projects = conFig.loadProjects()
+    #Creates Initial browser context
     browser = await launch({"headless": False})
 
     futures = [asyncio.ensure_future(await Controller.EvalSite(self, project, browser)) for project in projects]
