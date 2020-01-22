@@ -81,17 +81,15 @@ class processdata():
 
 class conFig():
     def __init__ (self):
-        pass
+        self.streams = {}
+        self.count = 0
 
     async def makeStream(self, path):
-        streams = {}
-        count = 0
         for x in path:
-            streams[count] = open(x, "a", encoding="utf-8")
-            count += 1
-            streams[count] = io.StringIO('temp newfile message.\n')
-            count += 1
-        return streams
+            self.count += 1
+            self.streams[self.count] = io.StringIO('temp newfile message.\n')
+            self.count += 1
+        return self.streams
 
 
 def project_out_File(self):
@@ -125,15 +123,14 @@ class Controller():
             print('Running project: '+ self.project.name)  #remove later
             allpaths = project_out_File(self)
             self.project.streams = await conFig.makeStream(self, allpaths)
-            await filterSite(self)
+            await self.filterSite()
 
-async def filterSite(self):
-    if self.project.hassite == 'amp':
-        await Has_Site.hasAmp(self)
-    elif self.project.hassite == 'qv':
-        await Has_Site.hasQV(self)
+    async def filterSite(self):
+        if self.project.hassite == 'amp':
+            await self.hasAmp()
+        elif self.project.hassite == 'qv':
+            await self.hasQV()
 
-class Has_Site():
     async def hasAmp(self):
         self.project.url = 'https://' + self.project.name + '.geo-instruments.com/index.php'
         self.project.page = await self.browser.newPage()
