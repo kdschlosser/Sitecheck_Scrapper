@@ -159,9 +159,9 @@ class ampWebpage():
         await self.page.goto(self.url)
         await self.page.waitFor(500)
         await self.page.type(sites.amp.logincss, creds.username)
-        await self.page.waitFor(500)
+        # await self.page.waitFor(500)
         await self.page.type(sites.amp.pwcss, creds.password)
-        await self.page.waitFor(500)
+        # await self.page.waitFor(500)
         await self.page.click(sites.amp.loginbutton)
         # await self.page.waitFor(2000)
         return
@@ -315,7 +315,7 @@ async def main():
     projects = loadProjects()
     futures = [await (Controller(project)) for project in projects]
     # await asyncio.gather(*futures)
-    # await browser.close()
+    await browser.close()
 
 # If run occurs from directly running the program
 if __name__ == '__main__':
