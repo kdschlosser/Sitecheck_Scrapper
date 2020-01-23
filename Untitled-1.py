@@ -36,3 +36,19 @@ x = json.loads(projects, object_hook=lambda d: Namespace(**d))
 # b = zip(d.values(), d.keys())
 # # [(1, 'a'), (3, 'c'), (2, 'b')]
 # print(a)
+
+
+
+class Ampadmin():
+    def __init__(self, url, page):
+        self.url = url
+        self.page = page
+
+    async def login(self):
+        await self.page.goto(self.url)
+        await self.page.type(sites.amp.logincss, creds.username)
+        await self.page.type(sites.amp.pwcss, creds.password)
+        await self.page.click(sites.amp.loginbutton)
+        # await self.page.setViewport(width(1600) height(900))
+        await self.page.waitFor(50)
+        return self.page

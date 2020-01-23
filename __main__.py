@@ -9,8 +9,9 @@ import msvcrt as m
 from io import StringIO
 from pyppeteer import launch
 from env import sites, text, creds
-
+#pylint: disable=too-many-arguments
 #temp for build
+browser = launch({"headless": False})
 debug = 0
 verbose = True
 getvalue = True
@@ -20,13 +21,6 @@ watchlimit = watchdog * 7
 user = 'dan.edens'
 split = 'false'
 #end temp
-
-
-async def get_page(browser, url):
-    page = await browser.newPage()
-    await page.goto(url)
-    return page
-
 
 def wait():
     m.getch()
@@ -81,10 +75,11 @@ class processdata():
 
 class conFig():
     def __init__ (self):
-        self.streams = {}
-        self.count = 0
+        pass
 
     async def makeStream(self, path):
+        self.streams = {}
+        self.count = 0
         for x in path:
             self.streams[self.count] = open(x, "a", encoding="utf-8")
             self.count += 1
@@ -111,40 +106,40 @@ class Report():
         pass
 
 class Controller():
-    async def __new__(self, project, browser):
+    async def __new__(self, project):
         project = processdata(project)
         self.project = project
-        print(browser)
-        # self.browser = browser
-        await self.EvalSite(self, browser)
+        await self.EvalSite(self)
 
-    async def EvalSite(self, browser):
+    async def EvalSite(self):
         if self.project.skip == 'true':
             print('Skipping project: '+ self.project.name)
         else:
             print('Running project: '+ self.project.name)  #remove later
-            allpaths = project_out_File(self)
-            self.project.streams = await conFig.makeStream(self, allpaths)
+            # allpaths = project_out_File(self)
+            # self.project.streams = await conFig.makeStream(self, allpaths)
             print(text.fileheader)
-            await self.filterSite(browser)
+            await self.filterSite(self)
 
-    async def filterSite(self, browser):
+    async def filterSite(self):
         if self.project.hassite == 'amp':
-            await self.hasAmp(browser)
+            await self.hasAmp(self)
         elif self.project.hassite == 'qv':
-            await self.hasQV(browser)
+            await self.hasQV(self)
 
-    async def hasAmp(self, browser):
-        self.project.url = 'https://' + self.project.name + '.geo-instruments.com/index.php'
-        self.project.page = await browser.newPage()
-        await ampWebpage.Login(self, browser)
-        await self.project.page.waitFor(50)
+    async def hasAmp(self):
+        self.url = 'https://' + self.project.name + '.geo-instruments.com/index.php'
+        browser = await launch({"headless": False})
+        self.page = await browser.newPage()
+        await ampWebpage.Login(self)
+        await self.page.waitFor(50)
         await ampWebpage.gotoPlanview(self)
-        await self.project.page.waitFor(50)
-        # await self.project.page.close()
-        return
+        await self.page.waitFor(50)
 
-    async def hasQV(self, browser):
+        # await self.project.page.close()
+        # return
+
+    async def hasQV(self):
         self.project.page = await browser.newPage()
         # await qvWebpage.Login(self)
         await self.project.page.waitFor(50)
@@ -156,49 +151,25 @@ class Controller():
         return
 
 
-class Ampadmin():
-    def __init__(self, url, page):
-        self.url = url
-        self.page = page
-
-    async def login(self):
-        await self.page.goto(self.url)
-        await self.page.type(sites.amp.logincss, creds.username)
-        await self.page.type(sites.amp.pwcss, creds.password)
-        await self.page.click(sites.amp.loginbutton)
-        # await self.page.setViewport(width(1600) height(900))
-        await self.page.waitFor(50)
-        return self.page
-
 class ampWebpage():
-    async def __init__(self, browser, project):
-        self.planarray = project.planarray
-        self.namenum = project.namenum
-        self.Upfile = project.Upfile
-        self.Warnfile = project.Warnfile
-        self.Oldfile = project.Oldfile
-        self.project = project
-        self.check = project.check
-        self.url = project.url
-        self.planarray = project.planarray
-        self.page = project.page
+    async def __init__(self):
+        pass
 
-
-
-    async def Login(self, browser):
+    async def Login(self):
         await self.page.goto(self.url)
-        await self.page.waitFor(300)
+        await self.page.waitFor(500)
         await self.page.type(sites.amp.logincss, creds.username)
-        await self.page.waitFor(300)
+        await self.page.waitFor(500)
         await self.page.type(sites.amp.pwcss, creds.password)
-        await self.page.waitFor(300)
+        await self.page.waitFor(500)
         await self.page.click(sites.amp.loginbutton)
-        await self.page.waitFor(2000)
-        return self
+        # await self.page.waitFor(2000)
+        return
 
     async def gotoPlanview(self): #url, planarray, Upfile, Oldfile, Warnfile, page):
-        print(text.scanplan + self.planarray)
-        for view in self.planarray:
+        print(text.scanplan + self.project.planarray)
+        planarray = self.project.planarray.split(",")
+        for view in planarray:
             print(view)
             await self.page.goto(self.url + sites.amp.planview + view)
             for targetchild in text.sensorarray:
@@ -342,11 +313,8 @@ class qvWebpage():
 async def main():
     #Returns List of project configs {[project],[project],[project]}
     projects = loadProjects()
-    #Creates Initial browser context
-    browser = await launch({"headless": False})
-
-    futures = [(Controller(project, browser)) for project in projects]
-    asyncio.gather(*futures)
+    futures = [await (Controller(project)) for project in projects]
+    # await asyncio.gather(*futures)
     # await browser.close()
 
 # If run occurs from directly running the program
