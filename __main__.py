@@ -157,17 +157,19 @@ class ampWebpage():
 
     async def Login(self):
         await self.page.goto(self.url)
-        await self.page.waitFor(300)
+        await self.page.waitFor(500)
         await self.page.type(sites.amp.logincss, creds.username)
-        await self.page.waitFor(300)
+        await self.page.waitFor(500)
         await self.page.type(sites.amp.pwcss, creds.password)
-        await self.page.waitFor(300)
+        await self.page.waitFor(500)
         await self.page.click(sites.amp.loginbutton)
-        await self.page.waitFor(2000)
+        # await self.page.waitFor(2000)
+        return
 
     async def gotoPlanview(self): #url, planarray, Upfile, Oldfile, Warnfile, page):
-        print(text.scanplan + self.planarray)
-        for view in self.planarray:
+        print(text.scanplan + self.project.planarray)
+        planarray = self.project.planarray.split(",")
+        for view in planarray:
             print(view)
             await self.page.goto(self.url + sites.amp.planview + view)
             for targetchild in text.sensorarray:
@@ -311,8 +313,8 @@ class qvWebpage():
 async def main():
     #Returns List of project configs {[project],[project],[project]}
     projects = loadProjects()
-    futures = [(Controller(project)) for project in projects]
-    await asyncio.gather(*futures)
+    futures = [await (Controller(project)) for project in projects]
+    # await asyncio.gather(*futures)
     # await browser.close()
 
 # If run occurs from directly running the program
