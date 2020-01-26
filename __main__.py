@@ -62,18 +62,20 @@ class Debug():
     def checkExists(self, file):
         pass
 
+async def wait_type(page, selector, text):
+    await page.waitForSelector(selector),
+    await page.type(selector, text)
+    return page
+
 async def wait_click(page, selector):
-    return await asyncio.gather(
-            self.page.waitForNavigation(selector),
-            self.page.click(selector)
-        )
-    return self.page
+    await page.waitForSelector(selector),
+    await page.click(selector)
+    return page
 
 async def wait_hover(page, selector):
-    return await asyncio.gather(
-            self.page.waitForNavigation(selector),
-            self.page.hover(selector)
-        )
+    await page.waitForSelector(selector),
+    await page.hover(selector)
+    return page
 
 def loadProjects():
     with open('env/projects.json', 'r') as userdata:
