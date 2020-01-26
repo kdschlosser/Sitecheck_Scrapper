@@ -1,4 +1,5 @@
 #Daily Sitecheck Web Scrapper V. 4.1.0
+from __future__ import print_function, unicode_literals
 import sys
 import io
 import asyncio
@@ -11,7 +12,6 @@ from io import StringIO
 from prompt_toolkit import prompt
 from pyxtension.Json import Json
 from PyInquirer import prompt, print_json
-from __future__ import print_function, unicode_literals
 from env import sites, text, creds
 qv = sites.qv
 amp = sites.amp
@@ -46,17 +46,17 @@ class Debug():
             pass
         return
 
-    def askQuestion(self, query):
+    def askQuestion(query):
         # questions = [
         #     {
         #         'type': 'input',
-        #         'name': 'first_name',
-        #         'message': 'What would you like to do',
+        #         'name': 'var',
+        #         'message': query,
         #     }
         # ]
         # answers = prompt(questions)
-        # ans = Json(answers)  # use the answers as input for your app
-        # print (answers)
+        # return Json(answers)  # use the answers as input for your app
+        #
         return
 
     def checkExists(self, file):
@@ -85,13 +85,15 @@ def loadProjects():
 
 class processdata():
     def __init__(self, project):
-        self.skip = project['skip']
-        self.group = project['group']
-        self.name = project['name']
-        self.check = False
-        self.proj = project['proj']
-        self.planarray = project['planarray']
-        self.hassite = project['hassite']
+        self = Json(project)
+        print (self.project)
+        # self.skip = project['skip']
+        # self.group = project['group']
+        # self.name = project['name']
+        # self.check = False
+        # self.proj = project['proj']
+        # self.planarray = project['planarray']
+        # self.hassite = project['hassite']
 
     def __repr__(self):
         return(self)
@@ -185,9 +187,9 @@ class ampWebpage():
     async def Login(self):
         await self.page.goto(self.url)
         await self.page.waitFor(500)
-        await self.page.type(amp.logincss, creds.username)
-        await self.page.type(amp.pwcss, creds.password)
-        await self.page.click(amp.loginbutton)
+        await wait_type(self.page, amp.logincss, creds.username)
+        await wait_type(self.page, amp.pwcss, creds.password)
+        await wait_click(self,page, amp.loginbutton)
         return
 
     async def gotoPlanview(self):
@@ -246,10 +248,9 @@ class qvWebpage():
 
     async def Login(self):
         await self.page.goto(self.url)
-        await self.page.waitFor(300)
-        await self.page.type(qv.logincss, creds.qvuser)
-        await self.page.type(qv.pwcss, creds.qvpass)
-        await self.page.click(qv.loginbutton)
+        await wait_type(self.page, qv.logincss, creds.qvuser)
+        await wait_type(self.page, qv.pwcss, creds.qvpass)
+        await wait_click(self.page, qv.loginbutton)
         return
 
     async def gotoProject(self):
@@ -263,11 +264,11 @@ class qvWebpage():
     async def gotoPlanView(self):
         for view in self.planarray:
             if view != '0':
-                await self.page.click(qv.views)
+                await wait_click(self.page, qv.views)
                 await self.page.waitFor(500)
-                await self.page.hover(qv.scrollbar2)
+                await wait_hover(self.page, qv.scrollbar2)
                 await self.page.waitFor(400)
-                await self.page.click(qv.thumb+view)
+                await wait_click(self.page, qv.thumb+view)
             else:
                 pass
             await self.page.waitFor(1000)
@@ -313,9 +314,8 @@ class qvWebpage():
 async def main():
     global browser
     browser = await launch({"headless": False})
-
     projects = loadProjects()
-    futures = [await (Controller(project)) for project in projects]
+    [await (Controller(project)) for project in projects]
     await browser.close()
 
 if __name__ == '__main__':
