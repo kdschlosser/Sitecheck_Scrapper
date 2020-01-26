@@ -52,3 +52,51 @@ class Ampadmin():
         # await self.page.setViewport(width(1600) height(900))
         await self.page.waitFor(50)
         return self.page
+
+
+
+
+
+ ```
+  /**
+   * Write Cookies object to target JSON file
+   * @param {String} targetFile
+   */
+  async saveCookies(targetFile) {
+
+    let cookies = await this._page.cookies();
+    return this.saveToJSONFile(cookies, this._cookiessPath + targetFile);
+  }
+
+  /**
+   * Write JSON object to specified target file
+   * @param {String} jsonObj
+   * @param {String} targetFile
+   */
+  async saveToJSONFile(jsonObj, targetFile) {
+
+    if( !/^\//.test(targetFile) )
+      targetFile = this._jsonsPath + targetFile;
+
+    return new Promise((resolve, reject) => {
+
+      try {
+        var data = JSON.stringify(jsonObj);
+        console.log("Saving object '%s' to JSON file: %s", data, targetFile);
+      }
+      catch (err) {
+        console.log("Could not convert object to JSON string ! " + err);
+        reject(err);
+      }
+
+      // Try saving the file.
+      fs.writeFile(targetFile, data, (err, text) => {
+        if(err)
+          reject(err);
+        else {
+          resolve(targetFile);
+        }
+      });
+
+    });
+  }
