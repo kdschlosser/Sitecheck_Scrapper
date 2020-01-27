@@ -35,7 +35,7 @@ class qv:
 		views = 'li#menuViews p'
 		thumb = '#thumb'
 		scrollbar = 'body > div.wrapper > div.sidePanel.ui-resizable > div.ui-resizable-handle.ui-resizable-e'
-		scrollbar2 = 'div#viewList'
+		scrollbar2 = 'body > div.wrapper > div.sidePanel.ui-resizable > img'
 		# scrollbar = 'div#projectSearch > select'
 		# scrollbar = 'div.sidePanel.ui-resizable > div.panelHeading'
 		hoverbox = "#hoverBox"

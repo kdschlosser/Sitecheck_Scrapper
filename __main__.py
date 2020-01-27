@@ -134,7 +134,7 @@ class Report():
 class Controller():
     async def __new__(self, project):
         self.project = Json(project)
-        # self.project = project
+        # print(self.project.planarray)
         await self.EvalSite(self)
 
     async def EvalSite(self):
@@ -175,7 +175,7 @@ class Controller():
         await self.page.waitFor(50)
         await qvWebpage.gotoProject(self)
         await self.page.waitFor(50)
-        await qvWebpage.gotoView(self)
+        await qvWebpage.gotoPlanView(self)
         await self.page.waitFor(50)
         # await self.page.close()
 
@@ -257,13 +257,15 @@ class qvWebpage():
         await wait_click(self.page, qv.projects)
         await wait_hover(self.page,qv.scrollbar)
         await self.page.waitFor(500)
-        self.namenum = str(self.project.namenum)
+        self.namenum = str(self.project.proj)
+        print(self.namenum)
         self.page = await wait_click(self.page, qv.proj_pre + self.namenum + qv.proj_post)
         return self
 
 
     async def gotoPlanView(self):
-        for view in self.planarray:
+        list = self.project.planarray.split (",")
+        for view in list:
             if view != '0':
                 await wait_click(self.page, qv.views)
                 await self.page.waitFor(500)
@@ -276,7 +278,7 @@ class qvWebpage():
             for targetchild in text.sensorarray:
                 await qvWebpage.getLastupdate(self, targetchild)
 
-            return self.page
+        return self
 
 
     async def getLastupdate(self, targetchild):
