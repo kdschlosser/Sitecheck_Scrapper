@@ -1,16 +1,92 @@
 [
-{"skip":"true","group":"true","name":"capitolcomplex","proj":"null","planarray":"143,124,127","hassite":"amp"},
-{"skip":"true","group":"false","name":"audicentralhouston","proj":"null","planarray":"124,125,126","hassite":"amp"},
-{"skip":"false","group":"false","name":"425riverside","proj":"3","planarray":"0,2,3,4","hassite":"qv"},
-{"skip":"true","group":"true","name":"harbourbridge","proj":"14","planarray":"0","hassite":"qv"},
-{"skip":"true","group":"true","name":"unioncityintermodal","proj":"null","planarray":"4,5,6","hassite":"amp"},
-{"skip":"true","group":"true","name":"redbeach","proj":"null","planarray":"124,125","hassite":"amp"},
-{"skip":"true","group":"true","name":"santabarbaratjwall","proj":"null","planarray":"124","hassite":"amp"},
-{"skip":"true","group":"true","name":"beverlyhillshigh","proj":"null","planarray":"124","hassite":"amp"},
-{"skip":"true","group":"true","name":"isabelladam","proj":"null","planarray":"1","hassite":"amp"},
-{"skip":"true","group":"true","name":"755fig","proj":"null","planarray":"2,3","hassite":"amp"},
-{"skip":"true","group":"true","name":"haieng","proj":"null","planarray":"6,7","hassite":"amp"},
-{"skip":"true","group":"true","name":"tesolongbeach8485","proj":"null","planarray":"124,125,127","hassite":"amp"},
+  {
+    "skip": "false",
+    "group": "true",
+    "name": "capitolcomplex",
+    "proj": "null",
+    "planarray": "143,124,127",
+    "hassite": "amp"
+  },
+  {
+    "skip": "true",
+    "group": "false",
+    "name": "audicentralhouston",
+    "proj": "null",
+    "planarray": "124,125,126",
+    "hassite": "amp"
+  },
+  {
+    "skip": "false",
+    "group": "false",
+    "name": "425riverside",
+    "proj": "3",
+    "planarray": "0,2,3,4",
+    "hassite": "qv"
+  },
+  {
+    "skip": "true",
+    "group": "true",
+    "name": "unioncityintermodal",
+    "proj": "null",
+    "planarray": "4,5,6",
+    "hassite": "amp"
+  },
+  {
+    "skip": "true",
+    "group": "true",
+    "name": "redbeach",
+    "proj": "null",
+    "planarray": "124,125",
+    "hassite": "amp"
+  },
+  {
+    "skip": "true",
+    "group": "true",
+    "name": "santabarbaratjwall",
+    "proj": "null",
+    "planarray": "124",
+    "hassite": "amp"
+  },
+  {
+    "skip": "true",
+    "group": "true",
+    "name": "beverlyhillshigh",
+    "proj": "null",
+    "planarray": "124",
+    "hassite": "amp"
+  },
+  {
+    "skip": "true",
+    "group": "true",
+    "name": "isabelladam",
+    "proj": "null",
+    "planarray": "1",
+    "hassite": "amp"
+  },
+  {
+    "skip": "true",
+    "group": "true",
+    "name": "755fig",
+    "proj": "null",
+    "planarray": "2,3",
+    "hassite": "amp"
+  },
+  {
+    "skip": "true",
+    "group": "true",
+    "name": "haieng",
+    "proj": "null",
+    "planarray": "6,7",
+    "hassite": "amp"
+  },
+  {
+    "skip": "true",
+    "group": "true",
+    "name": "tesolongbeach8485",
+    "proj": "null",
+    "planarray": "124,125,127",
+    "hassite": "amp"
+  },
 {"skip":"true","group":"true","name":"natoma","proj":"2","planarray":"0,3","hassite":"qv"},
 {"skip":"true","group":"true","name":"TarzanaMed","proj":"22","planarray":"0,1,2,3","hassite":"qv"},
 {"skip":"true","group":"true","name":"LasVegasproj","proj":"14","planarray":"0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15","hassite":"qv"},

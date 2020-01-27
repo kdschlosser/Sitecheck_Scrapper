@@ -1,25 +1,23 @@
-#Daily Sitecheck Web Scrapper V. 4.1.0
+# Daily Sitecheck Web Scrapper V. 4.1.0
 from __future__ import print_function, unicode_literals
-import sys
+
 import io
-import asyncio
-import pathlib
 import json
-import datetime
-from pyppeteer import launch
 import msvcrt as m
-from io import StringIO
-from dateutil.relativedelta import *
-from prompt_toolkit import prompt
+import pathlib
+
+from dateutil.parser import parse
+from pyppeteer import launch
 from pyxtension.Json import Json
-from PyInquirer import prompt, print_json
+
 from env import sites, text, creds
+
 qv = sites.qv
 amp = sites.amp
 
-#temp for build
+# temp for build
 verbose = True
-getvalue = True
+getvalue = False
 watchdog = 86400000
 watchlimit = watchdog * 7
 split = 'false'
@@ -84,7 +82,6 @@ class Report():
 class Controller():
     async def __new__(self, project):
         self.project = Json(project)
-        # print(self.project.planarray)
         await self.EvalSite(self)
 
     async def EvalSite(self):
@@ -105,18 +102,15 @@ class Controller():
 
     async def hasAmp(self):
         self.url = 'https://' + self.project.name + '.geo-instruments.com/index.php'
-        # # # browser = await launch({"headless": False})
-        # self.page = await browser.newPage()
-        # await ampWebpage.Login(self)
+        self.page = await browser.newPage()
+        await ampWebpage.Login(self)
         await self.page.waitFor(50)
-        # await ampWebpage.gotoPlanview(self)
-        await self.page.waitFor(50)
-        # await self.page.close()
+        await ampWebpage.gotoPlanview(self)
+        await self.page.close()
 
 
     async def hasQV(self):
         self.url = qv.urlstring
-        # browser = await launch({"headless": False})
         self.page = await browser.newPage()
         await self.page.setViewport({
             "width": 1600,
@@ -126,12 +120,11 @@ class Controller():
         await qvWebpage.gotoProject(self)
         await self.page.waitFor(50)
         await qvWebpage.gotoPlanView(self)
-        await self.page.waitFor(50)
-        # await self.page.close()
+        await self.page.close()
 
 
 class ampWebpage():
-    async def __init__(self):
+    def __init__(self):
         pass
 
     async def Login(self):
@@ -139,7 +132,7 @@ class ampWebpage():
         await self.page.waitFor(500)
         await wait_type(self.page, amp.logincss, creds.username)
         await wait_type(self.page, amp.pwcss, creds.password)
-        await wait_click(self,page, amp.loginbutton)
+        await wait_click(self.page, amp.loginbutton)
         return
 
     async def gotoPlanview(self):
@@ -162,25 +155,22 @@ class ampWebpage():
             if name == None:
                 pass
             else:
-                sensor =  await self.page.evaluate('(name) => name.textContent', name)
-                value =  await self.page.evaluate('(link) => link.textContent', link)
+                sensor = await self.page.evaluate('(name) => name.textContent', name)
+                value = await self.page.evaluate('(link) => link.textContent', link)
                 date = await self.page.evaluate('(link) => link.title', link)
                 print(sensor, value)
                 data = '\nSensor name: ' + sensor
                 data += '\nLast Updated on AMP: '
-                # if getvalue:
-                #     data += '\nCurrent value: ' + value
-
-                # TODO pdate = datetime.parse(date)
-                # pnowdate = datetime.parse(text.nowdate)
-                # diff = pnowdate - pdate
-                diff = 10000
+                if getvalue:
+                    data += '\nCurrent value: ' + value
+                diff_in_days = parse(text.nowdate) - parse(date)
+                diff = diff_in_days.total_seconds()
                 if diff <= watchdog:
                     data += date
                     if verbose:
                         data += '\n' + text.uptoDate
                     print(data)
-                elif diff >= watchdog & diff <= watchlimit:
+                elif watchdog <= diff <= watchlimit:
                     data += date
                     if verbose:
                         data += '\n' + text.behindDate
@@ -193,7 +183,7 @@ class ampWebpage():
 
 
 class qvWebpage():
-    async def __init__(self):
+    def __init__(self):
         pass
 
     async def Login(self):
@@ -236,30 +226,29 @@ class qvWebpage():
         try:
             await self.page.hover(sensor)
             link = await self.page.querySelector(qv.hoverbox)
-            txt =  await self.page.evaluate('(link) => link.innerHTML', link)
+            txt = await self.page.evaluate('(link) => link.innerHTML', link)
             spltd = txt.split('<br>')
             data = '\nSensor name: ' + spltd[0]
             date = spltd[3].split("data: ").pop()
-            # print(data + ' \nDate:\n' + date + '\n', Upfile)
-            pdate = relitive (date)
-            pnowdate = '' #Date.parse(text.nowdate)
-            diff = pnowdate - pdate
+            print(data + ' \nDate:\n' + date + '\n')
+            diff_in_days = parse(text.nowdate) - parse(date)
+            diff = diff_in_days.total_seconds()
             if diff <= watchdog:
                 data += date
-                # if verbose:
-                #     data += '\n' + text.uptoDate
-                print(data, Upfile)
-            elif diff >= watchdog and diff <= watchlimit:
+                if verbose:
+                    data += '\n' + text.uptoDate
+                print(data)
+            elif watchdog <= diff <= watchlimit:
                 data += date
-                # if verbose:
-                #     data += '\n' + text.behindDate
-                print(data, Warnfile)
-            else:
-                data += date
-                # if verbose:
-                #     data += '\n' + text.oldDate
+                idd
+                data += '\n' + text.behindDate
+            print(data)
+        else:
+        data += date
+        if verbose:
+            data += '\n' + text.oldDate
+        print(data)
 
-                print(data, Oldfile)
         except: #(UnhandledPromiseRejectionWarning):
             pass
         return
