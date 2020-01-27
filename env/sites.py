@@ -29,7 +29,7 @@ class qv:
 		logincss = '#user'
 		pwcss = '#pass'
 		loginbutton = '#login > form > button'
-		projects = '#menuProjects'
+		projects = '#menuProjects > a > i'
 		proj_pre = 'div#projectList div:nth-child('
 		proj_post = ') > div.panelRowTxt2'
 		views = 'li#menuViews p'
