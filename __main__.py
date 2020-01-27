@@ -1,6 +1,7 @@
 # Daily Sitecheck Web Scrapper V. 4.1.0
 from __future__ import print_function, unicode_literals
 
+import asyncio
 import io
 import json
 import msvcrt as m
@@ -18,7 +19,7 @@ amp = sites.amp
 # temp for build
 verbose = True
 getvalue = False
-watchdog = 86400000
+watchdog = 86400
 watchlimit = watchdog * 7
 split = 'false'
 #end temp
@@ -164,7 +165,7 @@ class ampWebpage():
                 if getvalue:
                     data += '\nCurrent value: ' + value
                 diff_in_days = parse(text.nowdate) - parse(date)
-                diff = diff_in_days.total_seconds()
+                diff = int(diff_in_days.total_seconds())
                 if diff <= watchdog:
                     data += date
                     if verbose:
@@ -232,7 +233,7 @@ class qvWebpage():
             date = spltd[3].split("data: ").pop()
             print(data + ' \nDate:\n' + date + '\n')
             diff_in_days = parse(text.nowdate) - parse(date)
-            diff = diff_in_days.total_seconds()
+            diff = (diff_in_days.total_seconds())
             if diff <= watchdog:
                 data += date
                 if verbose:
@@ -240,14 +241,14 @@ class qvWebpage():
                 print(data)
             elif watchdog <= diff <= watchlimit:
                 data += date
-                idd
-                data += '\n' + text.behindDate
-            print(data)
-        else:
-        data += date
-        if verbose:
-            data += '\n' + text.oldDate
-        print(data)
+                if verbose:
+                    data += '\n' + text.behindDate
+                print(data)
+            else:
+                data += date
+                if verbose:
+                    data += '\n' + text.oldDate
+                print(data)
 
         except: #(UnhandledPromiseRejectionWarning):
             pass
