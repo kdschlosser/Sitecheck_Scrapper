@@ -133,8 +133,8 @@ class Report():
 
 class Controller():
     async def __new__(self, project):
-        project = processdata(project)
-        self.project = project
+        self.project = Json(project)
+        # self.project = project
         await self.EvalSite(self)
 
     async def EvalSite(self):
@@ -256,7 +256,8 @@ class qvWebpage():
     async def gotoProject(self):
         await wait_click(self.page, qv.projects)
         await wait_hover(self.page,qv.scrollbar)
-        # await self.page.waitFor(500)
+        await self.page.waitFor(500)
+        self.namenum = str(self.project.namme)
         await wait_click(self.page, qv.proj_pre + self.namenum + qv.proj_post)
         return self
 
