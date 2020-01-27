@@ -28,41 +28,6 @@ split = 'false'
 def wait():
     m.getch()
 
-class Debug():
-    def __init__(self, data, wfile):
-        self.data = data
-        self.wfile = 'notes.txt'
-        # if not wfile:
-        # else:
-        #     self.wfile = wfile
-
-    def log(self):
-        if debug == 0:
-            pass
-        elif debug == 1:
-            pass
-        elif debug == 2:
-            pass
-        elif debug == 3:
-            pass
-        return
-
-    def askQuestion(query):
-        # questions = [
-        #     {
-        #         'type': 'input',
-        #         'name': 'var',
-        #         'message': query,
-        #     }
-        # ]
-        # answers = prompt(questions)
-        # return Json(answers)  # use the answers as input for your app
-        #
-        return
-
-    def checkExists(self, file):
-        pass
-
 async def wait_type(page, selector, text):
     await page.waitForSelector(selector),
     await page.type(selector, text)
