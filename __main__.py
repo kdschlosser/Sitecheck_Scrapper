@@ -9,6 +9,7 @@ import datetime
 from pyppeteer import launch
 import msvcrt as m
 from io import StringIO
+from dateutil.relativedelta import *
 from prompt_toolkit import prompt
 from pyxtension.Json import Json
 from PyInquirer import prompt, print_json
@@ -82,22 +83,6 @@ def loadProjects():
         data=userdata.read()
         projects = json.loads(data)
         return projects
-
-class processdata():
-    def __init__(self, project):
-        self = Json(project)
-        print (self.project)
-        # self.skip = project['skip']
-        # self.group = project['group']
-        # self.name = project['name']
-        # self.check = False
-        # self.proj = project['proj']
-        # self.planarray = project['planarray']
-        # self.hassite = project['hassite']
-
-    def __repr__(self):
-        return(self)
-
 
 class conFig():
     def __init__ (self):
@@ -291,7 +276,7 @@ class qvWebpage():
             data = '\nSensor name: ' + spltd[0]
             date = spltd[3].split("data: ").pop()
             # print(data + ' \nDate:\n' + date + '\n', Upfile)
-            pdate = '' #Date.parse(date)
+            pdate = relitive (date)
             pnowdate = '' #Date.parse(text.nowdate)
             diff = pnowdate - pdate
             if diff <= watchdog:
