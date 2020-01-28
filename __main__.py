@@ -16,20 +16,19 @@ from env import sites, text, creds
 qv = sites.qv
 amp = sites.amp
 
+
 # temp for build
 verbose = True
 getvalue = False
 watchdog = 86400
-watchlimit = watchdog * 7
-split = 'false'
 #end temp
 
 def wait():
     m.getch()
 
-async def wait_type(page, selector, text):
+async def wait_type(page, selector, txt):
     await page.waitForSelector(selector),
-    await page.type(selector, text)
+    await page.type(selector, txt)
     return page
 
 async def wait_click(page, selector):
@@ -67,7 +66,7 @@ def project_out_File(self):
     checkpath = '\\users\\'+ creds.user + '\\dailychecks\\' + text.filedate + '\\'
     pathlib.Path(checkpath).mkdir(parents=True, exist_ok=True)
     print(self.project.group)
-    if self.project.group == True:
+    if self.project.group:
         output_pre = str(checkpath) + 'all_'
     else:
         output_pre = str(checkpath) + str(self.project.name) + '_'
@@ -80,16 +79,17 @@ class Report():
     def genCsv(self):
         pass
 
+
 class Controller():
-    async def __new__(self, project):
-        self.project = Json(project)
-        await self.EvalSite(self)
+    async def __new__(cls, project):
+        cls.project = Json(project)
+        await cls.EvalSite(cls)
 
     async def EvalSite(self):
         if self.project.skip == 'true':
-            print('Skipping project: '+ self.project.name)
+            print('Skipping project: ' + self.project.name)
         else:
-            print('Running project: '+ self.project.name)  #remove later
+            print('Running project: ' + self.project.name)  # remove later
             self.streams = await conFig.makeStream(self, project_out_File(self))
             print(self.streams)
             print(text.fileheader)
@@ -98,7 +98,7 @@ class Controller():
     async def filterSite(self):
         if self.project.hassite == 'amp':
             await self.hasAmp(self)
-        elif self.project.hassite == 'qv':
+        elif self.project.hassite == 'qv':a
             await self.hasQV(self)
 
     async def hasAmp(self):
@@ -171,7 +171,7 @@ class ampWebpage():
                     if verbose:
                         data += '\n' + text.uptoDate
                     print(data)
-                elif watchdog <= diff <= watchlimit:
+                elif watchdog <= diff <= (watchdog * 7):
                     data += date
                     if verbose:
                         data += '\n' + text.behindDate
@@ -239,7 +239,7 @@ class qvWebpage():
                 if verbose:
                     data += '\n' + text.uptoDate
                 print(data)
-            elif watchdog <= diff <= watchlimit:
+            elif watchdog <= diff <= (watchdog * 7):
                 data += date
                 if verbose:
                     data += '\n' + text.behindDate
