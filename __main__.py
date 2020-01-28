@@ -6,6 +6,7 @@ import io
 import json
 import msvcrt as m
 import pathlib
+from typing import Dict, Any
 
 from dateutil.parser import parse
 from pyppeteer import launch
@@ -16,63 +17,70 @@ from env import sites, text, creds
 qv = sites.qv
 amp = sites.amp
 
-
-# temp for build
+# Future args
 verbose = True
-getvalue = False
+getvalue = True
 watchdog = 86400
-#end temp
+
+
+# end temp
 
 def wait():
-    m.getch()
+    m.getch ()
+
 
 async def wait_type(page, selector, txt):
-    await page.waitForSelector(selector),
-    await page.type(selector, txt)
+    await page.waitForSelector ( selector ),
+    await page.type ( selector, txt )
     return page
+
 
 async def wait_click(page, selector):
-    await page.waitForSelector(selector),
-    await page.click(selector)
+    await page.waitForSelector ( selector ),
+    await page.click ( selector )
     return page
+
 
 async def wait_hover(page, selector):
-    await page.waitForSelector(selector),
-    await page.hover(selector)
+    await page.waitForSelector ( selector ),
+    await page.hover ( selector )
     return page
 
-def loadProjects():
-    with open('env/projects.json', 'r') as userdata:
-        data=userdata.read()
-        projects = json.loads(data)
+
+def load_projects():
+    with open ( 'env/projects.json', 'r' ) as user_data:
+        data = user_data.read ()
+        projects = json.loads ( data )
         return projects
 
-class conFig():
-    def __init__ (self):
+
+class conFig ():
+    def __init__(self):
         pass
 
-    async def makeStream(self, path):
-        self.streams = {}
-        self.count = 0
+    async def make_stream(self, path: object) -> object:
         for x in path:
-            self.streams[self.count] = open(x, "a", encoding="utf-8")
+            self.count = 0
+            self.streams = {}
+            self.streams[self.count] = open ( x, "a", encoding="utf-8" )
             self.count += 1
-            self.streams[self.count] = io.StringIO('temp newfile message.\n')
+            self.streams[self.count] = io.StringIO ( 'temp new file message.\n' )
             self.count += 1
         return self.streams
 
 
 def project_out_File(self):
-    checkpath = '\\users\\'+ creds.user + '\\dailychecks\\' + text.filedate + '\\'
-    pathlib.Path(checkpath).mkdir(parents=True, exist_ok=True)
-    print(self.project.group)
+    check_path = '\\users\\' + creds.user + '\\dailychecks\\' + text.filedate + '\\'
+    pathlib.Path ( check_path ).mkdir ( parents=True, exist_ok=True )
+    print ( self.project.group )
     if self.project.group:
-        output_pre = str(checkpath) + 'all_'
+        output_pre = str ( check_path ) + 'all_'
     else:
-        output_pre = str(checkpath) + str(self.project.name) + '_'
-    return [output_pre+text.outputfile, output_pre+text.Oldfile, output_pre+text.Warnfile]
+        output_pre = str ( check_path ) + str ( self.project.name ) + '_'
+    return [output_pre + text.outputfile, output_pre + text.Oldfile, output_pre + text.Warnfile]
 
-class Report():
+
+class Report ():
     def __init__(self, data):
         self.data = data
 
@@ -80,187 +88,192 @@ class Report():
         pass
 
 
-class Controller():
+class Controller ():
+    streams: Dict[Any, Any]
+
+    # noinspection Annotator
     async def __new__(cls, project):
-        cls.project = Json(project)
-        await cls.EvalSite(cls)
+        cls.project = Json ( project )
+        await cls.evaluate_site ( cls )
 
-    async def EvalSite(self):
+    async def evaluate_site(self):
         if self.project.skip == 'true':
-            print('Skipping project: ' + self.project.name)
+            print ( 'Skipping project: ' + self.project.name )
         else:
-            print('Running project: ' + self.project.name)  # remove later
-            self.streams = await conFig.makeStream(self, project_out_File(self))
-            print(self.streams)
-            print(text.fileheader)
-            await self.filterSite(self)
+            print ( 'Running project: ' + self.project.name )  # remove later
+            # noinspection PyAttributeOutsideInit
+            self.streams = await conFig.make_stream ( self, project_out_File ( self ) )
+            print ( self.streams )
+            print ( text.fileheader )
+            await self.filter_site ( self )
 
-    async def filterSite(self):
+    async def filter_site(self):
         if self.project.hassite == 'amp':
-            await self.hasAmp(self)
-        elif self.project.hassite == 'qv':a
-            await self.hasQV(self)
+            await self.has_amp ( self )
+        elif self.project.hassite == 'qv':
+            await self.hasQV ( self )
 
-    async def hasAmp(self):
+    async def has_amp(self):
         self.url = 'https://' + self.project.name + '.geo-instruments.com/index.php'
-        self.page = await browser.newPage()
-        await ampWebpage.Login(self)
-        await self.page.waitFor(50)
-        await ampWebpage.gotoPlanview(self)
-        await self.page.close()
-
+        self.page = await browser.newPage ()
+        await ampWebpage.login ( self )
+        await self.page.waitFor ( 50 )
+        await ampWebpage.goto_plan_view ( self )
+        await self.page.close ()
 
     async def hasQV(self):
         self.url = qv.urlstring
-        self.page = await browser.newPage()
-        await self.page.setViewport({
+        self.page = await browser.newPage ()
+        await self.page.setViewport ( {
             "width": 1600,
-            "height": 1200})
-        await qvWebpage.Login(self)
-        await self.page.waitFor(50)
-        await qvWebpage.gotoProject(self)
-        await self.page.waitFor(50)
-        await qvWebpage.gotoPlanView(self)
-        await self.page.close()
+            "height": 1200} )
+        await qvWebpage.login ( self )
+        await self.page.waitFor ( 50 )
+        await qvWebpage.goto_project ( self )
+        await self.page.waitFor ( 50 )
+        await qvWebpage.goto_plan_view ( self )
+        await self.page.close ()
 
 
-class ampWebpage():
+class ampWebpage:
     def __init__(self):
         pass
 
-    async def Login(self):
-        await self.page.goto(self.url)
-        await self.page.waitFor(500)
-        await wait_type(self.page, amp.logincss, creds.username)
-        await wait_type(self.page, amp.pwcss, creds.password)
-        await wait_click(self.page, amp.loginbutton)
+    async def login(self):
+        await self.page.goto ( self.url )
+        await self.page.waitFor ( 500 )
+        await wait_type ( self.page, amp.logincss, creds.username )
+        await wait_type ( self.page, amp.pwcss, creds.password )
+        await wait_click ( self.page, amp.loginbutton )
         return
 
-    async def gotoPlanview(self):
-        print(text.scanplan + self.project.planarray)
-        planarray = self.project.planarray.split(",")
-        for view in planarray:
-            print(view)
-            await self.page.goto(self.url + amp.planview + view)
-            for targetchild in text.sensorarray:
-                self.targetchild = targetchild
-                await ampWebpage.getLastupdate(self)
+    async def goto_plan_view(self):
+        print ( text.scanplan + self.project.planarray )
+        plan_array = self.project.planarray.split ( "," )
+        for view in plan_array:
+            print ( view )
+            await self.page.goto ( self.url + amp.planview + view )
+            for target_child in text.sensorarray:
+                # noinspection PyAttributeOutsideInit
+                self.target_child = target_child
+                await ampWebpage.get_last_update ( self )
 
-
-    async def getLastupdate(self):
-        for typeofsensorbox in amp.label:
-            namesel = str('body > div:nth-child(' + typeofsensorbox + ') > div:nth-child(' + self.targetchild + amp.title)
-            valuesel = str('body > div:nth-child(' + typeofsensorbox + ') > div:nth-child(' + self.targetchild + amp.sensor)
-            name = await self.page.J(namesel)
-            link = await self.page.J(valuesel)
-            if name == None:
+    async def get_last_update(self):
+        for type_of_sensor_box in amp.label:
+            name_sel = str (
+                'body > div:nth-child(' + type_of_sensor_box + ') > div:nth-child(' + self.target_child + amp.title )
+            value_sel = str (
+                'body > div:nth-child(' + type_of_sensor_box + ') > div:nth-child(' + self.target_child + amp.sensor )
+            name = await self.page.J ( name_sel )
+            link = await self.page.J ( value_sel )
+            if name is None:
                 pass
             else:
-                sensor = await self.page.evaluate('(name) => name.textContent', name)
-                value = await self.page.evaluate('(link) => link.textContent', link)
-                date = await self.page.evaluate('(link) => link.title', link)
-                print(sensor, value)
+                sensor = await self.page.evaluate ( '(name) => name.textContent', name )
+                value = await self.page.evaluate ( '(link) => link.textContent', link )
+                date = await self.page.evaluate ( '(link) => link.title', link )
+                print ( sensor, value )
                 data = '\nSensor name: ' + sensor
-                data += '\nLast Updated on AMP: '
                 if getvalue:
                     data += '\nCurrent value: ' + value
-                diff_in_days = parse(text.nowdate) - parse(date)
-                diff = int(diff_in_days.total_seconds())
+                data += '\nLast Updated on AMP: '
+                diff_in_days = parse ( text.nowdate ) - parse ( date )
+                diff = int ( diff_in_days.total_seconds () )
                 if diff <= watchdog:
                     data += date
                     if verbose:
                         data += '\n' + text.uptoDate
-                    print(data)
+                    print ( data )
                 elif watchdog <= diff <= (watchdog * 7):
                     data += date
                     if verbose:
                         data += '\n' + text.behindDate
-                    print(data)
+                    print ( data )
                 else:
                     data += date
                     if verbose:
                         data += '\n' + text.oldDate
-                    print(data)
+                    print ( data )
 
 
-class qvWebpage():
+class qvWebpage ():
     def __init__(self):
         pass
 
-    async def Login(self):
-        await self.page.goto(self.url)
-        await wait_type(self.page, qv.logincss, creds.qvuser)
-        await wait_type(self.page, qv.pwcss, creds.qvpass)
-        await wait_click(self.page, qv.loginbutton)
+    async def login(self):
+        await self.page.goto ( self.url )
+        await wait_type ( self.page, qv.logincss, creds.qvuser )
+        await wait_type ( self.page, qv.pwcss, creds.qvpass )
+        await wait_click ( self.page, qv.loginbutton )
         return
 
-    async def gotoProject(self):
-        await wait_click(self.page, qv.projects)
-        await wait_hover(self.page,qv.scrollbar)
-        await self.page.waitFor(500)
-        self.namenum = str(self.project.proj)
-        print(self.namenum)
-        self.page = await wait_click(self.page, qv.proj_pre + self.namenum + qv.proj_post)
+    async def goto_project(self):
+        await wait_click ( self.page, qv.projects )
+        await wait_hover ( self.page, qv.scrollbar )
+        await self.page.waitFor ( 500 )
+        self.namenum = str ( self.project.proj )
+        # print ( self.namenum )
+        self.page = await wait_click ( self.page, qv.proj_pre + self.namenum + qv.proj_post )
         return self
 
-
-    async def gotoPlanView(self):
-        list = self.project.planarray.split (",")
+    async def goto_plan_view(self):
+        list = self.project.planarray.split ( "," )
         for view in list:
             if view != '0':
-                await wait_click(self.page, qv.views)
-                await self.page.waitFor(500)
-                await wait_hover(self.page, qv.scrollbar2)
-                await self.page.waitFor(400)
-                await wait_click(self.page, qv.thumb+view)
+                await wait_click ( self.page, qv.views )
+                await self.page.waitFor ( 500 )
+                await wait_hover ( self.page, qv.scrollbar2 )
+                await self.page.waitFor ( 400 )
+                await wait_click ( self.page, qv.thumb + view )
             else:
                 pass
-            await self.page.waitFor(1000)
-            for targetchild in text.sensorarray:
-                await qvWebpage.getLastupdate(self, targetchild)
+            await self.page.waitFor ( 1000 )
+            for target_child in text.sensorarray:
+                await qvWebpage.get_last_update ( self, target_child )
 
         return self
 
-
-    async def getLastupdate(self, targetchild):
-        sensor = '#objects > img:nth-child(' + targetchild + ')'
+    async def get_last_update(self, target_child):
+        sensor = '#objects > img:nth-child(' + target_child + ')'
         try:
-            await self.page.hover(sensor)
-            link = await self.page.querySelector(qv.hoverbox)
-            txt = await self.page.evaluate('(link) => link.innerHTML', link)
-            spltd = txt.split('<br>')
-            data = '\nSensor name: ' + spltd[0]
-            date = spltd[3].split("data: ").pop()
-            print(data + ' \nDate:\n' + date + '\n')
-            diff_in_days = parse(text.nowdate) - parse(date)
-            diff = (diff_in_days.total_seconds())
+            await self.page.hover ( sensor )
+            link = await self.page.querySelector ( qv.hoverbox )
+            txt = await self.page.evaluate ( '(link) => link.innerHTML', link )
+            split_date = txt.split ( '<br>' )
+            sensor_data = '\nSensor name: ' + split_date[0]
+            date = split_date[3].split ( "data: " ).pop ()
+            sensor_data = sensor_data + ' \nDate:' + date + '\n' )
+            diff_in_days = parse ( text.nowdate ) - parse ( date )
+            diff = (diff_in_days.total_seconds ())
             if diff <= watchdog:
-                data += date
-                if verbose:
-                    data += '\n' + text.uptoDate
-                print(data)
+                sensor_data += date
+            if verbose:
+                sensor_data += '\n' + text.uptoDate
+            print ( sensor_data )
             elif watchdog <= diff <= (watchdog * 7):
-                data += date
-                if verbose:
-                    data += '\n' + text.behindDate
-                print(data)
+            sensor_data += date
+            if verbose:
+                sensor_data += '\n' + text.behindDate
+            print ( sensor_data )
             else:
-                data += date
-                if verbose:
-                    data += '\n' + text.oldDate
-                print(data)
+            sensor_data += date
+            if verbose:
+                sensor_data += '\n' + text.oldDate
+            print ( sensor_data )
 
-        except: #(UnhandledPromiseRejectionWarning):
+        except:  # (UnhandledPromiseRejectionWarning):
             pass
         return
 
+
 async def main():
     global browser
-    browser = await launch({"headless": False})
-    projects = loadProjects()
-    [await (Controller(project)) for project in projects]
-    await browser.close()
+    browser = await launch ( {"headless": False} )
+    projects = load_projects ()
+    [await (Controller ( project )) for project in projects]
+    await browser.close ()
+
 
 if __name__ == '__main__':
-    run = asyncio.run(main())
-    print('\n' + text.exitmessage)
+    run = asyncio.run ( main () )
+    print ( '\n' + text.exitmessage )
