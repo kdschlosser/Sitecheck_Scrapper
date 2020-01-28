@@ -18,4 +18,5 @@ env/__pycache__/**
 **.h
 **/lib
 Untitled-1.py
-/workspace.xml
+**/workspace.xml
+**.iml
