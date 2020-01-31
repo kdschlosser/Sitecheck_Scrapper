@@ -46,6 +46,12 @@ async def wait_type(page, selector, txt):
     return page
 
 
+async def wait_goto(page, url):
+    await page.goto ( url ),
+    await page.waitForNavigation (),
+    return page
+
+
 async def wait_click(page, selector):
     await page.waitForSelector ( selector ),
     await page.click ( selector )
@@ -174,8 +180,9 @@ class ampWebpage:
         print ( text.scanplan + self.project.planarray )
         plan_array = self.project.planarray.split ( "," )
         for view in plan_array:
-            print ( view )
-            await self.page.goto ( self.url + amp.planview + view )
+            if Options.verbose:
+                print ( view )
+            await wait_goto ( self.page, self.url + amp.planview + view )
             for target_child in text.sensorarray:
                 # noinspection PyAttributeOutsideInit
                 self.target_child = target_child
@@ -251,8 +258,7 @@ class qvWebpage ():
                 await wait_hover ( self.page, qv.scrollbar2 )
                 await self.page.waitFor ( 400 )
                 await wait_click ( self.page, qv.thumb + view )
-            # print ('1')
-            await self.page.waitFor ( 1000 )
+            await self.page.waitFor ( 2000 )
             for target_child in range ( 0, 300 ):
                 await qvWebpage.get_last_update ( self, target_child )
         return self
