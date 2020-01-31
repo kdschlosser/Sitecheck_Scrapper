@@ -20,8 +20,8 @@ amp = sites.amp
 
 # Future args
 class Options:
-    height = 1200
-    width = 1200
+    height = 1900
+    width = 1000
     verbose = True
     getvalue = True
     watchdog = 86400
@@ -88,7 +88,7 @@ def project_out_file(self):
     """
     check_path = '\\users\\' + creds.user + '\\dailychecks\\' + text.filedate + '\\'
     pathlib.Path ( check_path ).mkdir ( parents=True, exist_ok=True )
-    print ( self.project.group )
+    # print ( self.project.group )
     if self.project.group:
         output_pre = str ( check_path ) + 'all_'
     else:
@@ -114,13 +114,12 @@ class Controller:
 
     async def evaluate_site(self):
         if self.project.skip == 'true':
-            print ( 'Skipping project: ' + self.project.name )
+            pass
+            # print ( 'Skipping project: ' + self.project.name )
         else:
-            print ( 'Running project: ' + self.project.name )  # remove later
             # noinspection PyAttributeOutsideInit
             self.streams = await conFig.make_stream ( self, project_out_file ( self ) )
-            print ( self.streams )
-            print ( text.fileheader )
+            print ( text.fileheader + self.project.name )
             await self.filter_site ( self )
 
     async def filter_site(self):
@@ -141,8 +140,8 @@ class Controller:
         self.url = qv.urlstring
         self.page = await browser.newPage ()
         await self.page.setViewport ( {
-            "width": 1600,
-            "height": 1200} )
+            "width": 1900,
+            "height": 1000} )
         await qvWebpage.login ( self )
         await self.page.waitFor ( 50 )
         await qvWebpage.goto_project ( self )
@@ -157,7 +156,7 @@ class ampWebpage:
 
     async def login(self):
         await self.page.goto ( self.url )
-        await self.page.waitFor ( 2000 )
+        await self.page.waitFor ( 1000 )
         await wait_type ( self.page, amp.logincss, creds.username )
         await wait_type ( self.page, amp.pwcss, creds.password )
         await wait_click ( self.page, amp.loginbutton )
@@ -229,30 +228,29 @@ class qvWebpage ():
         await self.page.waitFor ( 500 )
         print ( str ( self.project.proj ) )
         self.namenum = str ( self.project.proj )
-        # print ( self.namenum )
         self.page = await wait_click ( self.page, qv.proj_pre + self.namenum + qv.proj_post )
         return self
 
     async def goto_plan_view(self):
         list = self.project.planarray.split ( "," )
         for view in list:
-            if view != '0':
+            print ( view )
+            if view == '0':
+                pass
+            else:
                 await wait_click ( self.page, qv.views )
                 await self.page.waitFor ( 500 )
                 await wait_hover ( self.page, qv.scrollbar2 )
                 await self.page.waitFor ( 400 )
                 await wait_click ( self.page, qv.thumb + view )
-            else:
-                pass
+            # print ('1')
             await self.page.waitFor ( 1000 )
-            # TODO: Fix sloppy array method
-            for target_child in text.sensorarray:
+            for target_child in range ( 0, 300 ):
                 await qvWebpage.get_last_update ( self, target_child )
-
         return self
 
     async def get_last_update(self, target_child):
-        sensor = '#objects > img:nth-child(' + target_child + ')'
+        sensor = '#objects > img:nth-child(' + str ( target_child ) + ')'
         # noinspection PyBroadException
         try:
             await self.page.hover ( sensor )

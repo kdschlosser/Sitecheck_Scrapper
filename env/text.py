@@ -6,11 +6,8 @@ from datetime import *
 from dateutil.parser import *
 
 now = parse ( "Sat Oct 11 17:13:46 UTC 2003" )
-print ( now )
 today = datetime.utcnow ()
-print ( today )
 nowdate = today.strftime ( "%Y-%m-%d %H:%M:%S" )
-print ( parse ( nowdate ) )
 filedate = today.strftime ( "%Y-%m-%d" )
 
 pathtonote = os.path.abspath ( os.path.dirname ( sys.argv[0] ) ) + '/_' + filedate + '/Notes.txt'
