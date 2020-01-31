@@ -17,12 +17,19 @@ from env import sites, text, creds
 qv = sites.qv
 amp = sites.amp
 
+
 # Future args
-verbose = True
-getvalue = True
-watchdog = 86400
-watchlimit = watchdog * 7
-# end temp
+class Options:
+    height = 1200
+    width = 1200
+    verbose = True
+    getvalue = True
+    watchdog = 86400
+    watch_limit = watchdog * 7
+
+    def __init__(self):
+        pass
+
 
 def wait():
     m.getch ()
@@ -53,11 +60,16 @@ def load_projects():
         return projects
 
 
-class conFig ():
+class conFig:
     def __init__(self):
         pass
 
     async def make_stream(self, path: object) -> object:
+        """
+
+        Args:
+            path (object): 
+        """
         for x in path:
             self.count = 0
             self.streams = {}
@@ -68,7 +80,7 @@ class conFig ():
         return self.streams
 
 
-def project_out_File(self):
+def project_out_file(self):
     """
 
     Returns:
@@ -84,7 +96,7 @@ def project_out_File(self):
     return [output_pre + text.outputfile, output_pre + text.Oldfile, output_pre + text.Warnfile]
 
 
-class Report ():
+class Report:
     def __init__(self, data):
         self.data = data
 
@@ -92,7 +104,7 @@ class Report ():
         pass
 
 
-class Controller ():
+class Controller:
     streams: Dict[Any, Any]
 
     # noinspection Annotator
@@ -106,7 +118,7 @@ class Controller ():
         else:
             print ( 'Running project: ' + self.project.name )  # remove later
             # noinspection PyAttributeOutsideInit
-            self.streams = await conFig.make_stream ( self, project_out_File ( self ) )
+            self.streams = await conFig.make_stream ( self, project_out_file ( self ) )
             print ( self.streams )
             print ( text.fileheader )
             await self.filter_site ( self )
@@ -115,7 +127,7 @@ class Controller ():
         if self.project.hassite == 'amp':
             await self.has_amp ( self )
         elif self.project.hassite == 'qv':
-            await self.hasQV ( self )
+            await self.has_QV ( self )
 
     async def has_amp(self):
         self.url = 'https://' + self.project.name + '.geo-instruments.com/index.php'
@@ -125,7 +137,7 @@ class Controller ():
         await ampWebpage.goto_plan_view ( self )
         await self.page.close ()
 
-    async def hasQV(self):
+    async def has_QV(self):
         self.url = qv.urlstring
         self.page = await browser.newPage ()
         await self.page.setViewport ( {
@@ -145,7 +157,7 @@ class ampWebpage:
 
     async def login(self):
         await self.page.goto ( self.url )
-        await self.page.waitFor ( 500 )
+        await self.page.waitFor ( 2000 )
         await wait_type ( self.page, amp.logincss, creds.username )
         await wait_type ( self.page, amp.pwcss, creds.password )
         await wait_click ( self.page, amp.loginbutton )
@@ -178,24 +190,24 @@ class ampWebpage:
                 date = await self.page.evaluate ( '(link) => link.title', link )
                 print ( sensor, value )
                 data = '\nSensor name: ' + sensor
-                if getvalue:
+                if Options.getvalue:
                     data += '\nCurrent value: ' + value
                 data += '\nLast Updated on AMP: '
                 diff_in_days = parse ( text.nowdate ) - parse ( date )
                 diff = int ( diff_in_days.total_seconds () )
-                if diff <= watchdog:
+                if diff <= Options.watchdog:
                     data += date
-                    if verbose:
+                    if Options.verbose:
                         data += '\n' + text.uptoDate
                     print ( data )
-                elif watchdog <= diff <= (watchdog * 7):
+                elif Options.watchdog <= diff <= Options.watch_limit:
                     data += date
-                    if verbose:
+                    if Options.verbose:
                         data += '\n' + text.behindDate
                     print ( data )
                 else:
                     data += date
-                    if verbose:
+                    if Options.verbose:
                         data += '\n' + text.oldDate
                     print ( data )
 
@@ -215,6 +227,7 @@ class qvWebpage ():
         await wait_click ( self.page, qv.projects )
         await wait_hover ( self.page, qv.scrollbar )
         await self.page.waitFor ( 500 )
+        print ( str ( self.project.proj ) )
         self.namenum = str ( self.project.proj )
         # print ( self.namenum )
         self.page = await wait_click ( self.page, qv.proj_pre + self.namenum + qv.proj_post )
@@ -251,19 +264,19 @@ class qvWebpage ():
             sensor_data = sensor_data + ' \nDate:' + date + '\n'
             diff_in_days = parse ( text.nowdate ) - parse ( date )
             diff = (diff_in_days.total_seconds ())
-            if diff <= watchdog:
+            if diff <= Options.watchdog:
                 sensor_data += date
-                if verbose:
+                if Options.verbose:
                     sensor_data += '\n' + text.uptoDate
                 print ( sensor_data )
-            elif watchdog <= diff <= watchlimit:
+            elif Options.watchdog <= diff <= Options.watch_limit:
                 sensor_data += date
-                if verbose:
+                if Options.verbose:
                     sensor_data += '\n' + text.behindDate
                 print ( sensor_data )
             else:
                 sensor_data += date
-                if verbose:
+                if Options.verbose:
                     sensor_data += '\n' + text.oldDate
                 print ( sensor_data )
         # This exception allows selector values not present on the current page to be ignored. Tag - future optimizations
@@ -274,7 +287,8 @@ class qvWebpage ():
 
 async def main():
     global browser
-    browser = await launch ( {"headless": False} )
+    # args: [`--window-size=${options.width},${options.height}`]
+    browser = await launch ( {"headless": False}, args=['`--window-size=${options.width},${options.height}'] )
     projects = load_projects ()
     [await (Controller ( project )) for project in projects]
     await browser.close ()
