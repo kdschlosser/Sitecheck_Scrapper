@@ -1,4 +1,4 @@
-# Daily Sitecheck Web Scrapper V. 4.1.0
+# Daily Sitecheck Web Scrapper V. 4.1.1
 from __future__ import print_function, unicode_literals
 
 import asyncio
@@ -21,8 +21,7 @@ amp = sites.amp
 verbose = True
 getvalue = True
 watchdog = 86400
-
-
+watchlimit = watchdog * 7
 # end temp
 
 def wait():
@@ -70,6 +69,11 @@ class conFig ():
 
 
 def project_out_File(self):
+    """
+
+    Returns:
+        object: 
+    """
     check_path = '\\users\\' + creds.user + '\\dailychecks\\' + text.filedate + '\\'
     pathlib.Path ( check_path ).mkdir ( parents=True, exist_ok=True )
     print ( self.project.group )
@@ -228,6 +232,7 @@ class qvWebpage ():
             else:
                 pass
             await self.page.waitFor ( 1000 )
+            # TODO: Fix sloppy array method
             for target_child in text.sensorarray:
                 await qvWebpage.get_last_update ( self, target_child )
 
@@ -235,6 +240,7 @@ class qvWebpage ():
 
     async def get_last_update(self, target_child):
         sensor = '#objects > img:nth-child(' + target_child + ')'
+        # noinspection PyBroadException
         try:
             await self.page.hover ( sensor )
             link = await self.page.querySelector ( qv.hoverbox )
@@ -242,26 +248,26 @@ class qvWebpage ():
             split_date = txt.split ( '<br>' )
             sensor_data = '\nSensor name: ' + split_date[0]
             date = split_date[3].split ( "data: " ).pop ()
-            sensor_data = sensor_data + ' \nDate:' + date + '\n' )
+            sensor_data = sensor_data + ' \nDate:' + date + '\n'
             diff_in_days = parse ( text.nowdate ) - parse ( date )
             diff = (diff_in_days.total_seconds ())
             if diff <= watchdog:
                 sensor_data += date
-            if verbose:
-                sensor_data += '\n' + text.uptoDate
-            print ( sensor_data )
-            elif watchdog <= diff <= (watchdog * 7):
-            sensor_data += date
-            if verbose:
-                sensor_data += '\n' + text.behindDate
-            print ( sensor_data )
+                if verbose:
+                    sensor_data += '\n' + text.uptoDate
+                print ( sensor_data )
+            elif watchdog <= diff <= watchlimit:
+                sensor_data += date
+                if verbose:
+                    sensor_data += '\n' + text.behindDate
+                print ( sensor_data )
             else:
-            sensor_data += date
-            if verbose:
-                sensor_data += '\n' + text.oldDate
-            print ( sensor_data )
-
-        except:  # (UnhandledPromiseRejectionWarning):
+                sensor_data += date
+                if verbose:
+                    sensor_data += '\n' + text.oldDate
+                print ( sensor_data )
+        # This exception allows selector values not present on the current page to be ignored. Tag - future optimizations
+        except:
             pass
         return
 

@@ -3,20 +3,17 @@ import os
 import sys
 from datetime import *
 
-# from dateutil.relativedelta import *
-# from dateutil.easter import *
-# from dateutil.rrule import *
 from dateutil.parser import *
 
-now = parse("Sat Oct 11 17:13:46 UTC 2003")
-print(now)
-today = datetime.utcnow()
-print(today)
-nowdate = today.strftime("%Y-%m-%d %H:%M:%S")
-print(parse(nowdate))
-filedate = today.strftime("%Y-%m-%d")
+now = parse ( "Sat Oct 11 17:13:46 UTC 2003" )
+print ( now )
+today = datetime.utcnow ()
+print ( today )
+nowdate = today.strftime ( "%Y-%m-%d %H:%M:%S" )
+print ( parse ( nowdate ) )
+filedate = today.strftime ( "%Y-%m-%d" )
 
-pathtonote = os.path.abspath(os.path.dirname(sys.argv[0])) + '/_' + filedate + '/Notes.txt'
+pathtonote = os.path.abspath ( os.path.dirname ( sys.argv[0] ) ) + '/_' + filedate + '/Notes.txt'
 outputfile = '_sitecheck.txt'
 Warnfile = '_WatchdogFile.txt'
 Oldfile = '_Watchdog_Old.txt'
