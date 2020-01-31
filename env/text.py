@@ -3,8 +3,11 @@ import os
 import sys
 from datetime import *
 
+import wx
 from dateutil.parser import *
 
+app = wx.App ( False )
+width, height = wx.GetDisplaySize ()
 now = parse ( "Sat Oct 11 17:13:46 UTC 2003" )
 today = datetime.utcnow ()
 nowdate = today.strftime ( "%Y-%m-%d %H:%M:%S" )

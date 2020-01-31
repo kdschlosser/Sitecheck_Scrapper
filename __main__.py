@@ -20,8 +20,8 @@ amp = sites.amp
 
 # Future args
 class Options:
-    height = 1900
-    width = 1000
+    width = text.width
+    height = text.height
     verbose = True
     getvalue = True
     watchdog = 86400
@@ -131,6 +131,9 @@ class Controller:
     async def has_amp(self):
         self.url = 'https://' + self.project.name + '.geo-instruments.com/index.php'
         self.page = await browser.newPage ()
+        await self.page.setViewport ( {
+            "width": Options.width,
+            "height": Options.height} )
         await ampWebpage.login ( self )
         await self.page.waitFor ( 50 )
         await ampWebpage.goto_plan_view ( self )
@@ -140,8 +143,8 @@ class Controller:
         self.url = qv.urlstring
         self.page = await browser.newPage ()
         await self.page.setViewport ( {
-            "width": 1900,
-            "height": 1000} )
+            "width": Options.width,
+            "height": Options.height} )
         await qvWebpage.login ( self )
         await self.page.waitFor ( 50 )
         await qvWebpage.goto_project ( self )
@@ -285,8 +288,11 @@ class qvWebpage ():
 
 async def main():
     global browser
-    # args: [`--window-size=${options.width},${options.height}`]
-    browser = await launch ( {"headless": False}, args=['`--window-size=${options.width},${options.height}'] )
+    chrome_args = [
+        '--start-maximized'
+        # ,'--no-startup-window'
+    ]
+    browser = await launch ( {"headless": False}, args=chrome_args )
     projects = load_projects ()
     [await (Controller ( project )) for project in projects]
     await browser.close ()
