@@ -91,7 +91,7 @@ class conFig:
         return self.streams
 
 
-def project_out_file(self):
+def project_out_file(self) -> object:
     """
 
     Returns:
@@ -183,7 +183,7 @@ class ampWebpage:
             if Options.verbose:
                 print ( view )
             await wait_goto ( self.page, self.url + amp.planview + view )
-            for target_child in text.sensorarray:
+            for target_child in range (0,300):
                 # noinspection PyAttributeOutsideInit
                 self.target_child = target_child
                 await ampWebpage.get_last_update ( self )
@@ -247,6 +247,11 @@ class qvWebpage ():
         return self
 
     async def goto_plan_view(self):
+        """
+
+        Returns:
+            object: 
+        """
         list = self.project.planarray.split ( "," )
         for view in list:
             print ( view )

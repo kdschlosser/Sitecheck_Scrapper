@@ -9,3 +9,4 @@ Projects/**/Dailychecks/**
 **/lib
 **/Site_check/**
 **.xml
+*.pyc
