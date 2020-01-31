@@ -1,4 +1,4 @@
-# Daily Sitecheck Web Scrapper V. 4.1.1
+# Daily Sitecheck Web Scrapper V. 4.1.2
 from __future__ import print_function, unicode_literals
 
 import asyncio
@@ -81,10 +81,10 @@ class conFig:
         Args:
             path (object): 
         """
+        # noinspection PyTypeChecker
         for x in path:
             self.count = 0
-            self.streams = {}
-            self.streams[self.count] = open ( x, "a", encoding="utf-8" )
+            self.streams = {self.count: open ( x, "a", encoding="utf-8" )}
             self.count += 1
             self.streams[self.count] = io.StringIO ( 'temp new file message.\n' )
             self.count += 1
@@ -121,7 +121,7 @@ class Controller:
     # noinspection Annotator
     async def __new__(cls, project):
         cls.project = Json ( project )
-        await cls.evaluate_site ( cls )
+        await cls.evaluate_site ()
 
     async def evaluate_site(self):
         if self.project.skip == 'true':
