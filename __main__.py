@@ -1,4 +1,4 @@
-# Daily Sitecheck Web Scrapper V. 4.1.2
+# Daily Sitecheck Web Scrapper V. 4.2.0
 from __future__ import print_function, unicode_literals
 
 import asyncio
