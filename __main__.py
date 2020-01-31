@@ -20,8 +20,13 @@ amp = sites.amp
 
 # Future args
 class Options:
+    headless = False
+    chrome_args = [
+        '--start-maximized',
+        ' --user-data-dir=c:\foo'
+    ]
     width = text.width
-    height = text.height
+    height = text.height-200
     verbose = True
     getvalue = True
     watchdog = 86400
@@ -288,11 +293,7 @@ class qvWebpage ():
 
 async def main():
     global browser
-    chrome_args = [
-        '--start-maximized'
-        # ,'--no-startup-window'
-    ]
-    browser = await launch ( {"headless": False}, args=chrome_args )
+    browser = await launch ( {"headless": Options.headless}, args=Options.chrome_args )
     projects = load_projects ()
     [await (Controller ( project )) for project in projects]
     await browser.close ()
