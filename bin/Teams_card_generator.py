@@ -233,7 +233,7 @@ class card_template:
 		"version": "1.0"
 	}'''
 
-class dataItem:
+class sensor_data:
 	def __init__(self, name, color, status, time):
 		self.name = name
 		self.color = color
@@ -245,25 +245,35 @@ class dataItem:
 		return data_line
 
 class factory:
-	def __init__(self):
-		self.project = project.name
-		self.file = storage + "\\" + project.name + ".json"
-		self.url = project.url
-		self.data = data
+	def __init__(self, current_project, list_of_sensor_data):
+		"""
+		        Args:
+		            current_project (object):
+		            list_of_sensor_data (list):
+
+		        """
+		# Name to display at top of card
+		self.project = current_project.name
+		# Location of staged output. It will than be picked up by the Teams_hook.py
+		self.file = storage + "\\" + current_project.name + ".json"
+		# On card button click
+		self.url = current_project.url
+		# this is the list each sensor's data was appended to while scanning
+		self.data = list_of_sensor_data
 
 	def generate_template(self):
-		# Peices together the Teams Card
+		# Builds the Teams Card
 		# Traditional methods of Json formatting do not preserve the template's syntax
 		print( card_template.Top_prefix1 + self.project + card_template.Top_prefix2 )
 		# Add the sensor table section goes above the sensors,
 		print( card_template.sensor_prefix )
-		# For each object held in data, add a line to the card containing it's data
-		_queue = len(data)
+		# For each current_project held in data, add a line to the card containing it's data
+		_run = len(data)
 		_loop = 0
 		for e in data:
-			data_info = dataItem(e[0],e[1],e[2],e[3])
+			data_info = sensor_data( e[0], e[1], e[2], e[3] )
 			_loop += 1
-			if _loop != _queue:
+			if _loop != _run:
 				# Add each sensor to the card and add a comma between them.
 				print(str(data_info)+',')
 			else:
