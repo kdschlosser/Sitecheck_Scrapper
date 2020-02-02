@@ -282,9 +282,9 @@ class factory:
         # Add the sensor table section goes above the sensors,
         print ( card_template.sensor_prefix )
         # For each current_project held in data, add a line to the card containing it's data
-        _run = len ( data )
+        _run = len ( self.data )
         _loop = 0
-        for e in data:
+        for e in self.data:
             data_info = sensor_data ( e[0], e[1], e[2], e[3] )
             _loop += 1
             if _loop != _run:
