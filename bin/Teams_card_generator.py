@@ -1,28 +1,31 @@
 # """Teams_card_generator.py: Library for generating JSON cards from a template.
 # Change Log:
-# 2/2/2020 	Adds the card_template class
-#		   	Adds the factory class
+# 2/2/2020
+# Adds the card_template class
+# Adds the factory class
 #
 #
 # """
 
 # __author__ = "Dan Edens"
-# __version__= "0.0.2"
+# __version__= "0.1.0"
 
 from __main__ import ROOT_DIR
 
 global storage
 storage = ROOT_DIR + "/env/data/"
 
-# temp
-project = 'Audi Central Houston'
-project_url = 'https://audicentralhouston.geo-instruments.com/index.php'
-Sensor_name = ''
-Sensor_time = ''
-Sensor_status = ''
-Sensor_status_color = 'attention'
-list_of_sensor_data = [['IP1', 'attention', 'Behind', '2020-01-14 08:00:00'], ['IP2', 'good', 'Okay', '2020-01-16 08:00:00'],
-        ['IP3', 'warning', 'Older than a week', '2020-01-04 08:00:00']]
+# Testing values
+if __name__ == 'Teams_card_generator':
+    project = 'Audi Central Houston'
+    project_url = 'https://audicentralhouston.geo-instruments.com/index.php'
+    Sensor_name = ''
+    Sensor_time = ''
+    Sensor_status = ''
+    Sensor_status_color = 'attention'
+    list_of_sensor_data = [['IP1', 'attention', 'Behind', '2020-01-14 08:00:00'],
+                           ['IP2', 'good', 'Okay', '2020-01-16 08:00:00'],
+                           ['IP3', 'warning', 'Older than a week', '2020-01-04 08:00:00']]
 
 
 class card_template:
@@ -255,7 +258,7 @@ class sensor_data:
     def __str__(self):
         # Formats the Sensor_data into table rows
         data_line = card_template.st1 + self.name + card_template.st2 + self.status + card_template.st3 + self.color + card_template.st4 + self.time + card_template.st5
-        return str(data_line)
+        return str ( data_line )
 
 
 class factory:
