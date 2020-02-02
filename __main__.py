@@ -2,7 +2,7 @@
 from __future__ import print_function, unicode_literals
 
 import asyncio
-import io
+import io, os
 import json
 import msvcrt as m
 import pathlib
@@ -14,16 +14,20 @@ from pyxtension.Json import Json
 
 from env import sites, text, creds
 
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+data = ROOT_DIR + "\\env\\data\\"
+
+# print (data)
 qv = sites.qv
 amp = sites.amp
 
 
 # Future args
 class Options:
-    headless = False
+    headless = True
     chrome_args = [
         '--start-maximized',
-        ' --user-data-dir=c:\foo'
+        ' --user-data-dir='+data
     ]
     width = text.width
     height = text.height-200
@@ -80,6 +84,9 @@ class conFig:
 
         Args:
             path (object): 
+
+        Returns:
+            object: 
         """
         # noinspection PyTypeChecker
         for x in path:
@@ -106,22 +113,13 @@ def project_out_file(self) -> object:
         output_pre = str ( check_path ) + str ( self.project.name ) + '_'
     return [output_pre + text.outputfile, output_pre + text.Oldfile, output_pre + text.Warnfile]
 
-
-class Report:
-    def __init__(self, data):
-        self.data = data
-
-    def genCsv(self):
-        pass
-
-
 class Controller:
     streams: Dict[Any, Any]
 
     # noinspection Annotator
     async def __new__(cls, project):
         cls.project = Json ( project )
-        await cls.evaluate_site ()
+        await cls.evaluate_site ( cls )
 
     async def evaluate_site(self):
         if self.project.skip == 'true':
@@ -226,7 +224,7 @@ class ampWebpage:
                     print ( data )
 
 
-class qvWebpage ():
+class qvWebpage:
     def __init__(self):
         pass
 
@@ -246,14 +244,14 @@ class qvWebpage ():
         self.page = await wait_click ( self.page, qv.proj_pre + self.namenum + qv.proj_post )
         return self
 
-    async def goto_plan_view(self):
+    async def goto_plan_view(self) -> object:
         """
 
         Returns:
             object: 
         """
-        list = self.project.planarray.split ( "," )
-        for view in list:
+        views = self.project.planarray.split ( "," )
+        for view in views:
             print ( view )
             if view == '0':
                 pass
@@ -299,10 +297,13 @@ class qvWebpage ():
         # This exception allows selector values not present on the current page to be ignored. Tag - future optimizations
         except:
             pass
+        #TODO: Add check if data is empty to re-try with longer page load wait
+    print ( '\n' + text.exitmessage )
         return
 
 
 async def main():
+    # noinspection PyGlobalUndefined
     global browser
     browser = await launch ( {"headless": Options.headless}, args=Options.chrome_args )
     projects = load_projects ()
@@ -312,4 +313,3 @@ async def main():
 
 if __name__ == '__main__':
     run = asyncio.run ( main () )
-    print ( '\n' + text.exitmessage )
