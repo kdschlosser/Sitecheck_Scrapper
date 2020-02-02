@@ -13,7 +13,7 @@
 from __main__ import ROOT_DIR
 
 global storage
-storage = ROOT_DIR + "/env/data/"
+storage = ROOT_DIR + "/env/data/cards"
 
 # Testing values
 if __name__ == 'Teams_card_generator':
