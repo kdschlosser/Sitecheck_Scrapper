@@ -10,3 +10,4 @@ Projects/**/Dailychecks/**
 **/Site_check/**
 **.xml
 *.pyc
+/env/data/**

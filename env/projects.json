@@ -1,6 +1,6 @@
 [
   {
-    "skip": "true",
+    "skip": "false",
     "group": "true",
     "name": "capitolcomplex",
     "proj": "null",
@@ -8,7 +8,7 @@
     "hassite": "amp"
   },
   {
-    "skip": "true",
+    "skip": "false",
     "group": "true",
     "name": "audicentralhouston",
     "proj": "null",
