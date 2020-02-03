@@ -16,17 +16,6 @@ global storage
 storage = ROOT_DIR + "/env/data/cards"
 
 # Testing values
-if __name__ == 'Teams_card_generator':
-    project = 'Audi Central Houston'
-    project_url = 'https://audicentralhouston.geo-instruments.com/index.php'
-    Sensor_name = ''
-    Sensor_time = ''
-    Sensor_status = ''
-    Sensor_status_color = 'attention'
-    list_of_sensor_data = [['IP1', 'attention', 'Behind', '2020-01-14 08:00:00'],
-                           ['IP2', 'good', 'Okay', '2020-01-16 08:00:00'],
-                           ['IP3', 'warning', 'Older than a week', '2020-01-04 08:00:00']]
-
 
 class card_template:
     Top_prefix1 = '''{
@@ -90,7 +79,6 @@ class card_template:
 						"size": "Medium",
 						"weight": "Bolder",
 						"text": "'''
-
     Top_prefix2 = '''"
 					},
 					{
@@ -100,7 +88,6 @@ class card_template:
 					}
 				]
 			},'''
-
     sensor_prefix = '''		{
 				"type": "Container",
 				"spacing": "small",
@@ -111,7 +98,6 @@ class card_template:
 					"right": "default"
 				},
 				"items": ['''
-
     st1 = '''				{
 						"spacing": "small",
 						"type": "ColumnSet",
@@ -123,7 +109,6 @@ class card_template:
 									{
 										"type": "TextBlock",
 										"text": "'''
-
     st2 = '''"
 									}
 								]
@@ -135,10 +120,8 @@ class card_template:
 									{
 										"type": "TextBlock",
 										"text": "'''
-
     st3 = '''",
 										"color": "'''
-
     st4 = '''"
 									}
 								]
@@ -150,17 +133,14 @@ class card_template:
 									{
 										"type": "TextBlock",
 										"text": "'''
-
     st5 = '''"
 									}
 								]
 							}
 						]
 					}'''
-
     sensor_suffix = '''			]
 			},'''
-
     Link_row_Template1 = '''		{
 				"spacing": "small",
 				"type": "Container",
@@ -232,7 +212,6 @@ class card_template:
     button_row_template2 = '''"
 						}
 			}'''
-
     Bot_suffix = '''	],
 		"$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
 		"version": "1.0"
@@ -261,7 +240,7 @@ class sensor_data:
         return str ( data_line )
 
 
-class factory:
+class generator:
     def __init__(self, current_project, list_of_sensor_data):
         """
 		        Args:
@@ -277,6 +256,7 @@ class factory:
         self.url = current_project.url
         # this is the list each sensor's data was appended to while scanning
         self.data = list_of_sensor_data
+        self.generate_template(self)
 
     def generate_template(self):
         # Builds the Teams Card
@@ -304,3 +284,13 @@ class factory:
         print ( card_template.button_row_template1 + project_url + card_template.button_row_template2 )
         # Add the bits to close up the card.
         print ( card_template.Bot_suffix )
+
+
+if __name__ == 'Teams_card_generator':
+    project = []
+    project.name = 'Sample Project'
+    project.url = 'https://quickview.geo-instruments.com'
+    list_of_sensor_data = [['IP1', 'attention', 'Behind', '2020-01-14 08:00:00'],
+                           ['IP2', 'good', 'Okay', '2020-01-16 08:00:00'],
+                           ['IP3', 'warning', 'Older than a week', '2020-01-04 08:00:00']]
+    generator(project, list_of_sensor_data)
