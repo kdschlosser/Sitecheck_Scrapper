@@ -163,9 +163,8 @@ class ampWebpage:
         await wait_type ( self.page, amp.logincss, creds.username )
         await wait_type ( self.page, amp.pwcss, creds.password )
         await wait_click ( self.page, amp.loginbutton )
-        if os.path.exists ( self.project.name + '_temp.txt' ):
-            os.remove ( self.project.name + '_temp.txt' )
-
+        if os.path.exists ( tcg.storage + self.project.name + '_temp.txt' ):
+            os.remove ( tcg.storage + self.project.name + '_temp.txt' )
         return
 
     async def goto_plan_view(self):

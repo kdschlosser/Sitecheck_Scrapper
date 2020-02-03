@@ -223,26 +223,28 @@ def store(project, data_list):
             Args:
                 project (str): from self.project.name
                 data_list (list): ['IP2', 'good', 'Okay', '2020-01-16 08:00:00']
+
             Returns:
                 none
             """
-
-    if os.path.exists ( project + '_temp.txt' ):
-        with open ( project + '_temp.txt', 'a' ) as temp:
+    file_path = storage + project + '_temp.txt'
+    if os.path.exists ( file_path ):
+        with open ( file_path, 'a' ) as file:
             # If file exists before now, this adds a comma between lists
-            temp.write ( ',' )
-            temp.write ( json.dumps ( data_list ) )
+            file.write ( ',' )
+            file.write ( json.dumps ( data_list ) )
     else:
-        with open ( project + '_temp.txt', 'w' ) as temp:
-            temp.write ( '[' )
-            temp.write ( json.dumps ( data_list ) )
+        with open ( file_path, 'w' ) as file:
+            file.write ( '[' )
+            file.write ( json.dumps ( data_list ) )
 
 
 def compile_data(project):
-    with open ( project + '_temp.txt', 'a' ) as temp:
-        temp.write ( ']' )
-    with open ( project + '_temp.txt', 'r' ) as temp:
-        list_of_lists = temp.read ()
+    file_path = storage + project + '_temp.txt'
+    with open ( file_path, 'a' ) as file:
+        file.write ( ']' )
+    with open ( file_path, 'r' ) as file:
+        list_of_lists = file.read ()
     final = json.loads ( list_of_lists )
     print ( type ( final ) )
     # return final
