@@ -13,10 +13,10 @@ from pyppeteer import launch
 from pyxtension.Json import Json
 
 from env import sites, text, creds
-from bin import Teams_card_generator as tcg
-
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 data = ROOT_DIR + "\\env\\data\\"
+from bin import Teams_card_generator as tcg
+
 
 qv = sites.qv
 amp = sites.amp
@@ -52,7 +52,7 @@ async def wait_type(page, selector, txt):
 
 async def wait_goto(page, url):
     await page.goto ( url ),
-    await page.waitForNavigation (),
+    # await page.waitForNavigation (),
     return page
 
 
@@ -154,7 +154,7 @@ class Controller:
         await ampWebpage.login ( self )
         await self.page.waitFor ( 50 )
         await ampWebpage.goto_plan_view ( self )
-        await self.page.close ()
+        # await self.page.close ()
 
     async def has_QV(self):
         self.url = qv.urlstring
@@ -167,7 +167,7 @@ class Controller:
         await qvWebpage.goto_project ( self )
         await self.page.waitFor ( 50 )
         await qvWebpage.goto_plan_view ( self )
-        await self.page.close ()
+        # await self.page.close ()
 
 
 class ampWebpage:
@@ -188,10 +188,10 @@ class ampWebpage:
         for view in plan_array:
             if Options.verbose:
                 print ( view )
-            await wait_goto ( self.page, self.url + amp.planview + view )
+            await self.page.goto ( self.url + amp.planview + view )
             for target_child in range (0,300):
                 # noinspection PyAttributeOutsideInit
-                self.target_child = target_child
+                self.target_child = str ( target_child )
                 await ampWebpage.get_last_update ( self )
 
     async def get_last_update(self):
@@ -221,19 +221,19 @@ class ampWebpage:
                         data += '\n' + text.uptoDate
                     print ( data )
                     # data = [name, color, status, time]
-                    tcg.store ( sensor, 'good', 'Updated today', date )
+                    # tcg.store ( sensor, 'good', 'Updated today', date )
                 elif Options.watchdog <= diff <= Options.watch_limit:
                     data += date
                     if Options.verbose:
                         data += '\n' + text.behindDate
                     print ( data )
-                    tcg.store ( sensor, 'attention', 'Older than 24 hours', date )
+                    # tcg.store ( sensor, 'attention', 'Older than 24 hours', date )
                 else:
                     data += date
                     if Options.verbose:
                         data += '\n' + text.oldDate
                     print ( data )
-                    tcg.store ( sensor, 'warning', 'Older than a week', date )
+                    # tcg.store ( sensor, 'warning', 'Older than a week', date )
 
 
 
