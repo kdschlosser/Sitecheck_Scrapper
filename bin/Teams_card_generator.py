@@ -219,9 +219,17 @@ class card_template:
 
 
 def store(project, data_list):
-    # temp = tempfile.TemporaryFile(prefix=project+'_', suffix="_tempdata", dir=storage)
+    """
+            Args:
+                project (str): from self.project.name
+                data_list (list): ['IP2', 'good', 'Okay', '2020-01-16 08:00:00']
+            Returns:
+                none
+            """
+
     if os.path.exists ( project + '_temp.txt' ):
         with open ( project + '_temp.txt', 'a' ) as temp:
+            # If file exists before now, this adds a comma between lists
             temp.write ( ',' )
             temp.write ( json.dumps ( data_list ) )
     else:
