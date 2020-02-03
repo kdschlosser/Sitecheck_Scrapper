@@ -21,4 +21,4 @@ class Memory:
 
 class Recall:
     def __init__(self):
-        self.
+        Imporxt = data+self.project
