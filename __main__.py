@@ -4,7 +4,6 @@ from __future__ import print_function, unicode_literals
 import io
 import json
 import msvcrt as m
-import os
 import pathlib
 
 import asyncio
@@ -12,8 +11,10 @@ from dateutil.parser import parse
 from pyppeteer import launch
 from pyxtension.Json import Json
 from typing import Dict, Any
-from env import sites, text, creds
+
+# noinspection PyPep8Naming
 from bin import Teams_card_generator as tcg
+from env import sites, text, creds
 
 qv = sites.qv
 amp = sites.amp
