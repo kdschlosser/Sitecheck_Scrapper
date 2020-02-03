@@ -12,11 +12,8 @@ from dateutil.parser import parse
 from pyppeteer import launch
 from pyxtension.Json import Json
 from typing import Dict, Any
-
 from env import sites, text, creds
-
-ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
-data = ROOT_DIR + "\\env\\data\\"
+from bin import Teams_card_generator as tcg
 
 qv = sites.qv
 amp = sites.amp
@@ -27,7 +24,7 @@ class Options:
     headless = False
     chrome_args = [
         '--start-maximized',
-        ' --user-data-dir='+data
+        ' --user-data-dir='+text.ROOT_data
     ]
     width = text.width
     height = text.height-200
@@ -228,7 +225,9 @@ class ampWebpage:
                     if Options.verbose:
                         data += '\n' + text.behindDate
                     print ( data )
-                    # tcg.store ( sensor, 'attention', 'Older than 24 hours', date )
+                    print( self.project.name )
+                    data_list = [sensor, 'attention', 'Older than 24 hours', date]
+                    tcg.store ( data_list )
                 else:
                     data += date
                     if Options.verbose:

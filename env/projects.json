@@ -1,6 +1,6 @@
 [
   {
-    "skip": "false",
+    "skip": "true",
     "group": "true",
     "name": "capitolcomplex",
     "proj": "null",
@@ -16,7 +16,7 @@
     "hassite": "amp"
   },
   {
-    "skip": "false",
+    "skip": "true",
     "group": "false",
     "name": "425riverside",
     "proj": "3",

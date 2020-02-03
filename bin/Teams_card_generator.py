@@ -10,11 +10,10 @@
 # __author__ = "Dan Edens"
 # __version__= "0.1.0"
 
-from __main__ import ROOT_DIR
-
+import os
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 global storage
 storage = ROOT_DIR + "/env/data/cards"
-
 
 
 class card_template:
@@ -216,6 +215,9 @@ class card_template:
 		"$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
 		"version": "1.0"
 	}'''
+
+def store( data_list ):
+    print( data_list )
 
 
 class sensor_data:

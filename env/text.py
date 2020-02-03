@@ -8,6 +8,10 @@ import ctypes
 width = ctypes.windll.user32.GetSystemMetrics(0)
 height = ctypes.windll.user32.GetSystemMetrics(1)
 
+
+ROOT_dir = os.path.dirname(os.path.abspath(__file__))
+ROOT_data = ROOT_dir + "\\env\\data\\"
+
 now = parse ( "Sat Oct 11 17:13:46 UTC 2003" )
 today = datetime.utcnow ()
 nowdate = today.strftime ( "%Y-%m-%d %H:%M:%S" )
