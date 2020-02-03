@@ -268,6 +268,7 @@ class generator:
         _run = len ( self.data )
         _loop = 0
         for e in self.data:
+            #              # data = [name, color, status, time]
             data_info = sensor_data ( e[0], e[1], e[2], e[3] )
             _loop += 1
             if _loop != _run:
