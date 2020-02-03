@@ -1,9 +1,10 @@
-# Daily Sitecheck Web Scrapper V. 4.2.0
+# Daily Sitecheck Web Scrapper V. 4.3.0
 from __future__ import print_function, unicode_literals
 
 import io
 import json
 import msvcrt as m
+import os
 import pathlib
 
 import asyncio
@@ -162,6 +163,9 @@ class ampWebpage:
         await wait_type ( self.page, amp.logincss, creds.username )
         await wait_type ( self.page, amp.pwcss, creds.password )
         await wait_click ( self.page, amp.loginbutton )
+        if os.path.exists ( self.project.name + '_temp.txt' ):
+            os.remove ( self.project.name + '_temp.txt' )
+
         return
 
     async def goto_plan_view(self):
@@ -171,11 +175,11 @@ class ampWebpage:
             if Options.verbose:
                 print ( view )
             await self.page.goto ( self.url + amp.planview + view )
-            for target_child in range (0,300):
+            for target_child in range ( 0, 300 ):
                 # noinspection PyAttributeOutsideInit
                 self.target_child = str ( target_child )
                 await ampWebpage.get_last_update ( self )
-            return
+        tcg.compile_data ( self.project.name )
 
     async def get_last_update(self):
         for type_of_sensor_box in amp.label:
@@ -204,7 +208,8 @@ class ampWebpage:
                         data += '\n' + text.uptoDate
                     print ( data )
                     # data = [name, color, status, time]
-                    # tcg.store ( sensor, 'good', 'Updated today', date )
+                    data_list = [sensor, 'attention', 'Older than 24 hours', date]
+                    tcg.store ( self.project.name, data_list )
                 elif Options.watchdog <= diff <= Options.watch_limit:
                     data += date
                     if Options.verbose:
@@ -212,13 +217,14 @@ class ampWebpage:
                     print ( data )
                     print( self.project.name )
                     data_list = [sensor, 'attention', 'Older than 24 hours', date]
-                    tcg.store ( data_list )
+                    tcg.store ( self.project.name, data_list )
                 else:
                     data += date
                     if Options.verbose:
                         data += '\n' + text.oldDate
                     print ( data )
-                    # tcg.store ( sensor, 'warning', 'Older than a week', date )
+                    data_list = [sensor, 'attention', 'Older than 24 hours', date]
+                    tcg.store ( self.project.name, data_list )
 
 
 class qvWebpage:

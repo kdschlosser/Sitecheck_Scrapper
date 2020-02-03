@@ -8,12 +8,13 @@
 # """
 
 # __author__ = "Dan Edens"
-# __version__= "0.1.0"
-
+# __version__= "0.2.0"
+import json
 import os
-ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+ROOT_DIR = os.path.dirname ( os.path.abspath ( __file__ ) )
 global storage
-storage = ROOT_DIR + "/env/data/cards"
+storage = ROOT_DIR + "/env/data/cards/"
 
 
 class card_template:
@@ -216,8 +217,27 @@ class card_template:
 		"version": "1.0"
 	}'''
 
-def store( data_list ):
-    print( data_list )
+
+def store(project, data_list):
+    # temp = tempfile.TemporaryFile(prefix=project+'_', suffix="_tempdata", dir=storage)
+    if os.path.exists ( project + '_temp.txt' ):
+        with open ( project + '_temp.txt', 'a' ) as temp:
+            temp.write ( ',' )
+            temp.write ( json.dumps ( data_list ) )
+    else:
+        with open ( project + '_temp.txt', 'w' ) as temp:
+            temp.write ( '[' )
+            temp.write ( json.dumps ( data_list ) )
+
+
+def compile_data(project):
+    with open ( project + '_temp.txt', 'a' ) as temp:
+        temp.write ( ']' )
+    with open ( project + '_temp.txt', 'r' ) as temp:
+        list_of_lists = temp.read ()
+    final = json.loads ( list_of_lists )
+    print ( type ( final ) )
+    # return final
 
 
 class sensor_data:
@@ -258,6 +278,7 @@ class generator:
         self.url = current_project.url
         # this is the list each sensor's data was appended to while scanning
         self.data = list_of_sensor_data
+
         self.generate_template ( self )
 
     def generate_template(self):
