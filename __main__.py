@@ -13,11 +13,11 @@ from pyppeteer import launch
 from pyxtension.Json import Json
 
 from env import sites, text, creds
+from bin import Teams_card_generator as tcg
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 data = ROOT_DIR + "\\env\\data\\"
 
-# print (data)
 qv = sites.qv
 amp = sites.amp
 
@@ -98,6 +98,14 @@ class conFig:
         return self.streams
 
 
+class teams:
+    def __init__(self):
+        pass
+
+    def __str__(self):
+        pass
+
+
 def project_out_file(self) -> object:
     """
 
@@ -123,8 +131,8 @@ class Controller:
 
     async def evaluate_site(self):
         if self.project.skip == 'true':
-            pass
             # print ( 'Skipping project: ' + self.project.name )
+            pass
         else:
             # noinspection PyAttributeOutsideInit
             self.streams = await conFig.make_stream ( self, project_out_file ( self ) )
@@ -212,16 +220,22 @@ class ampWebpage:
                     if Options.verbose:
                         data += '\n' + text.uptoDate
                     print ( data )
+                    # data = [name, color, status, time]
+                    tcg.store ( sensor, 'good', 'Updated today', date )
                 elif Options.watchdog <= diff <= Options.watch_limit:
                     data += date
                     if Options.verbose:
                         data += '\n' + text.behindDate
                     print ( data )
+                    tcg.store ( sensor, 'attention', 'Older than 24 hours', date )
                 else:
                     data += date
                     if Options.verbose:
                         data += '\n' + text.oldDate
                     print ( data )
+                    tcg.store ( sensor, 'warning', 'Older than a week', date )
+
+
 
 
 class qvWebpage:
@@ -298,7 +312,6 @@ class qvWebpage:
         except:
             pass
         #TODO: Add check if data is empty to re-try with longer page load wait
-    print ( '\n' + text.exitmessage )
         return
 
 
@@ -313,3 +326,4 @@ async def main():
 
 if __name__ == '__main__':
     run = asyncio.run ( main () )
+    print ( '\n' + text.exitmessage )
