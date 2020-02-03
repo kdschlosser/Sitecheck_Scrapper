@@ -12,4 +12,5 @@ Projects/**/Dailychecks/**
 **.log
 env/data/DevToolsActivePort
 env/data/
-env/data/Default/Cookies
+env/data/Default/**
+env/projects.json
