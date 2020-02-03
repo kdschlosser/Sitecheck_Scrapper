@@ -1,22 +1,22 @@
 # Daily Sitecheck Web Scrapper V. 4.2.0
 from __future__ import print_function, unicode_literals
 
-import asyncio
-import io, os
+import io
 import json
 import msvcrt as m
+import os
 import pathlib
-from typing import Dict, Any
 
+import asyncio
 from dateutil.parser import parse
 from pyppeteer import launch
 from pyxtension.Json import Json
+from typing import Dict, Any
 
 from env import sites, text, creds
+
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 data = ROOT_DIR + "\\env\\data\\"
-from bin import Teams_card_generator as tcg
-
 
 qv = sites.qv
 amp = sites.amp
@@ -193,6 +193,7 @@ class ampWebpage:
                 # noinspection PyAttributeOutsideInit
                 self.target_child = str ( target_child )
                 await ampWebpage.get_last_update ( self )
+            return
 
     async def get_last_update(self):
         for type_of_sensor_box in amp.label:
@@ -276,7 +277,7 @@ class qvWebpage:
             await self.page.waitFor ( 2000 )
             for target_child in range ( 0, 300 ):
                 await qvWebpage.get_last_update ( self, target_child )
-        return self
+        # return
 
     async def get_last_update(self, target_child):
         sensor = '#objects > img:nth-child(' + str ( target_child ) + ')'
