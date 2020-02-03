@@ -281,7 +281,7 @@ class generator:
         # TODO: this row needs more development, It will house links to troubleshooting tools
         print ( card_template.Link_row_Template1 + project + card_template.Link_row_Template2 )
         # TODO: this row needs more development, It will house buttons
-        print ( card_template.button_row_template1 + project_url + card_template.button_row_template2 )
+        print ( card_template.button_row_template1 + project.url + card_template.button_row_template2 )
         # Add the bits to close up the card.
         print ( card_template.Bot_suffix )
 
