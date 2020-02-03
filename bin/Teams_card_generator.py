@@ -15,7 +15,7 @@ from __main__ import ROOT_DIR
 global storage
 storage = ROOT_DIR + "/env/data/cards"
 
-# Testing values
+
 
 class card_template:
     Top_prefix1 = '''{
@@ -256,7 +256,7 @@ class generator:
         self.url = current_project.url
         # this is the list each sensor's data was appended to while scanning
         self.data = list_of_sensor_data
-        self.generate_template(self)
+        self.generate_template ( self )
 
     def generate_template(self):
         # Builds the Teams Card
@@ -286,7 +286,7 @@ class generator:
         # Add the bits to close up the card.
         print ( card_template.Bot_suffix )
 
-
+# Testing values
 if __name__ == 'Teams_card_generator':
     project = []
     project.name = 'Sample Project'
@@ -294,4 +294,4 @@ if __name__ == 'Teams_card_generator':
     list_of_sensor_data = [['IP1', 'attention', 'Behind', '2020-01-14 08:00:00'],
                            ['IP2', 'good', 'Okay', '2020-01-16 08:00:00'],
                            ['IP3', 'warning', 'Older than a week', '2020-01-04 08:00:00']]
-    generator(project, list_of_sensor_data)
+    generator ( project, list_of_sensor_data )

@@ -24,7 +24,7 @@ amp = sites.amp
 
 # Future args
 class Options:
-    headless = True
+    headless = False
     chrome_args = [
         '--start-maximized',
         ' --user-data-dir='+data
@@ -154,7 +154,7 @@ class Controller:
         await ampWebpage.login ( self )
         await self.page.waitFor ( 50 )
         await ampWebpage.goto_plan_view ( self )
-        # await self.page.close ()
+        await self.page.close ()
 
     async def has_QV(self):
         self.url = qv.urlstring
@@ -167,7 +167,7 @@ class Controller:
         await qvWebpage.goto_project ( self )
         await self.page.waitFor ( 50 )
         await qvWebpage.goto_plan_view ( self )
-        # await self.page.close ()
+        await self.page.close ()
 
 
 class ampWebpage:
@@ -234,8 +234,6 @@ class ampWebpage:
                         data += '\n' + text.oldDate
                     print ( data )
                     # tcg.store ( sensor, 'warning', 'Older than a week', date )
-
-
 
 
 class qvWebpage:
@@ -318,7 +316,7 @@ class qvWebpage:
 async def main():
     # noinspection PyGlobalUndefined
     global browser
-    browser = await launch ( {"headless": Options.headless}, args=Options.chrome_args )
+    browser = await launch ( {"headless": Options.headless, "ignoreHTTPSErrors": True}, args=Options.chrome_args )
     projects = load_projects ()
     [await (Controller ( project )) for project in projects]
     await browser.close ()
