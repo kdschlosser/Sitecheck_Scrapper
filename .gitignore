@@ -3,11 +3,12 @@
 **.sln
 **.txt
 Projects/**/Dailychecks/**
-**data/**
 **.pyc
 **__pycache__**
 **/lib
 **/Site_check/**
 **.xml
 *.pyc
-/env/data/**
+**.log
+env/data/DevToolsActivePort
+env/data/
