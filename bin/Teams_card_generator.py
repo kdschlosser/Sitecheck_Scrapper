@@ -272,7 +272,7 @@ class generator:
         # Location of staged output. It will than be picked up by the Teams_hook.py
         # On card button click
         self.store_path = storage + current_project.name + '_temp.txt'
-        self.generator_output = storage + "\\" + current_project.name + "_card.json"
+        self.generator_output = open ( storage + current_project.name + "_card.json", 'w' )
         self.url = current_project.url
         # this is the list each sensor's data was appended to while scanning
         # self.data = list_of_sensor_data
@@ -307,7 +307,7 @@ class generator:
             _loop += 1
             if _loop != _run:
                 # Add each sensor to the card and add a comma between them.
-                print ( data_info + ',', file=self.generator_output )
+                print ( str ( data_info ) + ',', file=self.generator_output )
             else:
                 # Once the last item is added it will add without the final comma
                 # Add the bits to close up the table.
@@ -319,7 +319,7 @@ class generator:
         # TODO: this row needs more development, It will house buttons
         # Add the bits to close up the card.
         # TODO: queue or start teams_hook.py
-        print ( _template.button_row_template1 + self.project.url + _template.button_row_template2,
+        print ( _template.button_row_template1 + 'https://www.google.com/' + _template.button_row_template2,
                 file=self.generator_output )
         print ( _template.Bot_suffix, file=self.generator_output )
         return self.generator_output
