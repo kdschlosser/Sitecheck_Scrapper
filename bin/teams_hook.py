@@ -9,25 +9,57 @@ import json
 
 import requests
 
-# Set the webhook_url to the one provided by Slack when you create the webhook at https://my.slack.com/services/new/incoming-webhook/
+# test URL
+from env import creds
 
-webhook_url = 'https://webhook.site/854c483a-1a38-4523-b25e-0bb46012a101'
+
+def top_secret(channel):
+    """
+              Args:
+                  channel (str): Name of channel to send card to. Currently 1 option
+              Returns:
+                  (str): The channel's webhook as url string
+              """
+    # currently only 1 channel is setup. This will be added in future versions need
+    # TODO: Build sorter to retrieve hook urls contained in creds file
+    if channel == 'test':
+        url = 'https://webhook.site/854c483a-1a38-4523-b25e-0bb46012a101'
+    # elif channel == 'westproject':
+    #     url = creds.webhook_url.westproject
+    # elif channel == 'another_area':
+    #     url = creds.webhook_url.another_area
+    # else:
+    #     print ( 'Channel name does not match configured projects
+    # return url
+    return creds.teamshook
 
 
 class Send_Hook:
     def __init__(self, channel, file_path):
-        self.channel = channel
+        """
+                  Args:
+                      channel (str): Which team to send card to. Currently 1 option
+                      file_path (str): 'Path to json being Posted'
+                  Returns:
+                      (str): Post error message
+                  """
+        self.channel = top_secret ( channel )
         self.file = file_path
+        self.finished_card = json.loads ( self.file + '_card.json' )
 
     def draft_message(self):
-        self.finished_card = json.loads ( self.file + '_card.json' )
+        # prompt user to review card.
+        # TODO: build Interactive module
+        # TODO: find way to display preview
+        return self.send_message ()
 
     def send_message(self):
         response = requests.post (
-            webhook_url, data=json.dumps ( self.finished_card ),
+            self.channel, data=json.dumps ( self.finished_card ),
             headers={'Content-Type': 'application/json'}
         )
         if response.status_code != 200:
+            # return error.message. TODO: return to be handled
             raise ValueError (
                 'Request to Teams returned an error %s, the response is:\n%s'
                 % (response.status_code, response.text)
