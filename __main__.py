@@ -34,9 +34,6 @@ class Options:
     watchdog = 86400
     watch_limit = watchdog * 7
 
-    def __init__(self):
-        pass
-
 
 def wait():
     m.getch ()
@@ -45,12 +42,6 @@ def wait():
 async def wait_type(page, selector, txt):
     await page.waitForSelector ( selector ),
     await page.type ( selector, txt )
-    return page
-
-
-async def wait_goto(page, url):
-    await page.goto ( url ),
-    # await page.waitForNavigation (),
     return page
 
 
@@ -96,14 +87,6 @@ class conFig:
         return self.streams
 
 
-class teams:
-    def __init__(self):
-        pass
-
-    def __str__(self):
-        pass
-
-
 def project_out_file(self) -> object:
     """
 
@@ -129,7 +112,8 @@ class Controller:
 
     async def evaluate_site(self):
         if self.project.skip == 'true':
-            # print ( 'Skipping project: ' + self.project.name )
+            if Options.verbose:
+                print ( 'Skipping project: ' + self.project.name )
             pass
         else:
             # noinspection PyAttributeOutsideInit

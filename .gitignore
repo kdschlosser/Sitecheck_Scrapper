@@ -8,9 +8,7 @@ Projects/**/Dailychecks/**
 **/lib
 **/Site_check/**
 **.xml
-*.pyc
 **.log
-env/data/DevToolsActivePort
 env/data/
 env/data/Default/**
-env/projects.json
+*creds.py
