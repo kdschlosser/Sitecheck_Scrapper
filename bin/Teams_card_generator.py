@@ -239,17 +239,6 @@ def store(project, data_list):
             file.write ( json.dumps ( data_list ) )
 
 
-def compile_data(project):
-    file_path = storage + project + '_temp.txt'
-    with open ( file_path, 'a' ) as file:
-        file.write ( ']' )
-    with open ( file_path, 'r' ) as file:
-        list_of_lists = file.read ()
-    final = json.loads ( list_of_lists )
-    print ( type ( final ) )
-    # return final
-
-
 class sensor_data:
     def __init__(self, name, color, status, time):
         """
@@ -288,36 +277,53 @@ class generator:
         self.url = current_project.url
         # this is the list each sensor's data was appended to while scanning
         self.data = list_of_sensor_data
+        # File path of output file
+        self.file_path = storage + project
 
-        self.generate_template ( self )
+        # self.generate_template ( self )
 
-    def generate_template(self):
+    def compile_data(self):
+        # Adds the end bracket to finish list of lists
+        with open ( self.file_path + '_temp.txt', 'a' ) as file:
+            file.write ( ']' )
+        # Reads the finished product as string
+        with open ( self.file_path + '_temp.txt', 'r' ) as file:
+            list_of_lists = file.read ()
+        # Converts String to List
+        card_list = json.loads ( list_of_lists )
+        # Sends final copy of list to the generator
+        self.generate_template ( self, card_list )
+
+    def generate_template(self, card_list):
         # Builds the Teams Card
         # Traditional methods of Json formatting do not preserve the template's syntax
-        print ( card_template.Top_prefix1 + self.project + card_template.Top_prefix2 )
+        print ( card_template.Top_prefix1 + self.project + card_template.Top_prefix2, self.file_path + '_card.json' )
         # Add the sensor table section goes above the sensors,
-        print ( card_template.sensor_prefix )
+        print ( card_template.sensor_prefix, self.file_path + '_card.json' )
         # For each current_project held in data, add a line to the card containing it's data
-        _run = len ( self.data )
+        _run = len ( card_list )
         _loop = 0
-        for e in self.data:
+        for e in card_list:
             #              # data = [name, color, status, time]
             data_info = sensor_data ( e[0], e[1], e[2], e[3] )
             _loop += 1
             if _loop != _run:
                 # Add each sensor to the card and add a comma between them.
-                print ( data_info + ',' )
+                print ( data_info + ',', self.file_path + '_card.json' )
             else:
                 # Once the last item is added it will add without the final comma
-                print ( data_info )
+                print ( data_info, self.file_path + '_card.json' )
         # Add the bits to close up the table.
-        print ( card_template.sensor_suffix )
+        print ( card_template.sensor_suffix, self.file_path + '_card.json' )
         # TODO: this row needs more development, It will house links to troubleshooting tools
-        print ( card_template.Link_row_Template1 + project + card_template.Link_row_Template2 )
+        print ( card_template.Link_row_Template1 + project + card_template.Link_row_Template2,
+                self.file_path + '_card.json' )
         # TODO: this row needs more development, It will house buttons
-        print ( card_template.button_row_template1 + project.url + card_template.button_row_template2 )
+        print ( card_template.button_row_template1 + project.url + card_template.button_row_template2,
+                self.file_path + '_card.json' )
         # Add the bits to close up the card.
-        print ( card_template.Bot_suffix )
+        print ( card_template.Bot_suffix, self.file_path + '_card.json' )
+        # TODO: queue or start teams_hook.py
 
 # Testing values
 if __name__ == 'Teams_card_generator':
