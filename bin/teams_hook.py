@@ -42,15 +42,17 @@ class Send_Hook:
                       (str): Post error message
                   """
         # converts channel name to url from creds file
-        self.channel = top_secret ( channel )
+        self.channel = top_secret(channel)
         self.project = project
         self.file = file_path
-        self.finished_card = json.loads ( self.file + '_card.json' )
+        self.finished_card = json.loads(self.file + '_card.json')
+        self.draft_message(self)
 
     def draft_message(self):
         # prompt user to review card.
         # TODO: build Interactive module
         # TODO: find way to display preview
+        print(self)
         return self.send_message ()
 
     def send_message(self):
