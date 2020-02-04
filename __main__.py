@@ -15,6 +15,7 @@ from typing import Dict, Any
 
 # noinspection PyPep8Naming
 from bin import Teams_card_generator as tcg
+from bin import teams_hook as hook
 from env import sites, text, creds
 
 qv = sites.qv
@@ -110,6 +111,11 @@ class Controller:
     async def __new__(cls, project):
         cls.project = Json ( project )
         await cls.evaluate_site ( cls )
+        # After the Site is scanned, the collected data is processed into a
+        # Team's channel card
+        staged_file = tcg.compile_data ( project.name )
+        # Now that the data is arranged, pass it on to teams through a webhook
+        hook.Send_Hook.draft_message ( 'muffins', project.name, staged_file )
 
     async def evaluate_site(self):
         if self.project.skip == 'true':
@@ -178,7 +184,7 @@ class ampWebpage:
                 # noinspection PyAttributeOutsideInit
                 self.target_child = str ( target_child )
                 await ampWebpage.get_last_update ( self )
-        tcg.compile_data ( self.project.name )
+        return self
 
     async def get_last_update(self):
         for type_of_sensor_box in amp.label:
