@@ -10,11 +10,11 @@
 # __author__ = "Dan Edens"
 # __version__= "0.2.1"
 import json
-import os
 
-ROOT_DIR = os.path.dirname ( os.path.abspath ( __file__ ) )
+from __main__ import ROOT_DIR
+
 global storage
-storage = ROOT_DIR + "/env/data/cards/"
+storage = ROOT_DIR + "\\env\\data\\cards\\"
 
 
 class _template:
@@ -228,15 +228,12 @@ def store(project, data_list):
                 none
             """
     file_path = storage + project + '_temp.txt'
-    if os.path.exists ( file_path ):
-        with open ( file_path, 'a' ) as file:
-            # If file exists before now, this adds a comma between lists
-            file.write ( ',' )
-            file.write ( json.dumps ( data_list ) )
-    else:
-        with open ( file_path, 'w' ) as file:
+    with open ( file_path, 'a' ) as file:
+        if file.tell () == 0:
             file.write ( '[' )
-            file.write ( json.dumps ( data_list ) )
+        else:
+            file.write ( ',' )
+        file.write ( json.dumps ( data_list ) )
 
 
 class sensor_data:
@@ -293,15 +290,15 @@ class generator:
         # Converts String to List
         card_list = json.loads ( list_of_lists )
         # Sends final copy of list to the generator
-        self.generate_template ( self, card_list )
+        self.generate_template ( card_list )
 
     def generate_template(self, card_list):
         # Builds the Teams Card
         # Traditional methods of Json formatting do not preserve the template's syntax
         # Add the sensor table section goes above the sensors,
         # For each current_project held in data, add a line to the card containing it's data
-        print ( _template.Top_prefix1 + self.project + _template.Top_prefix2, self.generator_output )
-        print ( _template.sensor_prefix, self.generator_output )
+        print ( _template.Top_prefix1 + self.project + _template.Top_prefix2, file=self.generator_output )
+        print ( _template.sensor_prefix, file=self.generator_output )
         _run = len ( card_list )
         _loop = 0
         for e in card_list:
@@ -310,19 +307,19 @@ class generator:
             _loop += 1
             if _loop != _run:
                 # Add each sensor to the card and add a comma between them.
-                print ( data_info + ',', self.generator_output )
+                print ( data_info + ',', file=self.generator_output )
             else:
                 # Once the last item is added it will add without the final comma
-        # Add the bits to close up the table.
-                print ( data_info, self.generator_output )
-        print ( _template.sensor_suffix, self.generator_output )
+                # Add the bits to close up the table.
+                print ( data_info, file=self.generator_output )
+        print ( _template.sensor_suffix, file=self.generator_output )
         # TODO: this row needs more development, It will house links to troubleshooting tools
         print ( _template.Link_row_Template1 + self.project + _template.Link_row_Template2,
-                self.generator_output )
+                file=self.generator_output )
         # TODO: this row needs more development, It will house buttons
         # Add the bits to close up the card.
         # TODO: queue or start teams_hook.py
         print ( _template.button_row_template1 + self.project.url + _template.button_row_template2,
-                self.generator_output )
-        print ( _template.Bot_suffix, self.generator_output )
+                file=self.generator_output )
+        print ( _template.Bot_suffix, file=self.generator_output )
         return self.generator_output

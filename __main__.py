@@ -1,10 +1,13 @@
 # Daily Sitecheck Web Scrapper V. 0.4.4
 from __future__ import print_function, unicode_literals
 
+import os
+
+ROOT_DIR = os.path.dirname ( os.path.abspath ( __file__ ) )
+
 import io
 import json
 import msvcrt as m
-import os
 import pathlib
 
 import asyncio
@@ -142,7 +145,7 @@ class Controller:
         await self.page.close ()
         # After the Site is scanned, the collected data is processed into a
         # Team's channel card
-        await print ( self.project.name )
+        print ( self.project.name )
         staged_file = await tcg.generator ( self.project )
         # Now that the data is arranged, pass it on to teams through a webhook
         result = await hook.Send_Hook ( 'test', self.project.name, staged_file )
