@@ -229,13 +229,13 @@ def store(project, data_list):
             """
     file_path = storage + project + '_temp.txt'
     if os.path.exists ( file_path ):
-        with open ( file_path, 'w' ) as file:
-            file.write ( '[' )
-            file.write ( json.dumps ( data_list ) )
-    else:
         with open ( file_path, 'a' ) as file:
             # If file exists before now, this adds a comma between lists
             file.write ( ',' )
+            file.write ( json.dumps ( data_list ) )
+    else:
+        with open ( file_path, 'w' ) as file:
+            file.write ( '[' )
             file.write ( json.dumps ( data_list ) )
 
 
