@@ -111,11 +111,7 @@ class Controller:
     async def __new__(cls, project):
         cls.project = Json ( project )
         await cls.evaluate_site ( cls )
-        # After the Site is scanned, the collected data is processed into a
-        # Team's channel card
-        staged_file = tcg.generator.compile_data ( project )
-        # Now that the data is arranged, pass it on to teams through a webhook
-        hook.Send_Hook.draft_message ( 'test', project.name, staged_file )
+
 
     async def evaluate_site(self):
         if self.project.skip == 'true':
@@ -144,6 +140,13 @@ class Controller:
         await self.page.waitFor ( 50 )
         await ampWebpage.goto_plan_view ( self )
         await self.page.close ()
+        # After the Site is scanned, the collected data is processed into a
+        # Team's channel card
+        await print ( self.project.name )
+        staged_file = await tcg.generator ( self.project )
+        # Now that the data is arranged, pass it on to teams through a webhook
+        result = await hook.Send_Hook ( 'test', self.project.name, staged_file )
+        print(result)
 
     async def has_QV(self):
         self.url = qv.urlstring
