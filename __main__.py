@@ -113,9 +113,9 @@ class Controller:
         await cls.evaluate_site ( cls )
         # After the Site is scanned, the collected data is processed into a
         # Team's channel card
-        staged_file = tcg.compile_data ( project.name )
+        staged_file = tcg.generator.compile_data ( project )
         # Now that the data is arranged, pass it on to teams through a webhook
-        hook.Send_Hook.draft_message ( 'muffins', project.name, staged_file )
+        hook.Send_Hook.draft_message ( 'test', project.name, staged_file )
 
     async def evaluate_site(self):
         if self.project.skip == 'true':

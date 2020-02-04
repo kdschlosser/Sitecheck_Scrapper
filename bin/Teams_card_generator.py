@@ -262,7 +262,7 @@ class sensor_data:
 
 
 class generator:
-    def __init__(self, current_project, list_of_sensor_data):
+    def __init__(self, current_project):
         """
 		        Args:
 		            current_project (object):
@@ -271,14 +271,14 @@ class generator:
 		        """
         # Name to display at top of card
         self.project = current_project.name
+        # File path of output file
+        self.file_path = storage + current_project.name
         # Location of staged output. It will than be picked up by the Teams_hook.py
         self.file = storage + "\\" + current_project.name + ".json"
         # On card button click
         self.url = current_project.url
         # this is the list each sensor's data was appended to while scanning
-        self.data = list_of_sensor_data
-        # File path of output file
-        self.file_path = storage + project
+        # self.data = list_of_sensor_data
 
         # self.generate_template ( self )
 
@@ -333,4 +333,4 @@ if __name__ == 'Teams_card_generator':
     list_of_sensor_data = [['IP1', 'attention', 'Behind', '2020-01-14 08:00:00'],
                            ['IP2', 'good', 'Okay', '2020-01-16 08:00:00'],
                            ['IP3', 'warning', 'Older than a week', '2020-01-04 08:00:00']]
-    generator ( project, list_of_sensor_data )
+    # generator ( project, list_of_sensor_data )
