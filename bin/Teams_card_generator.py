@@ -272,22 +272,23 @@ class generator:
         # Name to display at top of card
         self.project = current_project.name
         # File path of output file
-        self.file_path = storage + current_project.name
         # Location of staged output. It will than be picked up by the Teams_hook.py
-        self.file = storage + "\\" + current_project.name + ".json"
         # On card button click
+        self.store_path = storage + current_project.name + '_temp.txt'
+        self.generator_output = storage + "\\" + current_project.name + "_card.json"
         self.url = current_project.url
         # this is the list each sensor's data was appended to while scanning
         # self.data = list_of_sensor_data
 
         # self.generate_template ( self )
+        self.compile_data()
 
     def compile_data(self):
         # Adds the end bracket to finish list of lists
-        with open ( self.file_path + '_temp.txt', 'a' ) as file:
+        with open ( self.store_path, 'a' ) as file:
             file.write ( ']' )
         # Reads the finished product as string
-        with open ( self.file_path + '_temp.txt', 'r' ) as file:
+        with open ( self.store_path, 'r' ) as file:
             list_of_lists = file.read ()
         # Converts String to List
         card_list = json.loads ( list_of_lists )
@@ -297,10 +298,10 @@ class generator:
     def generate_template(self, card_list):
         # Builds the Teams Card
         # Traditional methods of Json formatting do not preserve the template's syntax
-        print ( card_template.Top_prefix1 + self.project + card_template.Top_prefix2, self.file_path + '_card.json' )
         # Add the sensor table section goes above the sensors,
-        print ( card_template.sensor_prefix, self.file_path + '_card.json' )
         # For each current_project held in data, add a line to the card containing it's data
+        print ( _template.Top_prefix1 + self.project + _template.Top_prefix2, self.generator_output )
+        print ( _template.sensor_prefix, self.generator_output )
         _run = len ( card_list )
         _loop = 0
         for e in card_list:
@@ -309,28 +310,19 @@ class generator:
             _loop += 1
             if _loop != _run:
                 # Add each sensor to the card and add a comma between them.
-                print ( data_info + ',', self.file_path + '_card.json' )
+                print ( data_info + ',', self.generator_output )
             else:
                 # Once the last item is added it will add without the final comma
-                print ( data_info, self.file_path + '_card.json' )
         # Add the bits to close up the table.
-        print ( card_template.sensor_suffix, self.file_path + '_card.json' )
+                print ( data_info, self.generator_output )
+        print ( _template.sensor_suffix, self.generator_output )
         # TODO: this row needs more development, It will house links to troubleshooting tools
-        print ( card_template.Link_row_Template1 + project + card_template.Link_row_Template2,
-                self.file_path + '_card.json' )
+        print ( _template.Link_row_Template1 + self.project + _template.Link_row_Template2,
+                self.generator_output )
         # TODO: this row needs more development, It will house buttons
-        print ( card_template.button_row_template1 + project.url + card_template.button_row_template2,
-                self.file_path + '_card.json' )
         # Add the bits to close up the card.
-        print ( card_template.Bot_suffix, self.file_path + '_card.json' )
         # TODO: queue or start teams_hook.py
-
-# Testing values
-if __name__ == 'Teams_card_generator':
-    project = []
-    project.name = 'Sample Project'
-    project.url = 'https://quickview.geo-instruments.com'
-    list_of_sensor_data = [['IP1', 'attention', 'Behind', '2020-01-14 08:00:00'],
-                           ['IP2', 'good', 'Okay', '2020-01-16 08:00:00'],
-                           ['IP3', 'warning', 'Older than a week', '2020-01-04 08:00:00']]
-    # generator ( project, list_of_sensor_data )
+        print ( _template.button_row_template1 + self.project.url + _template.button_row_template2,
+                self.generator_output )
+        print ( _template.Bot_suffix, self.generator_output )
+        return self.generator_output
