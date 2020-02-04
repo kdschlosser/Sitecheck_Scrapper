@@ -8,7 +8,7 @@
 # """
 
 # __author__ = "Dan Edens"
-# __version__= "0.2.0"
+# __version__= "0.2.1"
 import json
 import os
 
@@ -17,7 +17,7 @@ global storage
 storage = ROOT_DIR + "/env/data/cards/"
 
 
-class card_template:
+class _template:
     Top_prefix1 = '''{
 		"hideOriginalBody": true,
 		"type": "AdaptiveCard",
@@ -257,7 +257,7 @@ class sensor_data:
 
     def __str__(self):
         # Formats the Sensor_data into table rows
-        data_line = card_template.st1 + self.name + card_template.st2 + self.status + card_template.st3 + self.color + card_template.st4 + self.time + card_template.st5
+        data_line = _template.st1 + self.name + _template.st2 + self.status + _template.st3 + self.color + _template.st4 + self.time + _template.st5
         return str ( data_line )
 
 
