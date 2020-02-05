@@ -29,7 +29,8 @@ def top_secret(channel):
         return creds.webhook_url.another_area
     else:
         # print('Channel name does not match configured projects')
-        return creds.teamshook
+        # return creds.teamshook
+        return creds.testhook
 
 
 class Send_Hook:
@@ -42,18 +43,20 @@ class Send_Hook:
                       (str): Post error message
                   """
         # converts channel name to url from creds file
-        self.channel = top_secret(channel)
+        self.channel = top_secret ( channel )
         self.project = project
         self.file = file_path
-        self.finished_card = json.loads(self.file + '_card.json')
-        self.draft_message(self)
+        with open ( self.file + '_card.json', 'r' ) as f:
+            file = f.read ()
+        self.finished_card = json.loads ( file )
+        self.draft_message ()
 
     def draft_message(self):
         # prompt user to review card.
         # TODO: build Interactive module
         # TODO: find way to display preview
-        print(self)
-        return self.send_message ()
+        print ( self )
+        self.send_message ()
 
     def send_message(self):
         # Post self.finished_card to url self.channel
@@ -67,3 +70,8 @@ class Send_Hook:
                 'Request to Teams returned an error %s, the response is:\n%s'
                 % (response.status_code, response.text)
             )
+
+
+file_path = "C:\\Users\\Dan.Edens\\Desktop\\Tree\\the_lab\\Python\\pyppeteer_sitecheck_scrapper\\env\\data\\cards\\audicentralhouston"
+project = "audicentralhouston"
+Send_Hook ( 'muffins', project, file_path )
