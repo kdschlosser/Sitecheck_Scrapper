@@ -29,7 +29,8 @@ def top_secret(channel):
         return creds.webhook_url.another_area
     else:
         # print('Channel name does not match configured projects')
-        return creds.teamshook
+        # return creds.teamshook
+        return creds.testhook
 
 
 class Send_Hook:

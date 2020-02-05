@@ -177,6 +177,8 @@ class ampWebpage:
         await wait_click ( self.page, amp.loginbutton )
         if os.path.exists ( tcg.storage + self.project.name + '_temp.txt' ):
             os.remove ( tcg.storage + self.project.name + '_temp.txt' )
+        if os.path.exists ( tcg.storage + self.project.name + '_card.json' ):
+            os.remove ( tcg.storage + self.project.name + '_card.json' )
         return
 
     async def goto_plan_view(self):
@@ -219,7 +221,7 @@ class ampWebpage:
                         data += '\n' + text.uptoDate
                     print ( data )
                     # data = [name, color, status, time]
-                    data_list = [sensor, 'attention', 'Older than 24 hours', date]
+                    data_list = [sensor, 'good', 'Up-to-date', date]
                     tcg.store ( self.project.name, data_list )
                 elif Options.watchdog <= diff <= Options.watch_limit:
                     data += date
@@ -227,14 +229,14 @@ class ampWebpage:
                         data += '\n' + text.behindDate
                     print ( data )
                     print( self.project.name )
-                    data_list = [sensor, 'attention', 'Older than 24 hours', date]
+                    data_list = [sensor, 'warning', 'Older than 24 hours', date]
                     tcg.store ( self.project.name, data_list )
                 else:
                     data += date
                     if Options.verbose:
                         data += '\n' + text.oldDate
                     print ( data )
-                    data_list = [sensor, 'attention', 'Older than 24 hours', date]
+                    data_list = [sensor, 'attention', 'Older than a week', date]
                     tcg.store ( self.project.name, data_list )
 
 
