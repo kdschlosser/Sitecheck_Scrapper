@@ -9,7 +9,7 @@ import json
 
 import requests
 
-from env import creds
+from env import creds, text
 
 
 def top_secret(channel):
@@ -22,19 +22,18 @@ def top_secret(channel):
     # currently only 1 channel is setup. This will be added in future versions need
     # TODO: Build sorter to retrieve hook urls contained in creds file
     if channel == 'test':
-        return 'https://webhook.site/854c483a-1a38-4523-b25e-0bb46012a101'
-    elif channel == 'westproject':
-        return creds.webhook_url.westproject
-    elif channel == 'another_area':
-        return creds.webhook_url.another_area
+        return creds.testhook
+    elif channel == 'programming':
+        return creds.programminghook
+    elif channel == 'West-project':
+        return creds.westcoasthook
     else:
-        # print('Channel name does not match configured projects')
-        # return creds.teamshook
+        print ( text.no_channel + creds.testhook )
         return creds.testhook
 
 
 class Send_Hook:
-    def __init__(self, channel, project, file_path):
+    def __init__(self, channel, temp_project, file_path):
         """
                   Args:
                       channel (str): Which team to send card to. Currently 1 option
@@ -44,7 +43,7 @@ class Send_Hook:
                   """
         # converts channel name to url from creds file
         self.channel = top_secret ( channel )
-        self.project = project
+        self.project = temp_project
         self.file = file_path
         with open ( self.file + '_card.json', 'r' ) as f:
             file = f.read ()

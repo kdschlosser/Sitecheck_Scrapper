@@ -1,9 +1,10 @@
 debug = 0
+import ctypes
 import os
 import sys
 from datetime import *
+
 from dateutil.parser import *
-import ctypes
 
 width = ctypes.windll.user32.GetSystemMetrics(0)
 height = ctypes.windll.user32.GetSystemMetrics(1)
@@ -16,7 +17,7 @@ now = parse ( "Sat Oct 11 17:13:46 UTC 2003" )
 today = datetime.utcnow ()
 nowdate = today.strftime ( "%Y-%m-%d %H:%M:%S" )
 filedate = today.strftime ( "%Y-%m-%d" )
-
+no_channel = 'Channel name does not match configured projects, directed at test hook: \n'
 pathtonote = os.path.abspath ( os.path.dirname ( sys.argv[0] ) ) + '/_' + filedate + '/Notes.txt'
 outputfile = '_sitecheck.txt'
 Warnfile = '_WatchdogFile.txt'
