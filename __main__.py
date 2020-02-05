@@ -1,6 +1,7 @@
 # Daily Sitecheck Web Scrapper V. 0.4.4
 from __future__ import print_function, unicode_literals
 
+import asyncio
 import os
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -13,6 +14,7 @@ import pathlib
 from dateutil.parser import parse
 from pyppeteer import launch
 from pyxtension.Json import Json
+from typing import Dict, Any
 
 # noinspection PyPep8Naming
 from bin import Teams_card_generator as tcg
@@ -61,11 +63,9 @@ async def wait_hover(page, selector):
 
 
 def load_projects():
-    data = user_data.read()
-    projects = json.loads(data)
-
-
-with open('env/projects.json') as user_data:
+    with open('env/projects.json') as user_data:
+        data = user_data.read()
+        projects = json.loads(data)
     return projects
 
 
