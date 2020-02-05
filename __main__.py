@@ -1,8 +1,9 @@
 # Daily Sitecheck Web Scrapper V. 0.4.4
 from __future__ import print_function, unicode_literals
 
-import asyncio
 import os
+
+import asyncio
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -219,7 +220,7 @@ class ampWebpage:
                         data += '\n' + text.uptoDate
                     print(data)
                     # data = [name, color, status, time]
-                    data_list = [sensor, 'attention', 'Older than 24 hours', date]
+                    data_list = [sensor, 'good', 'Up-to-date', date]
                     tcg.store(self.project.name, data_list)
                 elif Options.watchdog <= diff <= Options.watch_limit:
                     data += date
@@ -227,14 +228,14 @@ class ampWebpage:
                         data += '\n' + text.behindDate
                     print(data)
                     print(self.project.name)
-                    data_list = [sensor, 'attention', 'Older than 24 hours', date]
+                    ata_list = [sensor, 'warning', 'Older than 24 hours', date]
                     tcg.store(self.project.name, data_list)
                 else:
                     data += date
                     if Options.verbose:
                         data += '\n' + text.oldDate
                     print(data)
-                    data_list = [sensor, 'attention', 'Older than 24 hours', date]
+                    data_list = [sensor, 'attention', 'Older than a week', date]
                     tcg.store(self.project.name, data_list)
 
 
