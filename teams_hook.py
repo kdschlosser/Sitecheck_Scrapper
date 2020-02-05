@@ -20,7 +20,6 @@ def top_secret(channel):
                   (str): The channel's webhook as url string
               """
     # currently only 1 channel is setup. This will be added in future versions need
-    # TODO: Build sorter to retrieve hook urls contained in creds file
     if channel == 'test':
         return creds.testhook
     elif channel == 'programming':
@@ -28,7 +27,7 @@ def top_secret(channel):
     elif channel == 'West-project':
         return creds.westcoasthook
     else:
-        print ( text.no_channel + creds.testhook )
+        print ( text.no_channel )
         return creds.testhook
 
 
@@ -71,6 +70,8 @@ class Send_Hook:
             )
 
 
-file_path = "C:\\Users\\Dan.Edens\\Desktop\\Tree\\the_lab\\Python\\pyppeteer_sitecheck_scrapper\\env\\data\\cards\\audicentralhouston"
-project = "audicentralhouston"
-Send_Hook ( 'muffins', project, file_path )
+if __name__ == '__main__':
+    file_path = "C:\\Users\\Dan.Edens\\Desktop\\Tree\\the_lab\\Python\\pyppeteer_sitecheck_scrapper\\env\\data\\cards" \
+                "\\audicentralhouston"
+    project = "audicentralhouston"
+    Send_Hook ( 'muffins', project, file_path )
