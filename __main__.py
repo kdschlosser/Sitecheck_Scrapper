@@ -113,9 +113,9 @@ class Controller:
     streams: Dict[Any, Any]
 
     # noinspection Annotator
-    async def __new__(cls, project):
+    def __new__(cls, project):
         cls.project = Json(project)
-        await cls.evaluate_site(cls)
+        asyncio.get_event_loop().run_until_complete(cls.evaluate_site(cls))
 
     async def evaluate_site(self):
         if self.project.skip == 'true':
