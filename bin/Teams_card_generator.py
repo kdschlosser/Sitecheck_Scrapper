@@ -162,7 +162,6 @@ class _template:
 										"type": "TextBlock",
 										"weight": "Bolder",
 										"text": "'''
-    # + project +
     Link_row_Template2 = '''"
 									}
 								],
@@ -187,7 +186,6 @@ class _template:
 					}
 				]
 			}'''
-    # project_url. This section needs work
     button_row_template1 = ''',
 			{			
 				"type": "Container",
@@ -208,7 +206,6 @@ class _template:
 							"type": "Action.OpenUrl",
 							"title": "View Monday",
 							"url": "'''
-    # + project url +
     button_row_template2 = '''"
 						}
 			}'''
