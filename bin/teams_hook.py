@@ -4,7 +4,7 @@ Documentation for Team's card incoming Webhooks:
 https://docs.microsoft.com/en-us/micrsoftteams/platform/webhooks-and-connectors/what-are-webhooks-and-connectors
 
 """
-
+import asyncio
 import json
 
 import requests
@@ -32,11 +32,11 @@ def top_secret(channel):
 
 
 class Send_Hook:
-    def __init__(self, channel, temp_project, file_path):
+    def __init__(self, channel, temp_project, tempfile_path):
         """
                   Args:
                       channel (str): Which team to send card to. Currently 1 option
-                      file_path (str): 'Path to json being Posted'
+                      tempfile_path (str): 'Path to json being Posted'
                   Returns:
                       (str): Post error message
                   """
@@ -54,24 +54,26 @@ class Send_Hook:
         # TODO: build Interactive module
         # TODO: find way to display preview
         print ( self )
-        self.send_message ()
+        asyncio.get_event_loop().run_until_complete(self.send_message())
 
-    def send_message(self):
-        # Post self.finished_card to url self.channel
-        response = requests.post (
-            self.channel, data=json.dumps ( self.finished_card ),
-            headers={'Content-Type': 'application/json'}
+    async def send_message(self):
+        """ Post self.finished_card to url self.channel """
+        response = await requests.post(
+                self.channel, data=json.dumps(self.finished_card),
+                headers={'Content-Type': 'application/json'}
         )
         if response.status_code != 200:
-            # return error.message. TODO: return to be handled
-            raise ValueError (
-                'Request to Teams returned an error %s, the response is:\n%s'
-                % (response.status_code, response.text)
-            )
+            print(ValueError(
+                'Request to Teams returned an error %s, the response is:\n%s' % (response.status_code, response.text)))
+            # raise ValueError (
+            #     'Request to Teams returned an error %s, the response is:\n%s'
+            #     % (response.status_code, response.text)
+            # )
 
 
 if __name__ == '__main__':
     file_path = "C:\\Users\\Dan.Edens\\Desktop\\Tree\\the_lab\\Python\\pyppeteer_sitecheck_scrapper\\env\\data\\cards" \
                 "\\Test_Project"
     project = "Test_Project"
-    Send_Hook ( 'test', project, file_path )
+    # This
+    Send_Hook('test', project, file_path)
