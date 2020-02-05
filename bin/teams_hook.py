@@ -72,6 +72,6 @@ class Send_Hook:
 
 if __name__ == '__main__':
     file_path = "C:\\Users\\Dan.Edens\\Desktop\\Tree\\the_lab\\Python\\pyppeteer_sitecheck_scrapper\\env\\data\\cards" \
-                "\\audicentralhouston"
-    project = "audicentralhouston"
-    Send_Hook ( 'muffins', project, file_path )
+                "\\Test_Project"
+    project = "Test_Project"
+    Send_Hook ( 'test', project, file_path )
