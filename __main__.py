@@ -63,9 +63,9 @@ async def wait_hover(page, selector):
 
 
 def load_projects():
-    with open ( 'env/projects.json', 'r' ) as user_data:
         data = user_data.read ()
         projects = json.loads ( data )
+    with open('env/projects.json') as user_data:
         return projects
 
 
