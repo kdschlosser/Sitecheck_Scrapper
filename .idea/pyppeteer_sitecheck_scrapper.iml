@@ -3,7 +3,6 @@
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/.vs" />
-      <excludeFolder url="file://$MODULE_DIR$/.vscode" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.8 (pyppeteer_sitecheck_scrapper)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />

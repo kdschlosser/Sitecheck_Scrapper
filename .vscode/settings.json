@@ -1,7 +1,0 @@
-{
-    "python.linting.pylintEnabled": false,
-    "python.pythonPath": "C:\\Users\\Dan.Edens\\Desktop\\Tree\\the_lab\\Python\\pyppeteer_sitecheck_scrapper\\Scripts\\python.exe",
-    "python.linting.pylintArgs": [
-        "max-args: 15"
-    ]
-}
