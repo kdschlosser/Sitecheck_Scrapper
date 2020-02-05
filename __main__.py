@@ -7,7 +7,6 @@ import asyncio
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
-import io
 import json
 import msvcrt as m
 import pathlib
@@ -15,7 +14,6 @@ import pathlib
 from dateutil.parser import parse
 from pyppeteer import launch
 from pyxtension.Json import Json
-from typing import Dict, Any
 
 # noinspection PyPep8Naming
 from bin import Teams_card_generator as tcg
@@ -70,29 +68,6 @@ def load_projects():
     return projects
 
 
-class conFig:
-    def __init__(self):
-        pass
-
-    async def make_stream(self, path: object) -> object:
-        """
-
-        Args:
-            path (object):
-
-        Returns:
-            object:
-        """
-        # noinspection PyTypeChecker
-        for x in path:
-            self.count = 0
-            self.streams = {self.count: open(x, "a", encoding="utf-8")}
-            self.count += 1
-            self.streams[self.count] = io.StringIO('temp new file message.\n')
-            self.count += 1
-        return self.streams
-
-
 def project_out_file(self) -> object:
     """
 
@@ -109,13 +84,24 @@ def project_out_file(self) -> object:
     return [output_pre + text.outputfile, output_pre + text.Oldfile, output_pre + text.Warnfile]
 
 
-class Controller:
-    streams: Dict[Any, Any]
+async def run_controller(project):
+    """
 
-    # noinspection Annotator
-    def __new__(cls, project):
-        cls.project = Json(project)
-        asyncio.get_event_loop().run_until_complete(cls.evaluate_site(cls))
+    Args:
+        project: Object containing all project data:
+                 group, hassite, name, playarray, proj, skip
+
+    Returns: Todo: setup promise return hook result
+
+    """
+    run_result = Project_run(project)
+    await run_result.evaluate_site()
+    return run_result
+
+
+class Project_run:
+    def __init__(self, project):
+        self.project = Json(project)
 
     async def evaluate_site(self):
         if self.project.skip == 'true':
@@ -123,16 +109,14 @@ class Controller:
                 print('Skipping project: ' + self.project.name)
             pass
         else:
-            # noinspection PyAttributeOutsideInit
-            self.streams = await conFig.make_stream(self, project_out_file(self))
             print(text.fileheader + self.project.name)
-            await self.filter_site(self)
+            await self.filter_site()
 
     async def filter_site(self):
         if self.project.hassite == 'amp':
-            await self.has_amp(self)
+            await self.has_amp()
         elif self.project.hassite == 'qv':
-            await self.has_QV(self)
+            await self.has_QV()
 
     async def has_amp(self):
         self.url = 'https://' + self.project.name + '.geo-instruments.com/index.php'
@@ -147,7 +131,7 @@ class Controller:
         # After the Site is scanned, the collected data is processed into a
         # Team's channel card
         print(self.project.name)
-        staged_file = await tcg.generator(self.project)
+        staged_file = tcg.generator(self.project)
         # Now that the data is arranged, pass it on to teams through a webhook
         result = await hook.Send_Hook('test', self.project.name, staged_file)
         print(result)
@@ -321,7 +305,7 @@ async def main():
     global browser
     browser = await launch({"headless": Options.headless, "ignoreHTTPSErrors": True}, args=Options.chrome_args)
     projects = load_projects()
-    [await (Controller(project)) for project in projects]
+    [await (run_controller(project)) for project in projects]
     await browser.close()
 
 
