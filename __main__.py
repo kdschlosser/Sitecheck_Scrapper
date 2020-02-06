@@ -26,6 +26,7 @@ amp = sites.amp
 
 # Future args
 class Options:
+    """This class contains the browser's configurable options"""
     headless = False
     chrome_args = [
             '--start-maximized',
@@ -44,24 +45,40 @@ def wait():
 
 
 async def wait_type(page, selector, txt):
+    """
+    Wait for a selector to load than type supplied text.
+    Returns page incase entering text changes the context.
+    """
     await page.waitForSelector(selector),
     await page.type(selector, txt)
     return page
 
 
 async def wait_click(page, selector):
+    """
+    Wait for a selector to load than click on it.
+    Returns page incase this changes the context.
+    """
     await page.waitForSelector(selector),
     await page.click(selector)
     return page
 
 
 async def wait_hover(page, selector):
+    """
+    Wait for a selector to load than hover over it.
+    Returns page incase this changes the context.
+    """
     await page.waitForSelector(selector),
     await page.hover(selector)
     return page
 
 
 def load_projects():
+    """
+    Returns: project object
+
+    """
     with open('env/projects.json') as user_data:
         data = user_data.read()
         projects = json.loads(data)
@@ -76,7 +93,6 @@ def project_out_file(self) -> object:
     """
     check_path = '\\users\\' + creds.user + '\\dailychecks\\' + text.filedate + '\\'
     pathlib.Path(check_path).mkdir(parents=True, exist_ok=True)
-    # print ( self.project.group )
     if self.project.group:
         output_pre = str(check_path) + 'all_'
     else:
@@ -131,9 +147,13 @@ class Project_run:
         # After the Site is scanned, the collected data is processed into a
         # Team's channel card
         print(self.project.name)
+
         staged_file = tcg.generator(self.project)
+        path_to_temp = staged_file.compile_data()
+        print(path_to_temp)
         # Now that the data is arranged, pass it on to teams through a webhook
-        result = await hook.Send_Hook('test', self.project.name, staged_file)
+        # staged_hook = hook.Send_Hook('test', self.project.name, staged_file)
+        result = hook.Send_Hook('test', self.project.name, path_to_temp)
         print(result)
 
     async def has_QV(self):
@@ -212,7 +232,7 @@ class ampWebpage:
                         data += '\n' + text.behindDate
                     print(data)
                     print(self.project.name)
-                    ata_list = [sensor, 'warning', 'Older than 24 hours', date]
+                    data_list = [sensor, 'warning', 'Older than 24 hours', date]
                     tcg.store(self.project.name, data_list)
                 else:
                     data += date

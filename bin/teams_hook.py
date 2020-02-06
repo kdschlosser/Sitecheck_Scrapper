@@ -6,7 +6,6 @@ https://docs.microsoft.com/en-us/micrsoftteams/platform/webhooks-and-connectors/
 """
 import json
 
-import asyncio
 import requests
 
 from env import creds, text
@@ -48,8 +47,10 @@ class Send_Hook:
         # converts channel name to url from creds file
         self.channel = top_secret(channel)
         self.project = temp_project
-        self.file = file_path
-        with open(self.file + '_card.json') as f:
+        # print(temp_file_path.cr_code.co_filename)
+        print(temp_file_path)
+        self.file = temp_file_path
+        with open(self.file) as f:
             file = f.read()
         self.finished_card = json.loads(file)
         self.draft_message()
@@ -59,11 +60,11 @@ class Send_Hook:
         # TODO: build Interactive module
         # TODO: find way to display preview
         print(self)
-        asyncio.get_event_loop().run_until_complete(self.send_message())
+        self.send_message()
 
     async def send_message(self):
         """ Post self.finished_card to url self.channel """
-        response = await requests.post(
+        response = requests.post(
                 self.channel, data=json.dumps(self.finished_card),
                 headers={'Content-Type': 'application/json'}
         )

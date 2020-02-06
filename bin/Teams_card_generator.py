@@ -9,11 +9,10 @@
 
 import json
 
+from __main__ import ROOT_DIR
+
 # __author__ = "Dan Edens"
 # __version__= "0.2.1"
-import asyncio
-
-from __main__ import ROOT_DIR
 
 global storage
 storage = ROOT_DIR + "\\env\\data\\cards\\"
@@ -271,54 +270,55 @@ class generator:
         # Location of staged output. It will than be picked up by the Teams_hook.py
         # On card button click
         self.store_path = storage + current_project.name + '_temp.txt'
-        self.generator_output = open(storage + current_project.name + "_card.json", 'w')
+        self.generator_output = storage + current_project.name + "_card.json"
         self.url = current_project.url
         # this is the list each sensor's data was appended to while scanning
         # self.data = list_of_sensor_data
 
-        # self.generate_template ( self )
-        asyncio.get_event_loop().run_until_complete(self.compile_data())
-
-    async def compile_data(self):
+    def compile_data(self):
         # Adds the end bracket to finish list of lists
         with open(self.store_path, 'a') as file:
             file.write(']')
         # Reads the finished product as string
-        with open(self.store_path, 'r') as file:
+        with open(self.store_path) as file:
             list_of_lists = file.read()
         # Converts String to List
         card_list = json.loads(list_of_lists)
         # Sends final copy of list to the generator
-        self.generate_template(card_list)
+        return self.generate_template(card_list)
+        # print(type(x))
+        # return self.generator_output
 
     def generate_template(self, card_list):
-        # Builds the Teams Card
-        # Traditional methods of Json formatting do not preserve the template's syntax
-        # Add the sensor table section goes above the sensors,
-        # For each current_project held in data, add a line to the card containing it's data
-        print(_template.Top_prefix1 + self.project + _template.Top_prefix2, file=self.generator_output)
-        print(_template.sensor_prefix, file=self.generator_output)
-        _run = len(card_list)
-        _loop = 0
-        for e in card_list:
-            #              # data = [name, color, status, time]
-            data_info = sensor_data(e[0], e[1], e[2], e[3])
-            _loop += 1
-            if _loop != _run:
-                # Add each sensor to the card and add a comma between them.
-                print(str(data_info) + ',', file=self.generator_output)
-            else:
-                # Once the last item is added it will add without the final comma
-                # Add the bits to close up the table.
-                print(data_info, file=self.generator_output)
-        print(_template.sensor_suffix, file=self.generator_output)
-        # TODO: this row needs more development, It will house links to troubleshooting tools
-        print(_template.Link_row_Template1 + self.project + _template.Link_row_Template2,
-              file=self.generator_output)
-        # TODO: this row needs more development, It will house buttons
-        # Add the bits to close up the card.
-        # TODO: queue or start teams_hook.py
-        print(_template.button_row_template1 + 'https://www.google.com/' + _template.button_row_template2,
-              file=self.generator_output)
-        print(_template.Bot_suffix, file=self.generator_output)
-        return self.generator_output
+        with open(self.generator_output, 'w') as gen_file:
+            print(gen_file.name)
+            # Builds the Teams Card
+            # Traditional methods of Json formatting do not preserve the template's syntax
+            # Add the sensor table section goes above the sensors,
+            # For each current_project held in data, add a line to the card containing it's data
+            print(_template.Top_prefix1 + self.project + _template.Top_prefix2, file=gen_file)
+            print(_template.sensor_prefix, file=gen_file)
+            _run = len(card_list)
+            _loop = 0
+            for e in card_list:
+                #              # data = [name, color, status, time]
+                data_info = sensor_data(e[0], e[1], e[2], e[3])
+                _loop += 1
+                if _loop != _run:
+                    # Add each sensor to the card and add a comma between them.
+                    print(str(data_info) + ',', file=gen_file)
+                else:
+                    # Once the last item is added it will add without the final comma
+                    # Add the bits to close up the table.
+                    print(data_info, file=gen_file)
+            print(_template.sensor_suffix, file=gen_file)
+            # TODO: this row needs more development, It will house links to troubleshooting tools
+            print(_template.Link_row_Template1 + self.project + _template.Link_row_Template2,
+                  file=gen_file)
+            # TODO: this row needs more development, It will house buttons
+            # Add the bits to close up the card.
+            # TODO: queue or start teams_hook.py
+            print(_template.button_row_template1 + 'https://www.google.com/' + _template.button_row_template2,
+                  file=gen_file)
+            print(_template.Bot_suffix, file=gen_file)
+        return gen_file.name
