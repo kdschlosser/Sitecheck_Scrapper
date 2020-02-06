@@ -30,6 +30,11 @@ def top_secret(channel):
         return creds.testhook
 
 
+async def message_factory(channel, project_name, path_to_temp):
+    message = Send_Hook(channel, project_name, path_to_temp)
+    return await message.draft_message()
+
+
 class Send_Hook:
     """
     Send json data through a webhook to the Team's channel
@@ -53,14 +58,12 @@ class Send_Hook:
         with open(self.file) as f:
             file = f.read()
         self.finished_card = json.loads(file)
-        self.draft_message()
 
-    def draft_message(self):
+    async def draft_message(self):
         """Prompt user to review card."""
         # TODO: build Interactive module
         # TODO: find way to display preview
-        print(self)
-        self.send_message()
+        return await self.send_message()
 
     async def send_message(self):
         """ Post self.finished_card to url self.channel """
@@ -72,7 +75,7 @@ class Send_Hook:
             result = ValueError(
                     'Request to Teams returned an error %s, the response is:\n%s' % (
                             response.status_code, response.text))
-            print(result)
+            # print(result)
             return result
 
 

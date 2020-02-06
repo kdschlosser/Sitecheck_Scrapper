@@ -119,6 +119,7 @@ class Project_run:
     def __init__(self, project):
         self.project = Json(project)
 
+
     async def evaluate_site(self):
         if self.project.skip == 'true':
             if Options.verbose:
@@ -152,9 +153,9 @@ class Project_run:
         path_to_temp = staged_file.compile_data()
         print(path_to_temp)
         # Now that the data is arranged, pass it on to teams through a webhook
-        # staged_hook = hook.Send_Hook('test', self.project.name, staged_file)
-        result = hook.Send_Hook('test', self.project.name, path_to_temp)
-        print(result)
+        # result = await hook.message_factory(self.project.channel, self.project.name, path_to_temp)
+        result = await hook.message_factory('test', self.project.name, path_to_temp)
+        print(result, '\n End of run')
 
     async def has_QV(self):
         self.url = qv.urlstring
