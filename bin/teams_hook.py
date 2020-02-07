@@ -1,8 +1,7 @@
 """
 This sends completed cards through a webhook to a specific Team's channel (Team)
-Documentation for Team's card incoming Webhooks:
-https://docs.microsoft.com/en-us/micrsoftteams/platform/webhooks-and-connectors/what-are-webhooks-and-connectors
-
+Documentation for Team's Adaptive Cards:
+https://docs.microsoft.com/en-us/adaptive-cards/
 """
 import json
 
