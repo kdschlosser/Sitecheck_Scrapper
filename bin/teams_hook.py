@@ -18,19 +18,29 @@ def top_secret(channel):
               Returns:
                   (str): The channel's webhook as url string
               """
-    # currently only 1 channel is setup. This will be added in future versions need
-    if channel == 'test':
-        return creds.testhook
-    elif channel == 'programming':
+    if channel == 'programming':
+        print("Sending data to the Programming team")
         return creds.programminghook
-    elif channel == 'West-project':
-        return creds.westcoasthook
+    elif channel == 'west_project':
+        print("Sending data to West Project Checks team")
+        return creds.testhook  # BUILD
+        # return creds.westcoasthook # SHIP
     else:
         print(text.no_channel)
         return creds.testhook
 
 
 async def message_factory(channel, project_name, path_to_temp):
+    """
+
+    Args:
+        channel(str): Selects the webhook to send too.
+        project_name(str): Name of project
+        path_to_temp(str): Path to file of stored json data
+
+    Returns:
+
+    """
     message = Send_Hook(channel, project_name, path_to_temp)
     return await message.draft_message()
 
@@ -72,10 +82,10 @@ class Send_Hook:
                 headers={'Content-Type': 'application/json'}
         )
         if response.status_code != 200:
+            # TODO: Handle response codes
             result = ValueError(
                     'Request to Teams returned an error %s, the response is:\n%s' % (
                             response.status_code, response.text))
-            # print(result)
             return result
 
 
@@ -83,5 +93,4 @@ if __name__ == '__main__':
     file_path = "C:\\Users\\Dan.Edens\\Desktop\\Tree\\the_lab\\Python\\pyppeteer_sitecheck_scrapper\\env\\data\\cards" \
                 "\\Test_Project"
     project = "Test_Project"
-    # This
-    Send_Hook('test', project, file_path)
+    await message_factory('test', project, file_path)

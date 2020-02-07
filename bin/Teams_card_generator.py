@@ -17,7 +17,7 @@ from __main__ import ROOT_DIR
 global storage
 storage = ROOT_DIR + "\\env\\data\\cards\\"
 
-
+# TODO: Rebuild template model to messagecard
 class _template:
     Top_prefix1 = '''{
 		"hideOriginalBody": true,
@@ -286,8 +286,6 @@ class generator:
         card_list = json.loads(list_of_lists)
         # Sends final copy of list to the generator
         return self.generate_template(card_list)
-        # print(type(x))
-        # return self.generator_output
 
     def generate_template(self, card_list):
         with open(self.generator_output, 'w') as gen_file:
