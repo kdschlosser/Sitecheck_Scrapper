@@ -1,15 +1,14 @@
-# Daily Sitecheck Web Scrapper V. 0.4.4
+# Daily Sitecheck Web Scrapper V. 0.5.0
 from __future__ import print_function, unicode_literals
 
 import os
-
 import asyncio
 
-# TODO deal with having to call this in the middle of imports
+# TODO deal with having to call this before importing tcg
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 import json
-import msvcrt as m
+import msvcrt
 import pathlib
 
 from dateutil.parser import parse
@@ -41,13 +40,13 @@ class Options:
 
 
 def wait():
-    m.getch()
+    msvcrt.getch()
 
 
 async def wait_type(page, selector, txt):
     """
     Wait for a selector to load than type supplied text.
-    Returns page incase entering text changes the context.
+    Returns page in case entering text changes the context.
     """
     await page.waitForSelector(selector),
     await page.type(selector, txt)
@@ -57,7 +56,7 @@ async def wait_type(page, selector, txt):
 async def wait_click(page, selector):
     """
     Wait for a selector to load than click on it.
-    Returns page incase this changes the context.
+    Returns page in case this changes the context.
     """
     await page.waitForSelector(selector),
     await page.click(selector)
@@ -67,7 +66,7 @@ async def wait_click(page, selector):
 async def wait_hover(page, selector):
     """
     Wait for a selector to load than hover over it.
-    Returns page incase this changes the context.
+    Returns page in case this changes the context.
     """
     await page.waitForSelector(selector),
     await page.hover(selector)
@@ -134,6 +133,7 @@ class Project_run:
             await self.has_amp()
         elif self.project.hassite == 'qv':
             await self.has_QV()
+        # TODO rebuild truelook support
 
     async def has_amp(self):
         self.url = 'https://' + self.project.name + '.geo-instruments.com/index.php'
@@ -158,6 +158,7 @@ class Project_run:
         print(result, '\n End of run')
 
     async def has_QV(self):
+        #TODO Update qv run
         self.url = qv.urlstring
         self.page = await browser.newPage()
         await self.page.setViewport({
@@ -173,6 +174,7 @@ class Project_run:
 
 class ampWebpage:
     def __init__(self):
+        # TODO Update class structure with my new learns
         pass
 
     async def login(self):
@@ -181,6 +183,7 @@ class ampWebpage:
         await wait_type(self.page, amp.logincss, creds.username)
         await wait_type(self.page, amp.pwcss, creds.password)
         await wait_click(self.page, amp.loginbutton)
+        # TODO move to cleanup function, add name_temp.json
         if os.path.exists(tcg.storage + self.project.name + '_temp.txt'):
             os.remove(tcg.storage + self.project.name + '_temp.txt')
         return
@@ -251,6 +254,7 @@ class ampWebpage:
 
 class qvWebpage:
     def __init__(self):
+        # TODO Update qv run
         pass
 
     async def login(self):
