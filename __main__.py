@@ -1,10 +1,10 @@
-# Daily Sitecheck Web Scrapper V. 0.4.4
+# Daily Sitecheck Web Scrapper V. 0.5.0
 from __future__ import print_function, unicode_literals
 
 import os
-
 import asyncio
-# TODO deal with having to call this in the middle of imports
+
+# TODO deal with having to call this before importing tcg
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 import json
@@ -24,7 +24,6 @@ qv = sites.qv
 amp = sites.amp
 
 
-# Future args
 class Options:
     """This class contains the browser's configurable options"""
     headless = True
@@ -47,7 +46,7 @@ def wait():
 async def wait_type(page, selector, txt):
     """
     Wait for a selector to load than type supplied text.
-    Returns page incase entering text changes the context.
+    Returns page in case entering text changes the context.
     """
     await page.waitForSelector(selector),
     await page.type(selector, txt)
@@ -57,7 +56,7 @@ async def wait_type(page, selector, txt):
 async def wait_click(page, selector):
     """
     Wait for a selector to load than click on it.
-    Returns page incase this changes the context.
+    Returns page in case this changes the context.
     """
     await page.waitForSelector(selector),
     await page.click(selector)
@@ -67,7 +66,7 @@ async def wait_click(page, selector):
 async def wait_hover(page, selector):
     """
     Wait for a selector to load than hover over it.
-    Returns page incase this changes the context.
+    Returns page in case this changes the context.
     """
     await page.waitForSelector(selector),
     await page.hover(selector)
@@ -134,6 +133,7 @@ class Project_run:
             await self.has_amp()
         elif self.project.hassite == 'qv':
             await self.has_QV()
+        # TODO rebuild truelook support
 
     async def has_amp(self):
         self.url = 'https://' + self.project.name + '.geo-instruments.com/index.php'
@@ -158,6 +158,7 @@ class Project_run:
         print(result, '\n End of run')
 
     async def has_QV(self):
+        #TODO Update qv run
         self.url = qv.urlstring
         self.page = await browser.newPage()
         await self.page.setViewport({
@@ -173,6 +174,7 @@ class Project_run:
 
 class ampWebpage:
     def __init__(self):
+        # TODO Update class structure with my new learns
         pass
 
     async def login(self):
@@ -181,6 +183,7 @@ class ampWebpage:
         await wait_type(self.page, amp.logincss, creds.username)
         await wait_type(self.page, amp.pwcss, creds.password)
         await wait_click(self.page, amp.loginbutton)
+        # TODO move to cleanup function, add name_temp.json
         if os.path.exists(tcg.storage + self.project.name + '_temp.txt'):
             os.remove(tcg.storage + self.project.name + '_temp.txt')
         return
@@ -209,12 +212,14 @@ class ampWebpage:
             if name is None:
                 pass
             else:
+                # TODO When sensor is found, add to list saved to this project for future runs
                 sensor = await self.page.evaluate('(name) => name.textContent', name)
                 value = await self.page.evaluate('(link) => link.textContent', link)
                 date = await self.page.evaluate('(link) => link.title', link)
                 print(sensor, value)
                 data = '\nSensor name: ' + sensor
                 if Options.getvalue:
+                    # TODO Add get value option to card generator
                     data += '\nCurrent value: ' + value
                 data += '\nLast Updated on AMP: '
                 diff_in_days = parse(text.nowdate) - parse(date)
@@ -231,6 +236,9 @@ class ampWebpage:
                     data += date
                     if Options.verbose:
                         data += '\n' + text.behindDate
+                    if Options.check:
+                        # TODO: Build check module, Entry point here
+                        pass
                     print(data)
                     print(self.project.name)
                     data_list = [sensor, 'warning', 'Older than 24 hours', date]
@@ -246,6 +254,7 @@ class ampWebpage:
 
 class qvWebpage:
     def __init__(self):
+        # TODO Update qv run
         pass
 
     async def login(self):

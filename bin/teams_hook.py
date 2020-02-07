@@ -5,7 +5,6 @@ https://docs.microsoft.com/en-us/adaptive-cards/
 """
 import asyncio
 import json
-
 import requests
 
 from env import creds, text
@@ -13,6 +12,7 @@ from env import creds, text
 
 def top_secret(channel):
     """
+        Converts channel name to url from creds file
               Args:
                   channel (str): Name of channel to send card to. Currently 1 option
               Returns:
@@ -89,8 +89,9 @@ class Send_Hook:
                     'Request to Teams returned an error %s, the response is:\n%s' % (
                             response.status_code, response.text))
             return result
+        # TODO: Do temp file clean up
 
 
 if __name__ == '__main__':
     run = asyncio.run(message_factory('flamming', "Test_Project",
-                                      "C:\\Users\\Dan.Edens\\Desktop\\Tree\\the_lab\\Python\\pyppeteer_sitecheck_scrapper\\env\\data\\cards\\audicentralhouston_card.json"))
+                                      "C:\\Users\\Dan.Edens\\Desktop\\Tree\\the_lab\\Python\\pyppeteer_sitecheck_scrapper\\env\\data\\cards\\audicentralhouston"))

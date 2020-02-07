@@ -13,7 +13,7 @@ import json
 from __main__ import ROOT_DIR
 
 # __author__ = "Dan Edens"
-# __version__= "0.2.1"
+# __version__= "0.3.0"
 
 global storage
 storage = ROOT_DIR + "\\env\\data\\cards\\"
