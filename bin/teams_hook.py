@@ -6,6 +6,7 @@ https://docs.microsoft.com/en-us/micrsoftteams/platform/webhooks-and-connectors/
 """
 import json
 
+import asyncio
 import requests
 
 from env import creds, text
@@ -90,5 +91,5 @@ class Send_Hook:
 
 
 if __name__ == '__main__':
-    await message_factory('test', "Test_Project",
-                          "C:\\Users\\Dan.Edens\\Desktop\\Tree\\the_lab\\Python\\pyppeteer_sitecheck_scrapper\\env\\data\\cards\\Test_Project")
+    run = asyncio.run(message_factory('test', "Test_Project",
+                                      "C:\\Users\\Dan.Edens\\Desktop\\Tree\\the_lab\\Python\\pyppeteer_sitecheck_scrapper\\env\\data\\cards\\Test_Project"))
