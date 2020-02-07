@@ -4,7 +4,7 @@
 # 2/2/2020
 # Adds the card_template class
 # Adds the factory class
-#
+# TODO: update all change logs and squash commits
 #
 # """
 
@@ -58,7 +58,7 @@ class _template:
 							{
 								"verticalContentAlignment": "Center",
 								"type": "Image",
-								"url": "https://cdn1.imggmi.com/uploads/2020/1/16/fc83bdfc3949e70df506c972948d68d3-full.png", 
+								"url": "https://cdn1.imggmi.com/uploads/2020/1/16/fc83bdfc3949e70df506c972948d68d3-full.png",
 								"width": "80px",
 								"altText": "Geo Logo"
 							}
@@ -191,7 +191,7 @@ class _template:
 				]
 			}'''
     button_row_template1 = ''',
-			{			
+			{
 				"type": "Container",
 				"padding": {
 					"top": "none",
@@ -238,7 +238,10 @@ def store ( project, data_list ):
 
 
 class sensor_data:
-    def __init__ ( self, name, color, status, time ):
+    """
+            # TODO fill this in
+    """
+    def __init__(self, name, color, status, time):
         """
 		        Args:
 		            name (str):
@@ -260,7 +263,10 @@ class sensor_data:
 
 
 class generator:
-    def __init__ ( self, current_project ):
+    """
+            # TODO fill this in
+    """
+    def __init__(self, current_project):
         """
 		        Args:
 		            current_project (object):
@@ -278,7 +284,12 @@ class generator:
         # this is the list each sensor's data was appended to while scanning
         # self.data = list_of_sensor_data
 
-    def compile_data ( self ):
+    def compile_data(self):
+        """
+            # TODO fill this in
+        Returns:
+
+        """
         # Adds the end bracket to finish list of lists
         with open(self.store_path, 'a') as file:
             file.write(']')
@@ -290,7 +301,15 @@ class generator:
         # Sends final copy of list to the generator
         return self.generate_template(card_list)
 
-    def generate_template ( self, card_list ):
+    def generate_template(self, card_list):
+        """
+            # TODO fill this in
+        Args:
+            card_list:
+
+        Returns:
+
+        """
         with open(self.generator_output, 'w') as gen_file:
             # print(gen_file.name)
             # Builds the Teams Card
