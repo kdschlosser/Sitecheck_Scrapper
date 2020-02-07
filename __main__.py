@@ -4,7 +4,7 @@ from __future__ import print_function, unicode_literals
 import os
 
 import asyncio
-
+# TODO deal with having to call this in the middle of imports
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 import json
