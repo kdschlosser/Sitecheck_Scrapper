@@ -1,23 +1,18 @@
-# Daily Sitecheck Web Scrapper V. 0.5.0
+# Daily Sitecheck Web Scrapper V. 0.5.1
 from __future__ import print_function, unicode_literals
-
-import os
-import asyncio
-
-# TODO deal with having to call this before importing tcg
-ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 import json
 import msvcrt
+import os
 import pathlib
 
+import asyncio
 from dateutil.parser import parse
 from pyppeteer import launch
 from pyxtension.Json import Json
 
+from bin import Teams_card_generator as tcg, teams_hook as hook
 # noinspection PyPep8Naming
-from bin import Teams_card_generator as tcg
-from bin import teams_hook as hook
 from env import sites, text, creds
 
 qv = sites.qv
@@ -240,7 +235,6 @@ class ampWebpage:
                         # TODO: Build check module, Entry point here
                         pass
                     print(data)
-                    print(self.project.name)
                     data_list = [sensor, 'warning', 'Older than 24 hours', date]
                     tcg.store(self.project.name, data_list)
                 else:
@@ -268,7 +262,7 @@ class qvWebpage:
         await wait_click(self.page, qv.projects)
         await wait_hover(self.page, qv.scrollbar)
         await self.page.waitFor(500)
-        print(str(self.project.proj))
+        # print(str(self.project.proj))
         self.namenum = str(self.project.proj)
         self.page = await wait_click(self.page, qv.proj_pre + self.namenum + qv.proj_post)
         return self

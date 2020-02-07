@@ -3,14 +3,15 @@ This sends completed cards through a webhook to a specific Team's channel (Team)
 Documentation for Team's Adaptive Cards:
 https://docs.microsoft.com/en-us/adaptive-cards/
 """
-import asyncio
 import json
+
+import asyncio
 import requests
 
 from env import creds, text
 
 
-def top_secret(channel):
+def top_secret ( channel ):
     """
         Converts channel name to url from creds file
               Args:
@@ -65,7 +66,6 @@ class Send_Hook:
                   """
         self.channel = top_secret(channel)
         self.project = temp_project
-        print(temp_file_path)
         self.file = temp_file_path
         with open(self.file) as f:
             file = f.read()

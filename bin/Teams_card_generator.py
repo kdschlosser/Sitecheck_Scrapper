@@ -10,13 +10,14 @@
 
 import json
 
-from __main__ import ROOT_DIR
+from env import text
 
 # __author__ = "Dan Edens"
 # __version__= "0.3.0"
 
 global storage
-storage = ROOT_DIR + "\\env\\data\\cards\\"
+storage = text.ROOT_dir + "\\env\\data\\cards\\"
+print(storage)
 
 
 # TODO: Rebuild template model to messagecard
@@ -291,7 +292,7 @@ class generator:
 
     def generate_template ( self, card_list ):
         with open(self.generator_output, 'w') as gen_file:
-            print(gen_file.name)
+            # print(gen_file.name)
             # Builds the Teams Card
             # Traditional methods of Json formatting do not preserve the template's syntax
             # Add the sensor table section goes above the sensors,
