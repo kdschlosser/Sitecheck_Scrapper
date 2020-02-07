@@ -5,15 +5,17 @@
     "name": "capitolcomplex",
     "proj": "null",
     "planarray": "143,124,127",
-    "hassite": "amp"
+    "hassite": "amp",
+    "channel": "west_project"
   },
   {
     "skip": "false",
     "group": "true",
     "name": "audicentralhouston",
     "proj": "null",
-    "planarray": "124,125,126",
-    "hassite": "amp"
+    "planarray": "126",
+    "hassite": "amp",
+    "channel": "west_project"
   },
   {
     "skip": "true",
@@ -21,7 +23,8 @@
     "name": "425riverside",
     "proj": "3",
     "planarray": "0,1",
-    "hassite": "qv"
+    "hassite": "qv",
+    "channel": "west_project"
   },
   {
     "skip": "true",
@@ -29,7 +32,8 @@
     "name": "unioncityintermodal",
     "proj": "null",
     "planarray": "4,5,6",
-    "hassite": "amp"
+    "hassite": "amp",
+    "channel": "west_project"
   },
   {
     "skip": "true",
@@ -37,7 +41,8 @@
     "name": "redbeach",
     "proj": "null",
     "planarray": "124,125",
-    "hassite": "amp"
+    "hassite": "amp",
+    "channel": "west_project"
   },
   {
     "skip": "true",
@@ -45,7 +50,8 @@
     "name": "santabarbaratjwall",
     "proj": "null",
     "planarray": "124",
-    "hassite": "amp"
+    "hassite": "amp",
+    "channel": "west_project"
   },
   {
     "skip": "true",
@@ -53,7 +59,8 @@
     "name": "beverlyhillshigh",
     "proj": "null",
     "planarray": "124",
-    "hassite": "amp"
+    "hassite": "amp",
+    "channel": "west_project"
   },
   {
     "skip": "true",
@@ -61,7 +68,8 @@
     "name": "isabelladam",
     "proj": "null",
     "planarray": "1",
-    "hassite": "amp"
+    "hassite": "amp",
+    "channel": "west_project"
   },
   {
     "skip": "true",
@@ -69,7 +77,8 @@
     "name": "755fig",
     "proj": "null",
     "planarray": "2,3",
-    "hassite": "amp"
+    "hassite": "amp",
+    "channel": "west_project"
   },
   {
     "skip": "true",
@@ -77,7 +86,8 @@
     "name": "haieng",
     "proj": "null",
     "planarray": "6,7",
-    "hassite": "amp"
+    "hassite": "amp",
+    "channel": "west_project"
   },
   {
     "skip": "true",
@@ -85,7 +95,8 @@
     "name": "tesolongbeach8485",
     "proj": "null",
     "planarray": "124,125,127",
-    "hassite": "amp"
+    "hassite": "amp",
+    "channel": "west_project"
   },
   {
     "skip": "true",
@@ -93,7 +104,8 @@
     "name": "natoma",
     "proj": "2",
     "planarray": "0,3",
-    "hassite": "qv"
+    "hassite": "qv",
+    "channel": "west_project"
   },
   {
     "skip": "true",
@@ -101,7 +113,8 @@
     "name": "TarzanaMed",
     "proj": "22",
     "planarray": "0,1,2,3",
-    "hassite": "qv"
+    "hassite": "qv",
+    "channel": "west_project"
   },
   {
     "skip": "true",
@@ -109,7 +122,8 @@
     "name": "LasVegasproj",
     "proj": "14",
     "planarray": "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15",
-    "hassite": "qv"
+    "hassite": "qv",
+    "channel": "west_project"
   },
   {
     "skip": "true",
@@ -117,6 +131,7 @@
     "name": "texasinternational",
     "proj": "24",
     "planarray": "2",
-    "hassite": "qv"
+    "hassite": "qv",
+    "channel": "west_project"
   }
 ]

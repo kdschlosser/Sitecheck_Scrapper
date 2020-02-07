@@ -7,17 +7,18 @@
 #
 # """
 
-# __author__ = "Dan Edens"
-# __version__= "0.2.0"
 import json
-import os
 
-ROOT_DIR = os.path.dirname ( os.path.abspath ( __file__ ) )
+from __main__ import ROOT_DIR
+
+# __author__ = "Dan Edens"
+# __version__= "0.2.1"
+
 global storage
-storage = ROOT_DIR + "/env/data/cards/"
+storage = ROOT_DIR + "\\env\\data\\cards\\"
 
-
-class card_template:
+# TODO: Rebuild template model to messagecard
+class _template:
     Top_prefix1 = '''{
 		"hideOriginalBody": true,
 		"type": "AdaptiveCard",
@@ -162,7 +163,6 @@ class card_template:
 										"type": "TextBlock",
 										"weight": "Bolder",
 										"text": "'''
-    # + project +
     Link_row_Template2 = '''"
 									}
 								],
@@ -187,7 +187,6 @@ class card_template:
 					}
 				]
 			}'''
-    # project_url. This section needs work
     button_row_template1 = ''',
 			{			
 				"type": "Container",
@@ -208,7 +207,6 @@ class card_template:
 							"type": "Action.OpenUrl",
 							"title": "View Monday",
 							"url": "'''
-    # + project url +
     button_row_template2 = '''"
 						}
 			}'''
@@ -228,15 +226,12 @@ def store(project, data_list):
                 none
             """
     file_path = storage + project + '_temp.txt'
-    if os.path.exists ( file_path ):
-        with open ( file_path, 'a' ) as file:
-            # If file exists before now, this adds a comma between lists
-            file.write ( ',' )
-            file.write ( json.dumps ( data_list ) )
-    else:
-        with open ( file_path, 'w' ) as file:
-            file.write ( '[' )
-            file.write ( json.dumps ( data_list ) )
+    with open(file_path, 'a') as file:
+        if file.tell() == 0:
+            file.write('[')
+        else:
+            file.write(',')
+        file.write(json.dumps(data_list))
 
 
 class sensor_data:
@@ -257,12 +252,12 @@ class sensor_data:
 
     def __str__(self):
         # Formats the Sensor_data into table rows
-        data_line = card_template.st1 + self.name + card_template.st2 + self.status + card_template.st3 + self.color + card_template.st4 + self.time + card_template.st5
-        return str ( data_line )
+        data_line = _template.st1 + self.name + _template.st2 + self.status + _template.st3 + self.color + _template.st4 + self.time + _template.st5
+        return str(data_line)
 
 
 class generator:
-    def __init__(self, current_project, list_of_sensor_data):
+    def __init__(self, current_project):
         """
 		        Args:
 		            current_project (object):
@@ -271,66 +266,57 @@ class generator:
 		        """
         # Name to display at top of card
         self.project = current_project.name
+        # File path of output file
         # Location of staged output. It will than be picked up by the Teams_hook.py
-        self.file = storage + "\\" + current_project.name + ".json"
         # On card button click
+        self.store_path = storage + current_project.name + '_temp.txt'
+        self.generator_output = storage + current_project.name + "_card.json"
         self.url = current_project.url
         # this is the list each sensor's data was appended to while scanning
-        self.data = list_of_sensor_data
-        # File path of output file
-        self.file_path = storage + project
-
-        # self.generate_template ( self )
+        # self.data = list_of_sensor_data
 
     def compile_data(self):
         # Adds the end bracket to finish list of lists
-        with open ( self.file_path + '_temp.txt', 'a' ) as file:
-            file.write ( ']' )
+        with open(self.store_path, 'a') as file:
+            file.write(']')
         # Reads the finished product as string
-        with open ( self.file_path + '_temp.txt', 'r' ) as file:
-            list_of_lists = file.read ()
+        with open(self.store_path) as file:
+            list_of_lists = file.read()
         # Converts String to List
-        card_list = json.loads ( list_of_lists )
+        card_list = json.loads(list_of_lists)
         # Sends final copy of list to the generator
-        self.generate_template ( self, card_list )
+        return self.generate_template(card_list)
 
     def generate_template(self, card_list):
-        # Builds the Teams Card
-        # Traditional methods of Json formatting do not preserve the template's syntax
-        print ( card_template.Top_prefix1 + self.project + card_template.Top_prefix2, self.file_path + '_card.json' )
-        # Add the sensor table section goes above the sensors,
-        print ( card_template.sensor_prefix, self.file_path + '_card.json' )
-        # For each current_project held in data, add a line to the card containing it's data
-        _run = len ( card_list )
-        _loop = 0
-        for e in card_list:
-            #              # data = [name, color, status, time]
-            data_info = sensor_data ( e[0], e[1], e[2], e[3] )
-            _loop += 1
-            if _loop != _run:
-                # Add each sensor to the card and add a comma between them.
-                print ( data_info + ',', self.file_path + '_card.json' )
-            else:
-                # Once the last item is added it will add without the final comma
-                print ( data_info, self.file_path + '_card.json' )
-        # Add the bits to close up the table.
-        print ( card_template.sensor_suffix, self.file_path + '_card.json' )
-        # TODO: this row needs more development, It will house links to troubleshooting tools
-        print ( card_template.Link_row_Template1 + project + card_template.Link_row_Template2,
-                self.file_path + '_card.json' )
-        # TODO: this row needs more development, It will house buttons
-        print ( card_template.button_row_template1 + project.url + card_template.button_row_template2,
-                self.file_path + '_card.json' )
-        # Add the bits to close up the card.
-        print ( card_template.Bot_suffix, self.file_path + '_card.json' )
-        # TODO: queue or start teams_hook.py
-
-# Testing values
-if __name__ == 'Teams_card_generator':
-    project = []
-    project.name = 'Sample Project'
-    project.url = 'https://quickview.geo-instruments.com'
-    list_of_sensor_data = [['IP1', 'attention', 'Behind', '2020-01-14 08:00:00'],
-                           ['IP2', 'good', 'Okay', '2020-01-16 08:00:00'],
-                           ['IP3', 'warning', 'Older than a week', '2020-01-04 08:00:00']]
-    generator ( project, list_of_sensor_data )
+        with open(self.generator_output, 'w') as gen_file:
+            print(gen_file.name)
+            # Builds the Teams Card
+            # Traditional methods of Json formatting do not preserve the template's syntax
+            # Add the sensor table section goes above the sensors,
+            # For each current_project held in data, add a line to the card containing it's data
+            print(_template.Top_prefix1 + self.project + _template.Top_prefix2, file=gen_file)
+            print(_template.sensor_prefix, file=gen_file)
+            _run = len(card_list)
+            _loop = 0
+            for e in card_list:
+                #              # data = [name, color, status, time]
+                data_info = sensor_data(e[0], e[1], e[2], e[3])
+                _loop += 1
+                if _loop != _run:
+                    # Add each sensor to the card and add a comma between them.
+                    print(str(data_info) + ',', file=gen_file)
+                else:
+                    # Once the last item is added it will add without the final comma
+                    # Add the bits to close up the table.
+                    print(data_info, file=gen_file)
+            print(_template.sensor_suffix, file=gen_file)
+            # TODO: this row needs more development, It will house links to troubleshooting tools
+            print(_template.Link_row_Template1 + self.project + _template.Link_row_Template2,
+                  file=gen_file)
+            # TODO: this row needs more development, It will house buttons
+            # Add the bits to close up the card.
+            # TODO: queue or start teams_hook.py
+            print(_template.button_row_template1 + 'https://www.google.com/' + _template.button_row_template2,
+                  file=gen_file)
+            print(_template.Bot_suffix, file=gen_file)
+        return gen_file.name

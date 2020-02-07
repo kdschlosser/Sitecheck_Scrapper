@@ -4,12 +4,11 @@ Documentation for Team's card incoming Webhooks:
 https://docs.microsoft.com/en-us/micrsoftteams/platform/webhooks-and-connectors/what-are-webhooks-and-connectors
 
 """
-
 import json
 
 import requests
 
-from env import creds
+from env import creds, text
 
 
 def top_secret(channel):
@@ -19,49 +18,79 @@ def top_secret(channel):
               Returns:
                   (str): The channel's webhook as url string
               """
-    # currently only 1 channel is setup. This will be added in future versions need
-    # TODO: Build sorter to retrieve hook urls contained in creds file
-    if channel == 'test':
-        return 'https://webhook.site/854c483a-1a38-4523-b25e-0bb46012a101'
-    elif channel == 'westproject':
-        return creds.webhook_url.westproject
-    elif channel == 'another_area':
-        return creds.webhook_url.another_area
+    if channel == 'programming':
+        print("Sending data to the Programming team")
+        return creds.programminghook
+    elif channel == 'west_project':
+        print("Sending data to West Project Checks team")
+        return creds.testhook  # BUILD
+        # return creds.westcoasthook # SHIP
     else:
-        # print('Channel name does not match configured projects')
-        return creds.teamshook
+        print(text.no_channel)
+        return creds.testhook
+
+
+async def message_factory(channel, project_name, path_to_temp):
+    """
+
+    Args:
+        channel(str): Selects the webhook to send too.
+        project_name(str): Name of project
+        path_to_temp(str): Path to file of stored json data
+
+    Returns:
+
+    """
+    message = Send_Hook(channel, project_name, path_to_temp)
+    return await message.draft_message()
 
 
 class Send_Hook:
-    def __init__(self, channel, project, file_path):
+    """
+    Send json data through a webhook to the Team's channel
+    """
+
+    def __init__(self, channel, temp_project, temp_file_path):
         """
                   Args:
-                      channel (str): Which team to send card to. Currently 1 option
-                      file_path (str): 'Path to json being Posted'
+                      channel (str): Which channel(team) to send card to
+                      temp_project (str): Project name and filename
+                      temp_file_path (str): Path to json being Posted
                   Returns:
                       (str): Post error message
                   """
         # converts channel name to url from creds file
-        self.channel = top_secret ( channel )
-        self.project = project
-        self.file = file_path
-        self.finished_card = json.loads ( self.file + '_card.json' )
+        self.channel = top_secret(channel)
+        self.project = temp_project
+        # print(temp_file_path.cr_code.co_filename)
+        print(temp_file_path)
+        self.file = temp_file_path
+        with open(self.file) as f:
+            file = f.read()
+        self.finished_card = json.loads(file)
 
-    def draft_message(self):
-        # prompt user to review card.
+    async def draft_message(self):
+        """Prompt user to review card."""
         # TODO: build Interactive module
         # TODO: find way to display preview
-        return self.send_message ()
+        return await self.send_message()
 
-    def send_message(self):
-        # Post self.finished_card to url self.channel
-        response = requests.post (
-            self.channel, data=json.dumps ( self.finished_card ),
-            headers={'Content-Type': 'application/json'}
+    async def send_message(self):
+        """ Post self.finished_card to url self.channel """
+        response = requests.post(
+                self.channel, data=json.dumps(self.finished_card),
+                headers={'Content-Type': 'application/json'}
         )
         if response.status_code != 200:
-            # return error.message. TODO: return to be handled
-            raise ValueError (
-                'Request to Teams returned an error %s, the response is:\n%s'
-                % (response.status_code, response.text)
-            )
+            # TODO: Handle response codes
+            result = ValueError(
+                    'Request to Teams returned an error %s, the response is:\n%s' % (
+                            response.status_code, response.text))
+            return result
+
+
+if __name__ == '__main__':
+    file_path = "C:\\Users\\Dan.Edens\\Desktop\\Tree\\the_lab\\Python\\pyppeteer_sitecheck_scrapper\\env\\data\\cards" \
+                "\\Test_Project"
+    project = "Test_Project"
+    await message_factory('test', project, file_path)
