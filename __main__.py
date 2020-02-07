@@ -27,7 +27,7 @@ amp = sites.amp
 # Future args
 class Options:
     """This class contains the browser's configurable options"""
-    headless = False
+    headless = True
     chrome_args = [
             '--start-maximized',
             ' --user-data-dir=' + text.ROOT_data

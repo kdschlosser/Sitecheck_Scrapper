@@ -22,6 +22,9 @@ def top_secret(channel):
     if channel == 'programming':
         print("Sending data to the Programming team")
         return creds.programminghook
+    if channel == 'flow-programming':
+        print("Sending data to the Programming team through flow")
+        return creds.flow_programminghook
     elif channel == 'west_project':
         print("Sending data to West Project Checks team")
         return creds.testhook  # BUILD
@@ -91,5 +94,5 @@ class Send_Hook:
 
 
 if __name__ == '__main__':
-    run = asyncio.run(message_factory('test', "Test_Project",
-                                      "C:\\Users\\Dan.Edens\\Desktop\\Tree\\the_lab\\Python\\pyppeteer_sitecheck_scrapper\\env\\data\\cards\\Test_Project"))
+    run = asyncio.run(message_factory('flow-programming', "Test_Project",
+                                      "C:\\Users\\Dan.Edens\\Desktop\\Tree\\the_lab\\Python\\pyppeteer_sitecheck_scrapper\\env\\data\\cards\\audicentralhouston_card.json"))

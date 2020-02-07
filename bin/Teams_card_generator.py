@@ -1,4 +1,5 @@
 # """Teams_card_generator.py: Library for generating JSON cards from a template.
+# Guide on Message Cards: https://poszytek.eu/en/microsoft-en/microsoft-message-cards-the-ultimate-guide/
 # Change Log:
 # 2/2/2020
 # Adds the card_template class
@@ -17,13 +18,14 @@ from __main__ import ROOT_DIR
 global storage
 storage = ROOT_DIR + "\\env\\data\\cards\\"
 
+
 # TODO: Rebuild template model to messagecard
 class _template:
     Top_prefix1 = '''{
-		"hideOriginalBody": true,
-		"type": "AdaptiveCard",
-		"padding": "none",
-		"body": [
+    		"hideOriginalBody": true,
+    		"type": "AdaptiveCard",
+    		"padding": "none",
+    		"body": [
 			{
 				"type": "ColumnSet",
 				"padding": {
@@ -216,7 +218,7 @@ class _template:
 	}'''
 
 
-def store(project, data_list):
+def store ( project, data_list ):
     """
             Args:
                 project (str): from self.project.name
@@ -235,7 +237,7 @@ def store(project, data_list):
 
 
 class sensor_data:
-    def __init__(self, name, color, status, time):
+    def __init__ ( self, name, color, status, time ):
         """
 		        Args:
 		            name (str):
@@ -250,14 +252,14 @@ class sensor_data:
         self.status = status
         self.time = time
 
-    def __str__(self):
+    def __str__ ( self ):
         # Formats the Sensor_data into table rows
         data_line = _template.st1 + self.name + _template.st2 + self.status + _template.st3 + self.color + _template.st4 + self.time + _template.st5
         return str(data_line)
 
 
 class generator:
-    def __init__(self, current_project):
+    def __init__ ( self, current_project ):
         """
 		        Args:
 		            current_project (object):
@@ -275,7 +277,7 @@ class generator:
         # this is the list each sensor's data was appended to while scanning
         # self.data = list_of_sensor_data
 
-    def compile_data(self):
+    def compile_data ( self ):
         # Adds the end bracket to finish list of lists
         with open(self.store_path, 'a') as file:
             file.write(']')
@@ -287,7 +289,7 @@ class generator:
         # Sends final copy of list to the generator
         return self.generate_template(card_list)
 
-    def generate_template(self, card_list):
+    def generate_template ( self, card_list ):
         with open(self.generator_output, 'w') as gen_file:
             print(gen_file.name)
             # Builds the Teams Card
