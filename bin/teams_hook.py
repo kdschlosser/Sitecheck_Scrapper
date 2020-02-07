@@ -13,6 +13,7 @@ from env import creds, text
 
 def top_secret(channel):
     """
+        Converts channel name to url from creds file
               Args:
                   channel (str): Name of channel to send card to. Currently 1 option
               Returns:
@@ -59,10 +60,8 @@ class Send_Hook:
                   Returns:
                       (str): Post error message
                   """
-        # converts channel name to url from creds file
         self.channel = top_secret(channel)
         self.project = temp_project
-        # print(temp_file_path.cr_code.co_filename)
         print(temp_file_path)
         self.file = temp_file_path
         with open(self.file) as f:
@@ -87,10 +86,10 @@ class Send_Hook:
                     'Request to Teams returned an error %s, the response is:\n%s' % (
                             response.status_code, response.text))
             return result
+        # TODO: Do temp file clean up
 
 
 if __name__ == '__main__':
-    file_path = "C:\\Users\\Dan.Edens\\Desktop\\Tree\\the_lab\\Python\\pyppeteer_sitecheck_scrapper\\env\\data\\cards" \
-                "\\Test_Project"
-    project = "Test_Project"
-    await message_factory('test', project, file_path)
+    await message_factory('test', "Test_Project",
+                          "C:\\Users\\Dan.Edens\\Desktop\\Tree\\the_lab\\Python\\pyppeteer_sitecheck_scrapper\\env\\data\\cards" \
+                          "\\Test_Project")

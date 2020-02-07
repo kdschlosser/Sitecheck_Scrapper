@@ -4,6 +4,7 @@ from __future__ import print_function, unicode_literals
 import os
 
 import asyncio
+
 # TODO deal with having to call this in the middle of imports
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -24,7 +25,6 @@ qv = sites.qv
 amp = sites.amp
 
 
-# Future args
 class Options:
     """This class contains the browser's configurable options"""
     headless = False
@@ -209,12 +209,14 @@ class ampWebpage:
             if name is None:
                 pass
             else:
+                # TODO When sensor is found, add to list saved to this project for future runs
                 sensor = await self.page.evaluate('(name) => name.textContent', name)
                 value = await self.page.evaluate('(link) => link.textContent', link)
                 date = await self.page.evaluate('(link) => link.title', link)
                 print(sensor, value)
                 data = '\nSensor name: ' + sensor
                 if Options.getvalue:
+                    # TODO Add get value option to card generator
                     data += '\nCurrent value: ' + value
                 data += '\nLast Updated on AMP: '
                 diff_in_days = parse(text.nowdate) - parse(date)
@@ -231,6 +233,9 @@ class ampWebpage:
                     data += date
                     if Options.verbose:
                         data += '\n' + text.behindDate
+                    if Options.check:
+                        # TODO: Build check module, Entry point here
+                        pass
                     print(data)
                     print(self.project.name)
                     data_list = [sensor, 'warning', 'Older than 24 hours', date]
