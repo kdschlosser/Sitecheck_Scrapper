@@ -8,7 +8,7 @@ import asyncio
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 import json
-import msvcrt as m
+import msvcrt
 import pathlib
 
 from dateutil.parser import parse
@@ -41,7 +41,7 @@ class Options:
 
 
 def wait():
-    m.getch()
+    msvcrt.getch()
 
 
 async def wait_type(page, selector, txt):

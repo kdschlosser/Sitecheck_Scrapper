@@ -3,9 +3,9 @@ This sends completed cards through a webhook to a specific Team's channel (Team)
 Documentation for Team's Adaptive Cards:
 https://docs.microsoft.com/en-us/adaptive-cards/
 """
+import asyncio
 import json
 
-import asyncio
 import requests
 
 from env import creds, text
