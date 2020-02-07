@@ -1,6 +1,6 @@
 [
   {
-    "skip": "true",
+    "skip": "false",
     "group": "true",
     "name": "capitolcomplex",
     "proj": "null",
@@ -13,7 +13,7 @@
     "group": "true",
     "name": "audicentralhouston",
     "proj": "null",
-    "planarray": "126",
+    "planarray": "124,125,126",
     "hassite": "amp",
     "channel": "west_project"
   },

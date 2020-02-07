@@ -90,7 +90,5 @@ class Send_Hook:
 
 
 if __name__ == '__main__':
-    file_path = "C:\\Users\\Dan.Edens\\Desktop\\Tree\\the_lab\\Python\\pyppeteer_sitecheck_scrapper\\env\\data\\cards" \
-                "\\Test_Project"
-    project = "Test_Project"
-    await message_factory('test', project, file_path)
+    await message_factory('test', "Test_Project",
+                          "C:\\Users\\Dan.Edens\\Desktop\\Tree\\the_lab\\Python\\pyppeteer_sitecheck_scrapper\\env\\data\\cards\\Test_Project")
