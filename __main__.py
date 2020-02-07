@@ -4,6 +4,7 @@ from __future__ import print_function, unicode_literals
 import os
 
 import asyncio
+
 # TODO deal with having to call this in the middle of imports
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -27,6 +28,8 @@ amp = sites.amp
 # Future args
 class Options:
     """This class contains the browser's configurable options"""
+    # TODO: Setup .args
+    # TODO: headless testing
     headless = False
     chrome_args = [
             '--start-maximized',
@@ -34,6 +37,7 @@ class Options:
     ]
     width = text.width
     height = text.height - 200
+    # TODO: update Verbose mode
     verbose = True
     getvalue = True
     watchdog = 86400
@@ -87,7 +91,7 @@ def load_projects():
 
 def project_out_file(self) -> object:
     """
-
+    # TODO fill this in
     Returns:
         object:
     """
@@ -116,11 +120,18 @@ async def run_controller(project):
 
 
 class Project_run:
+    """
+    # TODO fill this in
+
+    """
+
     def __init__(self, project):
         self.project = Json(project)
 
-
     async def evaluate_site(self):
+        """
+    # TODO fill this in
+        """
         if self.project.skip == 'true':
             if Options.verbose:
                 print('Skipping project: ' + self.project.name)
@@ -130,12 +141,18 @@ class Project_run:
             await self.filter_site()
 
     async def filter_site(self):
+        """
+# TODO fill this in
+        """
         if self.project.hassite == 'amp':
             await self.has_amp()
         elif self.project.hassite == 'qv':
             await self.has_QV()
 
     async def has_amp(self):
+        """
+            # TODO fill this in
+        """
         self.url = 'https://' + self.project.name + '.geo-instruments.com/index.php'
         self.page = await browser.newPage()
         await self.page.setViewport({
@@ -158,6 +175,10 @@ class Project_run:
         print(result, '\n End of run')
 
     async def has_QV(self):
+        """
+            # TODO fill this in
+        """
+        # TODO Update qv run
         self.url = qv.urlstring
         self.page = await browser.newPage()
         await self.page.setViewport({
@@ -172,10 +193,19 @@ class Project_run:
 
 
 class ampWebpage:
+    """
+            # TODO fill this in
+    """
+
     def __init__(self):
         pass
 
     async def login(self):
+        """
+            # TODO fill this in
+        Returns:
+
+        """
         await self.page.goto(self.url)
         await self.page.waitFor(1000)
         await wait_type(self.page, amp.logincss, creds.username)
@@ -186,6 +216,11 @@ class ampWebpage:
         return
 
     async def goto_plan_view(self):
+        """
+            # TODO fill this in
+        Returns:
+
+        """
         print(text.scanplan + self.project.planarray)
         plan_array = self.project.planarray.split(",")
         for view in plan_array:
@@ -199,6 +234,9 @@ class ampWebpage:
         return self
 
     async def get_last_update(self):
+        """
+            # TODO fill this in
+        """
         for type_of_sensor_box in amp.label:
             name_sel = str(
                     'body > div:nth-child(' + type_of_sensor_box + ') > div:nth-child(' + self.target_child + amp.title)
@@ -245,10 +283,19 @@ class ampWebpage:
 
 
 class qvWebpage:
+    """
+            # TODO fill this in
+    """
+
     def __init__(self):
         pass
 
     async def login(self):
+        """
+            # TODO fill this in
+        Returns:
+
+        """
         await self.page.goto(self.url)
         await wait_type(self.page, qv.logincss, creds.qvuser)
         await wait_type(self.page, qv.pwcss, creds.qvpass)
@@ -256,6 +303,11 @@ class qvWebpage:
         return
 
     async def goto_project(self):
+        """
+            # TODO fill this in
+        Returns:
+
+        """
         await wait_click(self.page, qv.projects)
         await wait_hover(self.page, qv.scrollbar)
         await self.page.waitFor(500)
@@ -266,7 +318,7 @@ class qvWebpage:
 
     async def goto_plan_view(self) -> object:
         """
-
+            # TODO fill this in
         Returns:
             object:
         """
@@ -287,6 +339,14 @@ class qvWebpage:
         # return
 
     async def get_last_update(self, target_child):
+        """
+            # TODO fill this in
+        Args:
+            target_child:
+
+        Returns:
+
+        """
         sensor = '#objects > img:nth-child(' + str(target_child) + ')'
         # noinspection PyBroadException
         try:
@@ -314,8 +374,9 @@ class qvWebpage:
                 if Options.verbose:
                     sensor_data += '\n' + text.oldDate
                 print(sensor_data)
-        # This exception allows selector values not present on the current page to be ignored. Tag - future optimizations
         except:
+            # TODO: build proper exception for not finding selector on page
+            # This exception allows selector values not present on the current page to be ignored. Tag - future optimizations
             pass
         # TODO: Add check if data is empty to re-try with longer page load wait
         return
