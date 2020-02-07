@@ -4,8 +4,8 @@ Documentation for Team's card incoming Webhooks:
 https://docs.microsoft.com/en-us/micrsoftteams/platform/webhooks-and-connectors/what-are-webhooks-and-connectors
 
 """
+import asyncio
 import json
-
 import requests
 
 from env import creds, text
