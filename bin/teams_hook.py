@@ -21,10 +21,10 @@ def top_secret(channel):
               """
     if channel == 'programming':
         print("Sending data to the Programming team")
-        return creds.programminghook
+        return creds.testhook  # programminghook
     if channel == 'flow-programming':
         print("Sending data to the Programming team through flow")
-        return creds.flow_programminghook
+        return creds.testhook  #flow_programminghook
     elif channel == 'west_project':
         print("Sending data to West Project Checks team")
         return creds.testhook  # BUILD
@@ -52,6 +52,7 @@ async def message_factory(channel, project_name, path_to_temp):
 class Send_Hook:
     """
     Send json data through a webhook to the Team's channel
+    Call init as Object before calling object.draft_message() for aync factory
     """
 
     def __init__(self, channel, temp_project, temp_file_path):
@@ -63,10 +64,8 @@ class Send_Hook:
                   Returns:
                       (str): Post error message
                   """
-        # converts channel name to url from creds file
         self.channel = top_secret(channel)
         self.project = temp_project
-        # print(temp_file_path.cr_code.co_filename)
         print(temp_file_path)
         self.file = temp_file_path
         with open(self.file) as f:
@@ -94,5 +93,5 @@ class Send_Hook:
 
 
 if __name__ == '__main__':
-    run = asyncio.run(message_factory('flow-programming', "Test_Project",
+    run = asyncio.run(message_factory('flamming', "Test_Project",
                                       "C:\\Users\\Dan.Edens\\Desktop\\Tree\\the_lab\\Python\\pyppeteer_sitecheck_scrapper\\env\\data\\cards\\audicentralhouston_card.json"))
