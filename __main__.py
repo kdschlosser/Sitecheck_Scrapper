@@ -22,10 +22,7 @@ class Options:
     """This class contains the browser's configurable options"""
     headless = True
     # TODO: Setup .args
-    chrome_args = [
-            '--start-maximized',
-            ' --user-data-dir=' + text.ROOT_data
-    ]
+    chrome_args = ['--start-maximized', ' --user-data-dir=' + text.ROOT_data]
     width = text.width
     height = text.height - 200
     # TODO: update Verbose mode
@@ -33,6 +30,32 @@ class Options:
     getvalue = True
     watchdog = 86400
     watch_limit = watchdog * 7
+
+
+def project_out_file(self) -> object:
+    """
+    Config project to output to the shared run file or it's own seperate file
+
+    Returns:
+        object: paths to project's output files
+    """
+    check_path = '\\users\\' + creds.user + '\\dailychecks\\' + text.filedate + '\\'
+    pathlib.Path(check_path).mkdir(parents=True, exist_ok=True)
+    if self.project.group:
+        output_pre = str(check_path) + 'all_'
+    else:
+        output_pre = str(check_path) + str(self.project.name) + '_'
+    return [output_pre + text.outputfile, output_pre + text.Oldfile, output_pre + text.Warnfile]
+
+
+def load_projects():
+    """
+        Returns: project object
+        """
+    with open('env/projects.json') as user_data:
+        data = user_data.read()
+        projects = json.loads(data)
+    return projects
 
 
 async def wait_type(page, selector, txt):
@@ -65,32 +88,6 @@ async def wait_hover(page, selector):
     return page
 
 
-def load_projects():
-    """
-    Returns: project object
-    """
-    with open('env/projects.json') as user_data:
-        data = user_data.read()
-        projects = json.loads(data)
-    return projects
-
-
-def project_out_file(self) -> object:
-    """
-    Config project to output to the shared run file or it's own seperate file
-
-    Returns:
-        object: paths to project's output files
-    """
-    check_path = '\\users\\' + creds.user + '\\dailychecks\\' + text.filedate + '\\'
-    pathlib.Path(check_path).mkdir(parents=True, exist_ok=True)
-    if self.project.group:
-        output_pre = str(check_path) + 'all_'
-    else:
-        output_pre = str(check_path) + str(self.project.name) + '_'
-    return [output_pre + text.outputfile, output_pre + text.Oldfile, output_pre + text.Warnfile]
-
-
 async def run_controller(project):
     """
 
@@ -109,9 +106,9 @@ async def run_controller(project):
 class Project_run:
     """
     Controller class for a project.
-    After initiation by run_controller, The Project's skip        value is checked and canceled if true (TODO: fix case         sensitive).
+    After initiation by run_controller, The Project's skip value is checked and canceled if true
+    (TODO: fix case sensitive).
     If False, the run begins.
-
     """
 
     def __init__(self, project):
@@ -138,8 +135,7 @@ class Project_run:
         if self.project.hassite == 'amp':
             await self.has_amp()
         elif self.project.hassite == 'qv':
-            await self.has_QV()
-        # TODO rebuild truelook support
+            await self.has_QV()  # TODO rebuild truelook support
 
     async def has_amp(self):
         """
@@ -149,9 +145,7 @@ class Project_run:
         """
         self.url = 'https://' + self.project.name + '.geo-instruments.com/index.php'
         self.page = await browser.newPage()
-        await self.page.setViewport({
-                "width":  Options.width,
-                "height": Options.height})
+        await self.page.setViewport({"width": Options.width, "height": Options.height})
         await ampWebpage.login(self)
         await self.page.waitFor(50)
         await ampWebpage.goto_plan_view(self)
@@ -174,9 +168,7 @@ class Project_run:
         # TODO Update qv run
         self.url = qv.urlstring
         self.page = await browser.newPage()
-        await self.page.setViewport({
-                "width":  Options.width,
-                "height": Options.height})
+        await self.page.setViewport({"width": Options.width, "height": Options.height})
         await qvWebpage.login(self)
         await self.page.waitFor(50)
         await qvWebpage.goto_project(self)
@@ -338,8 +330,7 @@ class qvWebpage:
                 await wait_click(self.page, qv.thumb + view)
             await self.page.waitFor(2000)
             for target_child in range(0, 300):
-                await qvWebpage.get_last_update(self, target_child)
-        # return
+                await qvWebpage.get_last_update(self, target_child)  # return
 
     async def get_last_update(self, target_child):
         """

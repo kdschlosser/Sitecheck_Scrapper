@@ -1,3 +1,5 @@
+from typing import AsyncContextManager
+
 debug = 0
 import ctypes
 import os
@@ -6,16 +8,16 @@ from datetime import *
 
 from dateutil.parser import *
 
-# TODO Remove unused refs and move over main's text
 width = ctypes.windll.user32.GetSystemMetrics(0)
 height = ctypes.windll.user32.GetSystemMetrics(1)
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
-ROOT_dir = os.path.dirname(os.path.abspath(__file__))
-ROOT_data = ROOT_dir + "\\data\\"
+ROOT_data = ROOT_DIR + "\\data\\"
 
-now = parse ( "Sat Oct 11 17:13:46 UTC 2003" )
-today = datetime.utcnow ()
-nowdate = today.strftime ( "%Y-%m-%d %H:%M:%S" )
+now = parse("Sat Oct 11 17:13:46 UTC 2003")
+today = datetime.utcnow()
+nowdate = today.strftime("%Y-%m-%d %H:%M:%S")
+AsyncContextManager
 filedate = today.strftime("%Y-%m-%d")
 no_channel = 'Channel name does not match configured projects,\nDefaulting to test hook. View at the below url: \nhttps://webhook.site/#!/8a749da3-5b61-4060-b64f-22e3ae303f62/3542087d-0a3d-41af-811a-fb04f4c18b68/1'
 pathtonote = os.path.abspath(os.path.dirname(sys.argv[0])) + '/_' + filedate + '/Notes.txt'
