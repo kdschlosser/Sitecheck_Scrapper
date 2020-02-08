@@ -10,5 +10,7 @@ Projects/**/Dailychecks/**
 **.xml
 **.log
 env/data/
-env/data/Default/**
+env\\data\\Default/**
 *creds.py
+env/data/DevToolsActivePort
+env/data/Default/Cookies

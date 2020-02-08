@@ -16,7 +16,7 @@ from env import text
 # __version__= "0.3.0"
 
 global storage
-storage = text.ROOT_dir + "\\env\\data\\cards\\"
+storage = text.ROOT_dir + "\\data\\cards\\"
 print(storage)
 
 
