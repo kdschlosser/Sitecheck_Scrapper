@@ -36,10 +36,6 @@ class Options:
     watch_limit = watchdog * 7
 
 
-def wait():
-    msvcrt.getch()
-
-
 async def wait_type(page, selector, txt):
     """
     Wait for a selector to load than type supplied text.
@@ -52,7 +48,7 @@ async def wait_type(page, selector, txt):
 
 async def wait_click(page, selector):
     """
-    Wait for a selector to load than click on it.
+    Wait for a selector to load than clicks on it.
     Returns page in case this changes the context.
     """
     await page.waitForSelector(selector),
@@ -73,7 +69,6 @@ async def wait_hover(page, selector):
 def load_projects():
     """
     Returns: project object
-
     """
     with open('env/projects.json') as user_data:
         data = user_data.read()
