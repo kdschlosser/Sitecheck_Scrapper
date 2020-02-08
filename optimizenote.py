@@ -1,0 +1,1 @@
+Maybe you would not run into any memory problem in the first place by using a more compact structure for your data. Thus, lists of numbers are much less memory-efficient than the format used by the standard array module or the third-party numpy module. You would save memory by putting your vertices in a NumPy 3xN array and your triangles in an N-element array.
