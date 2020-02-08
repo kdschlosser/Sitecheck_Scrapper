@@ -146,7 +146,7 @@ class Project_run:
         self.url = 'https://' + self.project.name + '.geo-instruments.com/index.php'
         self.page = await browser.newPage()
         await self.page.setViewport({"width": Options.width, "height": Options.height})
-        await ampWebpage.login(self)
+        await temp.login(self)
         await self.page.waitFor(50)
         await ampWebpage.goto_plan_view(self)
         await self.page.close()
@@ -169,7 +169,7 @@ class Project_run:
         self.url = qv.urlstring
         self.page = await browser.newPage()
         await self.page.setViewport({"width": Options.width, "height": Options.height})
-        await qvWebpage.login(self)
+        await temp.login(self)
         await self.page.waitFor(50)
         await qvWebpage.goto_project(self)
         await self.page.waitFor(50)
@@ -274,6 +274,37 @@ class ampWebpage:
                     print(data)
                     data_list = [sensor, 'attention', 'Older than a week', date]
                     tcg.store(self.project.name, data_list)
+
+
+class temp:
+    """
+            # TODO fill this in
+    """
+
+    def __init__(self):
+        # TODO Update qv run
+        pass
+
+    async def login(self):
+        """
+            # TODO fill this in
+        Returns:
+
+        """
+        await self.page.goto(self.url)
+        await self.page.waitFor(1000)
+        y = [qv, amp]
+        for x in y:
+            print("Trying: " + str(x))
+            try:
+                await self.page.type(x.logincss, creds.qvuser)
+                await self.page.type(x.pwcss, creds.qvpass)
+                await self.page.click(x.loginbutton)
+            except:
+                pass
+        if os.path.exists(tcg.storage + self.project.name + '_temp.txt'):
+            os.remove(tcg.storage + self.project.name + '_temp.txt')
+        return
 
 
 class qvWebpage:
