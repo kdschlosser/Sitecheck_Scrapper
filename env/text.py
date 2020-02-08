@@ -5,13 +5,13 @@ import sys
 from datetime import *
 
 from dateutil.parser import *
+
 # TODO Remove unused refs and move over main's text
 width = ctypes.windll.user32.GetSystemMetrics(0)
 height = ctypes.windll.user32.GetSystemMetrics(1)
 
-
 ROOT_dir = os.path.dirname(os.path.abspath(__file__))
-ROOT_data = ROOT_dir + "\\env\\data\\"
+ROOT_data = ROOT_dir + "\\data\\"
 
 now = parse ( "Sat Oct 11 17:13:46 UTC 2003" )
 today = datetime.utcnow ()

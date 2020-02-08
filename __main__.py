@@ -1,23 +1,18 @@
-# Daily Sitecheck Web Scrapper V. 0.5.0
+# Daily Sitecheck Web Scrapper V. 0.5.1
 from __future__ import print_function, unicode_literals
-
-import os
-import asyncio
-
-# TODO deal with having to call this before importing tcg
-ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 import json
 import msvcrt
+import os
 import pathlib
 
+import asyncio
 from dateutil.parser import parse
 from pyppeteer import launch
 from pyxtension.Json import Json
 
 # noinspection PyPep8Naming
-from bin import Teams_card_generator as tcg
-from bin import teams_hook as hook
+from bin import Teams_card_generator as tcg, teams_hook as hook
 from env import sites, text, creds
 
 qv = sites.qv
@@ -26,21 +21,19 @@ amp = sites.amp
 
 class Options:
     """This class contains the browser's configurable options"""
-    headless = False
+    headless = True
+    # TODO: Setup .args
     chrome_args = [
             '--start-maximized',
             ' --user-data-dir=' + text.ROOT_data
     ]
     width = text.width
     height = text.height - 200
+    # TODO: update Verbose mode
     verbose = True
     getvalue = True
     watchdog = 86400
     watch_limit = watchdog * 7
-
-
-def wait():
-    msvcrt.getch()
 
 
 async def wait_type(page, selector, txt):
@@ -55,7 +48,7 @@ async def wait_type(page, selector, txt):
 
 async def wait_click(page, selector):
     """
-    Wait for a selector to load than click on it.
+    Wait for a selector to load than clicks on it.
     Returns page in case this changes the context.
     """
     await page.waitForSelector(selector),
@@ -76,7 +69,6 @@ async def wait_hover(page, selector):
 def load_projects():
     """
     Returns: project object
-
     """
     with open('env/projects.json') as user_data:
         data = user_data.read()
@@ -86,9 +78,10 @@ def load_projects():
 
 def project_out_file(self) -> object:
     """
+    Config project to output to the shared run file or it's own seperate file
 
     Returns:
-        object:
+        object: paths to project's output files
     """
     check_path = '\\users\\' + creds.user + '\\dailychecks\\' + text.filedate + '\\'
     pathlib.Path(check_path).mkdir(parents=True, exist_ok=True)
@@ -115,11 +108,21 @@ async def run_controller(project):
 
 
 class Project_run:
+    """
+    Controller class for a project.
+    After initiation by run_controller, The Project's skip        value is checked and canceled if true (TODO: fix case         sensitive).
+    If False, the run begins.
+
+    """
+
     def __init__(self, project):
         self.project = Json(project)
 
-
     async def evaluate_site(self):
+        """
+        after initiation by run_controller, The Project's             skip value is checked and canceled if true (case              sensitive).
+        If false, the run begins.
+        """
         if self.project.skip == 'true':
             if Options.verbose:
                 print('Skipping project: ' + self.project.name)
@@ -129,6 +132,10 @@ class Project_run:
             await self.filter_site()
 
     async def filter_site(self):
+        """
+        Checks if a project has a site on Amp, Qv, or               Truelook.
+        """
+        # TODO: Change If to switch for multi-site projects
         if self.project.hassite == 'amp':
             await self.has_amp()
         elif self.project.hassite == 'qv':
@@ -136,6 +143,11 @@ class Project_run:
         # TODO rebuild truelook support
 
     async def has_amp(self):
+        """
+            Main Thread function of the Amp scanner.
+            Creates the new page and gives it a viewport.
+            Than handles gathering and outputing the data                 from Amp.
+        """
         self.url = 'https://' + self.project.name + '.geo-instruments.com/index.php'
         self.page = await browser.newPage()
         await self.page.setViewport({
@@ -152,13 +164,15 @@ class Project_run:
         staged_file = tcg.generator(self.project)
         path_to_temp = staged_file.compile_data()
         print(path_to_temp)
-        # Now that the data is arranged, pass it on to teams through a webhook
         # result = await hook.message_factory(self.project.channel, self.project.name, path_to_temp)
         result = await hook.message_factory('test', self.project.name, path_to_temp)
         print(result, '\n End of run')
 
     async def has_QV(self):
-        #TODO Update qv run
+        """
+            # TODO fill this in
+        """
+        # TODO Update qv run
         self.url = qv.urlstring
         self.page = await browser.newPage()
         await self.page.setViewport({
@@ -173,11 +187,23 @@ class Project_run:
 
 
 class ampWebpage:
+    """
+        Thread pool for Amp.
+    """
+
     def __init__(self):
         # TODO Update class structure with my new learns
         pass
 
     async def login(self):
+        """
+        Navigates through authentication, and removes                 past run data from temp files. This will be                   rearranged in final optimization.
+        Args(object): Self.
+            Requires ID of current Page context.
+            TODO: test with just recieving self.page
+        Returns: (None)
+
+        """
         await self.page.goto(self.url)
         await self.page.waitFor(1000)
         await wait_type(self.page, amp.logincss, creds.username)
@@ -189,6 +215,11 @@ class ampWebpage:
         return
 
     async def goto_plan_view(self):
+        """
+            Navigates to each planview listed in project.planarray and iterates through an array to check possible sensorboxes
+        Returns:
+
+        """
         print(text.scanplan + self.project.planarray)
         plan_array = self.project.planarray.split(",")
         for view in plan_array:
@@ -202,6 +233,9 @@ class ampWebpage:
         return self
 
     async def get_last_update(self):
+        """
+            # TODO fill this in
+        """
         for type_of_sensor_box in amp.label:
             name_sel = str(
                     'body > div:nth-child(' + type_of_sensor_box + ') > div:nth-child(' + self.target_child + amp.title)
@@ -240,7 +274,6 @@ class ampWebpage:
                         # TODO: Build check module, Entry point here
                         pass
                     print(data)
-                    print(self.project.name)
                     data_list = [sensor, 'warning', 'Older than 24 hours', date]
                     tcg.store(self.project.name, data_list)
                 else:
@@ -253,11 +286,20 @@ class ampWebpage:
 
 
 class qvWebpage:
+    """
+            # TODO fill this in
+    """
+
     def __init__(self):
         # TODO Update qv run
         pass
 
     async def login(self):
+        """
+            # TODO fill this in
+        Returns:
+
+        """
         await self.page.goto(self.url)
         await wait_type(self.page, qv.logincss, creds.qvuser)
         await wait_type(self.page, qv.pwcss, creds.qvpass)
@@ -265,17 +307,22 @@ class qvWebpage:
         return
 
     async def goto_project(self):
+        """
+            # TODO fill this in
+        Returns:
+
+        """
         await wait_click(self.page, qv.projects)
         await wait_hover(self.page, qv.scrollbar)
         await self.page.waitFor(500)
-        print(str(self.project.proj))
+        # print(str(self.project.proj))
         self.namenum = str(self.project.proj)
         self.page = await wait_click(self.page, qv.proj_pre + self.namenum + qv.proj_post)
         return self
 
     async def goto_plan_view(self) -> object:
         """
-
+            # TODO fill this in
         Returns:
             object:
         """
@@ -296,6 +343,14 @@ class qvWebpage:
         # return
 
     async def get_last_update(self, target_child):
+        """
+            # TODO fill this in
+        Args:
+            target_child:
+
+        Returns:
+
+        """
         sensor = '#objects > img:nth-child(' + str(target_child) + ')'
         # noinspection PyBroadException
         try:
@@ -323,8 +378,9 @@ class qvWebpage:
                 if Options.verbose:
                     sensor_data += '\n' + text.oldDate
                 print(sensor_data)
-        # This exception allows selector values not present on the current page to be ignored. Tag - future optimizations
         except:
+            # TODO: build proper exception for not finding selector on page
+            # This exception allows selector values not present on the current page to be ignored. Tag - future optimizations
             pass
         # TODO: Add check if data is empty to re-try with longer page load wait
         return

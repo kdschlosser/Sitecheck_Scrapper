@@ -1,17 +1,17 @@
 """
 This sends completed cards through a webhook to a specific Team's channel (Team)
-Documentation for Team's card incoming Webhooks:
-https://docs.microsoft.com/en-us/micrsoftteams/platform/webhooks-and-connectors/what-are-webhooks-and-connectors
-
+Documentation for Team's Adaptive Cards:
+https://docs.microsoft.com/en-us/adaptive-cards/
 """
-import asyncio
 import json
+
+import asyncio
 import requests
 
 from env import creds, text
 
 
-def top_secret(channel):
+def top_secret ( channel ):
     """
         Converts channel name to url from creds file
               Args:
@@ -21,7 +21,10 @@ def top_secret(channel):
               """
     if channel == 'programming':
         print("Sending data to the Programming team")
-        return creds.programminghook
+        return creds.testhook  # programminghook
+    if channel == 'flow-programming':
+        print("Sending data to the Programming team through flow")
+        return creds.testhook  #flow_programminghook
     elif channel == 'west_project':
         print("Sending data to West Project Checks team")
         return creds.testhook  # BUILD
@@ -33,7 +36,7 @@ def top_secret(channel):
 
 async def message_factory(channel, project_name, path_to_temp):
     """
-
+    Now that the data is in card format, pass it on to a          Teams channel through a Flow webhook
     Args:
         channel(str): Selects the webhook to send too.
         project_name(str): Name of project
@@ -49,6 +52,7 @@ async def message_factory(channel, project_name, path_to_temp):
 class Send_Hook:
     """
     Send json data through a webhook to the Team's channel
+    Call init as Object before calling object.draft_message() for aync factory
     """
 
     def __init__(self, channel, temp_project, temp_file_path):
@@ -62,7 +66,6 @@ class Send_Hook:
                   """
         self.channel = top_secret(channel)
         self.project = temp_project
-        print(temp_file_path)
         self.file = temp_file_path
         with open(self.file) as f:
             file = f.read()
@@ -90,5 +93,5 @@ class Send_Hook:
 
 
 if __name__ == '__main__':
-    run = asyncio.run(message_factory('test', "Test_Project",
-                                      "C:\\Users\\Dan.Edens\\Desktop\\Tree\\the_lab\\Python\\pyppeteer_sitecheck_scrapper\\env\\data\\cards\\Test_Project"))
+    run = asyncio.run(message_factory('flamming', "Test_Project",
+                                      "C:\\Users\\Dan.Edens\\Desktop\\Tree\\the_lab\\Python\\pyppeteer_sitecheck_scrapper\\env\\data\\cards\\audicentralhouston"))

@@ -1,29 +1,32 @@
 # """Teams_card_generator.py: Library for generating JSON cards from a template.
+# Guide on Message Cards: https://poszytek.eu/en/microsoft-en/microsoft-message-cards-the-ultimate-guide/
 # Change Log:
 # 2/2/2020
 # Adds the card_template class
 # Adds the factory class
-#
+# TODO: update all change logs and squash commits
 #
 # """
 
 import json
 
-from __main__ import ROOT_DIR
+from env import text
 
 # __author__ = "Dan Edens"
 # __version__= "0.3.0"
 
 global storage
-storage = ROOT_DIR + "\\env\\data\\cards\\"
+storage = text.ROOT_dir + "\\data\\cards\\"
+print(storage)
+
 
 # TODO: Rebuild template model to messagecard
 class _template:
     Top_prefix1 = '''{
-		"hideOriginalBody": true,
-		"type": "AdaptiveCard",
-		"padding": "none",
-		"body": [
+    		"hideOriginalBody": true,
+    		"type": "AdaptiveCard",
+    		"padding": "none",
+    		"body": [
 			{
 				"type": "ColumnSet",
 				"padding": {
@@ -55,7 +58,7 @@ class _template:
 							{
 								"verticalContentAlignment": "Center",
 								"type": "Image",
-								"url": "https://cdn1.imggmi.com/uploads/2020/1/16/fc83bdfc3949e70df506c972948d68d3-full.png", 
+								"url": "https://cdn1.imggmi.com/uploads/2020/1/16/fc83bdfc3949e70df506c972948d68d3-full.png",
 								"width": "80px",
 								"altText": "Geo Logo"
 							}
@@ -188,7 +191,7 @@ class _template:
 				]
 			}'''
     button_row_template1 = ''',
-			{			
+			{
 				"type": "Container",
 				"padding": {
 					"top": "none",
@@ -216,7 +219,7 @@ class _template:
 	}'''
 
 
-def store(project, data_list):
+def store ( project, data_list ):
     """
             Args:
                 project (str): from self.project.name
@@ -235,6 +238,9 @@ def store(project, data_list):
 
 
 class sensor_data:
+    """
+            # TODO fill this in
+    """
     def __init__(self, name, color, status, time):
         """
 		        Args:
@@ -250,13 +256,16 @@ class sensor_data:
         self.status = status
         self.time = time
 
-    def __str__(self):
+    def __str__ ( self ):
         # Formats the Sensor_data into table rows
         data_line = _template.st1 + self.name + _template.st2 + self.status + _template.st3 + self.color + _template.st4 + self.time + _template.st5
         return str(data_line)
 
 
 class generator:
+    """
+            # TODO fill this in
+    """
     def __init__(self, current_project):
         """
 		        Args:
@@ -276,6 +285,11 @@ class generator:
         # self.data = list_of_sensor_data
 
     def compile_data(self):
+        """
+            # TODO fill this in
+        Returns:
+
+        """
         # Adds the end bracket to finish list of lists
         with open(self.store_path, 'a') as file:
             file.write(']')
@@ -288,8 +302,16 @@ class generator:
         return self.generate_template(card_list)
 
     def generate_template(self, card_list):
+        """
+            # TODO fill this in
+        Args:
+            card_list:
+
+        Returns:
+
+        """
         with open(self.generator_output, 'w') as gen_file:
-            print(gen_file.name)
+            # print(gen_file.name)
             # Builds the Teams Card
             # Traditional methods of Json formatting do not preserve the template's syntax
             # Add the sensor table section goes above the sensors,
