@@ -29,7 +29,6 @@ amp = sites.amp
 class Options:
     """This class contains the browser's configurable options"""
     # TODO: Setup .args
-    # TODO: headless testing
     headless = False
     chrome_args = [
             '--start-maximized',
@@ -91,9 +90,10 @@ def load_projects():
 
 def project_out_file(self) -> object:
     """
-    # TODO fill this in
+    Config project to output to the shared run file or it's own seperate file
+
     Returns:
-        object:
+        object: paths to project's output files
     """
     check_path = '\\users\\' + creds.user + '\\dailychecks\\' + text.filedate + '\\'
     pathlib.Path(check_path).mkdir(parents=True, exist_ok=True)
@@ -121,7 +121,9 @@ async def run_controller(project):
 
 class Project_run:
     """
-    # TODO fill this in
+    Controller class for a project.
+    After initiation by run_controller, The Project's skip        value is checked and canceled if true (TODO: fix case         sensitive).
+    If False, the run begins.
 
     """
 
@@ -130,7 +132,8 @@ class Project_run:
 
     async def evaluate_site(self):
         """
-    # TODO fill this in
+        after initiation by run_controller, The Project's             skip value is checked and canceled if true (case              sensitive).
+        If false, the run begins.        
         """
         if self.project.skip == 'true':
             if Options.verbose:
@@ -142,8 +145,9 @@ class Project_run:
 
     async def filter_site(self):
         """
-# TODO fill this in
+        Checks if a project has a site on Amp, Qv, or               Truelook.
         """
+        # TODO: Change If to switch for multi-site projects
         if self.project.hassite == 'amp':
             await self.has_amp()
         elif self.project.hassite == 'qv':
@@ -151,7 +155,9 @@ class Project_run:
 
     async def has_amp(self):
         """
-            # TODO fill this in
+            Main Thread function of the Amp scanner.
+            Creates the new page and gives it a viewport.
+            Than handles gathering and outputing the data                 from Amp. 
         """
         self.url = 'https://' + self.project.name + '.geo-instruments.com/index.php'
         self.page = await browser.newPage()
@@ -169,7 +175,6 @@ class Project_run:
         staged_file = tcg.generator(self.project)
         path_to_temp = staged_file.compile_data()
         print(path_to_temp)
-        # Now that the data is arranged, pass it on to teams through a webhook
         # result = await hook.message_factory(self.project.channel, self.project.name, path_to_temp)
         result = await hook.message_factory('test', self.project.name, path_to_temp)
         print(result, '\n End of run')
@@ -194,7 +199,8 @@ class Project_run:
 
 class ampWebpage:
     """
-            # TODO fill this in
+        Thread pool for Amp. 
+        
     """
 
     def __init__(self):
@@ -202,8 +208,11 @@ class ampWebpage:
 
     async def login(self):
         """
-            # TODO fill this in
-        Returns:
+        Navigates through authentication, and removes                 past run data from temp files. This will be                   rearranged in final optimization. 
+        Args(object): Self. 
+            Requires ID of current Page context. 
+            TODO: test with just recieving self.page
+        Returns: (None)
 
         """
         await self.page.goto(self.url)
@@ -217,7 +226,7 @@ class ampWebpage:
 
     async def goto_plan_view(self):
         """
-            # TODO fill this in
+            Navigates to each planview listed in project.planarray and iterates through an array to check possible sensorboxes
         Returns:
 
         """

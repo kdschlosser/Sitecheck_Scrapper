@@ -32,7 +32,7 @@ def top_secret(channel):
 
 async def message_factory(channel, project_name, path_to_temp):
     """
-
+    Now that the data is in card format, pass it on to a          Teams channel through a Flow webhook
     Args:
         channel(str): Selects the webhook to send too.
         project_name(str): Name of project
