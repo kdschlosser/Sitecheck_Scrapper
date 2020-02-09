@@ -142,7 +142,8 @@ class Project_run:
                 print('Skipping project: ' + self.project.name)
             pass
         else:
-            print(text.fileheader + self.project.name)
+            if Options.verbose:
+                print(text.fileheader + self.project.name)
             await self.filter_site()
 
     async def filter_site(self):
