@@ -103,6 +103,25 @@ async def run_controller(project):
     return run_result
 
 
+async def login(self):
+    """
+        # TODO fill this in
+    Returns:
+
+    """
+    await self.page.goto(self.url)
+    await self.page.waitFor(1000)
+    for x in [amp, qv]:
+        try:
+            await self.page.type(x.logincss, x.username)
+            await self.page.type(x.pwcss, x.password)
+            await self.page.click(x.loginbutton)
+            break
+        except:
+            pass
+    await self.page.waitFor(50)
+
+
 class Project_run:
     """
     Controller class for a project.
@@ -145,8 +164,7 @@ class Project_run:
         self.url = 'https://' + self.project.name + '.geo-instruments.com/index.php'
         self.page = await browser.newPage()
         await self.page.setViewport({"width": Options.width, "height": Options.height})
-        await temp.login(self)
-        await self.page.waitFor(50)
+        await login(self)
         await ampWebpage.goto_plan_view(self)
         await self.page.close()
         # After the Site is scanned, the collected data is processed into a
@@ -170,12 +188,17 @@ class Project_run:
         self.url = qv.urlstring
         self.page = await browser.newPage()
         await self.page.setViewport({"width": Options.width, "height": Options.height})
-        await temp.login(self)
-        await self.page.waitFor(50)
+        await login(self)
         await qvWebpage.goto_project(self)
         await self.page.waitFor(50)
         await qvWebpage.goto_plan_view(self)
         await self.page.close()
+        staged_file = tcg.generator(self.project)
+        path_to_temp = staged_file.compile_data()
+        print(path_to_temp)
+        # SHIP result = await hook.message_factory(self.project.channel, self.project.name, path_to_temp)
+        result = await hook.message_factory('test', self.project.name, path_to_temp)  # BUILD
+        print(result, '\n End of run')
 
 
 class ampWebpage:
@@ -187,32 +210,14 @@ class ampWebpage:
         # TODO Update class structure with my new learns
         pass
 
-    async def login(self):
-        """
-        Navigates through authentication, and removes                 past run data from temp files. This will be                   rearranged in final optimization.
-        Args(object): Self.
-            Requires ID of current Page context.
-            TODO: test with just recieving self.page
-        Returns: (None)
-
-        """
-        await self.page.goto(self.url)
-        await self.page.waitFor(1000)
-        await wait_type(self.page, amp.logincss, creds.username)
-        await wait_type(self.page, amp.pwcss, creds.password)
-        await wait_click(self.page, amp.loginbutton)
-        # TODO move to cleanup function, add name_temp.json
-        if os.path.exists(tcg.storage + self.project.name + '_temp.txt'):
-            os.remove(tcg.storage + self.project.name + '_temp.txt')
-        return
-
     async def goto_plan_view(self):
         """
             Navigates to each planview listed in project.planarray and iterates through an array to check possible sensorboxes
         Returns:
 
         """
-        print(text.scanplan + self.project.planarray)
+        if Options.verbose:
+            print(text.scanplan + self.project.planarray)
         plan_array = self.project.planarray.split(",")
         for view in plan_array:
             if Options.verbose:
@@ -222,7 +227,6 @@ class ampWebpage:
                 # noinspection PyAttributeOutsideInit
                 self.target_child = str(target_child)
                 await ampWebpage.get_last_update(self)
-        return self
 
     async def get_last_update(self):
         """
@@ -248,92 +252,40 @@ class ampWebpage:
                 sensor = await self.page.evaluate('(name) => name.textContent', name)
                 value = await self.page.evaluate('(link) => link.textContent', link)
                 date = await self.page.evaluate('(link) => link.title', link)
-                print(sensor, value)
-                data = '\nSensor name: ' + sensor
+
+                sensor_data = '\nSensor name: ' + sensor
                 if Options.getvalue:
-                    # TODO Add get value option to card generator
-                    data += '\nCurrent value: ' + value
-                data += '\nLast Updated on AMP: '
+                    sensor_data += '\nCurrent value: ' + value
+                sensor_data += '\nLatest data on AMP: '
+
                 diff_in_days = parse(text.nowdate) - parse(date)
                 diff = int(diff_in_days.total_seconds())
+                sensor_data += date
+
                 if diff <= Options.watchdog:
-                    data += date
                     if Options.verbose:
-                        data += '\n' + text.uptoDate
-                    print(data)
-                    # data = [name, color, status, time]
+                        sensor_data += '\n' + text.uptoDate
                     data_list = [sensor, 'good', 'Up-to-date', date]
                     tcg.store(self.project.name, data_list)
+                    print(sensor_data)
                 elif Options.watchdog <= diff <= Options.watch_limit:
-                    data += date
                     if Options.verbose:
-                        data += '\n' + text.behindDate
-                    if Options.check:
-                        # TODO: Build check module, Entry point here
-                        pass
-                    print(data)
+                        sensor_data += '\n' + text.behindDate
                     data_list = [sensor, 'warning', 'Older than 24 hours', date]
                     tcg.store(self.project.name, data_list)
+                    print(sensor_data)
                 else:
-                    data += date
                     if Options.verbose:
-                        data += '\n' + text.oldDate
-                    print(data)
+                        sensor_data += '\n' + text.oldDate
                     data_list = [sensor, 'attention', 'Older than a week', date]
                     tcg.store(self.project.name, data_list)
-
-
-class temp:
-    """
-            # TODO fill this in
-    """
-
-    def __init__(self):
-        # TODO Update qv run
-        pass
-
-    async def login(self):
-        """
-            # TODO fill this in
-        Returns:
-
-        """
-        await self.page.goto(self.url)
-        await self.page.waitFor(1000)
-        y = [qv, amp]
-        for x in y:
-            print("Trying: " + str(x))
-            try:
-                await self.page.type(x.logincss, creds.qvuser)
-                await self.page.type(x.pwcss, creds.qvpass)
-                await self.page.click(x.loginbutton)
-            except:
-                pass
-        if os.path.exists(tcg.storage + self.project.name + '_temp.txt'):
-            os.remove(tcg.storage + self.project.name + '_temp.txt')
-        return
+                    print(sensor_data)
 
 
 class qvWebpage:
     """
             Thread Pool for QV
     """
-
-    def __init__(self):
-        # TODO Update qv run
-        pass
-
-    async def login(self):
-        """
-            # TODO fill this in
-        Returns:
-
-        """
-        await self.page.goto(self.url)
-        await wait_type(self.page, qv.logincss, creds.qvuser)
-        await wait_type(self.page, qv.pwcss, creds.qvpass)
-        await wait_click(self.page, qv.loginbutton)
-        return
 
     async def goto_project(self):
         """
@@ -355,6 +307,8 @@ class qvWebpage:
         Returns:
             object:
         """
+        if Options.verbose:
+            print(text.scanplan + self.project.planarray)
         views = self.project.planarray.split(",")
         for view in views:
             print(view)
@@ -368,9 +322,11 @@ class qvWebpage:
                 await wait_click(self.page, qv.thumb + view)
             await self.page.waitFor(2000)
             for target_child in range(0, 300):
-                await qvWebpage.get_last_update(self, target_child)  # return
+                # noinspection PyAttributeOutsideInit
+                self.target_child = str(target_child)
+                await qvWebpage.get_last_update(self)  # return
 
-    async def get_last_update(self, target_child):
+    async def get_last_update(self):
         """
              Collects QV Sensor data from the current Planview
 
@@ -380,32 +336,46 @@ class qvWebpage:
         Returns: (none)
 
         """
-        sensor = '#objects > img:nth-child(' + str(target_child) + ')'
+        sensor = '#objects > img:nth-child(' + self.target_child + ')'
         # noinspection PyBroadException
+        print(sensor)
         try:
             await self.page.hover(sensor)
-            link = await self.page.querySelector(qv.hoverbox)
+            link = await self.page.J(qv.hoverbox)
             txt = await self.page.evaluate('(link) => link.innerHTML', link)
+            value = 'In Development'
             split_date = txt.split('<br>')
-            sensor_data = '\nSensor name: ' + split_date[0]
+            print(split_date)
+            sensor = split_date[0]
+            print(sensor, split_date[1])
+            sensor_data = '\nSensor name: ' + sensor
+            if Options.getvalue:
+                print('In Development')
+                # sensor_data += '\nCurrent value: ' + value
             date = split_date[3].split("data: ").pop()
-            sensor_data = sensor_data + ' \nDate:' + date + '\n'
+            sensor_data += '\nLatest data on QV: '
+
             diff_in_days = parse(text.nowdate) - parse(date)
             diff = (diff_in_days.total_seconds())
+            sensor_data += date
+
             if diff <= Options.watchdog:
-                sensor_data += date
                 if Options.verbose:
                     sensor_data += '\n' + text.uptoDate
+                data_list = [sensor, 'good', 'Up-to-date', date]
+                tcg.store(self.project.name, data_list)
                 print(sensor_data)
             elif Options.watchdog <= diff <= Options.watch_limit:
-                sensor_data += date
                 if Options.verbose:
                     sensor_data += '\n' + text.behindDate
+                data_list = [sensor, 'warning', 'Older than 24 hours', date]
+                tcg.store(self.project.name, data_list)
                 print(sensor_data)
             else:
-                sensor_data += date
                 if Options.verbose:
                     sensor_data += '\n' + text.oldDate
+                data_list = [sensor, 'attention', 'Older than a week', date]
+                tcg.store(self.project.name, data_list)
                 print(sensor_data)
         except:
             # TODO: build proper exception for not finding selector on page
