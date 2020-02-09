@@ -107,7 +107,6 @@ class Project_run:
     """
     Controller class for a project.
     After initiation by run_controller, The Project's skip value is checked and canceled if true
-    (TODO: fix case sensitive).
     If False, the run begins.
     """
 
@@ -157,8 +156,8 @@ class Project_run:
         staged_file = tcg.generator(self.project)
         path_to_temp = staged_file.compile_data()
         print(path_to_temp)
-        # result = await hook.message_factory(self.project.channel, self.project.name, path_to_temp)
-        result = await hook.message_factory('test', self.project.name, path_to_temp)
+        # SHIP result = await hook.message_factory(self.project.channel, self.project.name, path_to_temp)
+        result = await hook.message_factory('test', self.project.name, path_to_temp)  # BUILD
         print(result, '\n End of run')
 
     async def has_QV(self):
@@ -227,7 +226,13 @@ class ampWebpage:
 
     async def get_last_update(self):
         """
-            # TODO fill this in
+            Collects Amp Sensor data from the current Planview
+
+        Args:
+            target_child(str): Sensor to Scan
+
+        Returns: (none)
+
         """
         for type_of_sensor_box in amp.label:
             name_sel = str(
@@ -367,7 +372,7 @@ class qvWebpage:
 
     async def get_last_update(self, target_child):
         """
-             Collects Sensor data from the current Planview
+             Collects QV Sensor data from the current Planview
 
         Args:
             target_child(str): Sensor to Scan
