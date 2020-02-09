@@ -20,7 +20,7 @@ amp = sites.amp
 
 class Options:
     """This class contains the browser's configurable options"""
-    headless = True
+    headless = False
     # TODO: Setup .args
     chrome_args = ['--start-maximized', ' --user-data-dir=' + text.ROOT_data]
     width = text.width
@@ -116,7 +116,7 @@ class Project_run:
 
     async def evaluate_site(self):
         """
-        after initiation by run_controller, The Project's             skip value is checked and canceled if true (case              sensitive).
+        after initiation by run_controller, The Project's skip value is checked and canceled if true (case sensitive).
         If false, the run begins.
         """
         if self.project.skip == 'true':
@@ -141,7 +141,7 @@ class Project_run:
         """
             Main Thread function of the Amp scanner.
             Creates the new page and gives it a viewport.
-            Than handles gathering and outputing the data                 from Amp.
+            Than handles gathering and output of data for Amp scanner.
         """
         self.url = 'https://' + self.project.name + '.geo-instruments.com/index.php'
         self.page = await browser.newPage()
@@ -163,7 +163,9 @@ class Project_run:
 
     async def has_QV(self):
         """
-            # TODO fill this in
+            Main Thread function of the QV scanner.
+            Creates the new page and gives it a viewport.
+            Than handles gathering and output of data for QV scanner.
         """
         # TODO Update qv run
         self.url = qv.urlstring
@@ -309,7 +311,7 @@ class temp:
 
 class qvWebpage:
     """
-            # TODO fill this in
+            Thread Pool for QV
     """
 
     def __init__(self):
@@ -365,11 +367,12 @@ class qvWebpage:
 
     async def get_last_update(self, target_child):
         """
-            # TODO fill this in
-        Args:
-            target_child:
+             Collects Sensor data from the current Planview
 
-        Returns:
+        Args:
+            target_child(str): Sensor to Scan
+
+        Returns: (none)
 
         """
         sensor = '#objects > img:nth-child(' + str(target_child) + ')'
