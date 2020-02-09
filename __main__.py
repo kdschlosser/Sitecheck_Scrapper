@@ -150,6 +150,8 @@ class Project_run:
         """
         Checks if a project has a site on Amp, Qv, or               Truelook.
         """
+        if os.path.exists(tcg.storage + self.project.name + '_temp.txt'):
+            os.remove(tcg.storage + self.project.name + '_temp.txt')
         # TODO: Change If to switch for multi-site projects
         if self.project.hassite == 'amp':
             await self.has_amp()
