@@ -340,7 +340,6 @@ class qvWebpage:
         """
         sensor = '#objects > img:nth-child(' + self.target_child + ')'
         # noinspection PyBroadException
-        print(sensor)
         try:
             await self.page.hover(sensor)
             link = await self.page.J(qv.hoverbox)
