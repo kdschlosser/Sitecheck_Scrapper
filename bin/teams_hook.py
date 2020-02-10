@@ -24,6 +24,7 @@ def top_secret(channel):
         Converts channel name to Webhook url from creds file
         These Urls need to be kept internal. RISK: LOW
         Chance of a compromised link being spammed is very low, but possible.
+
             Args:
                 channel (str): Name of project's target Team's channel
             Returns:
@@ -47,6 +48,7 @@ async def message_factory(channel, project_name, path_to_temp):
     """
         Takes gathered data in card format and posts it to Teams channel through a Flow webhook
         This function acts as an Async factory for draft_message
+
             Args:
                 channel(str): Selects the webhook to send too.
                 project_name(str): Name of project
@@ -67,6 +69,7 @@ class Send_Hook:
     def __init__(self, channel, temp_project, temp_file_path):
         """
            Load Card.json for use in message functions.
+
                Args:
                    channel (str): Which channel(team) to send card to
                    temp_project (str): Project name and filename
@@ -83,6 +86,7 @@ class Send_Hook:
         """
             If the flag for review card is true:
             Prompt the user to approve the generated card before sending it to Teams.
+
                 Args:
                     self (obj): Passes entire self through for now. TODO: trim unneeded values
                 Returns: (str)
@@ -95,6 +99,7 @@ class Send_Hook:
     async def send_message(self):
         """
             HTTP Post self.finished_card to self.channel
+
                 Args:
                     Self.finished_card (str): Path to Card.json
                     self.channel (str): Webhook Url to target channel
