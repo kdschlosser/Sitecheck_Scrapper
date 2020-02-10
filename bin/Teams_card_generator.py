@@ -1,19 +1,19 @@
-# """Teams_card_generator.py: Library for generating JSON cards from a template.
-# Guide on Message Cards: https://docs.microsoft.com/en-us/adaptive-cards/
-#
-# This Collects stored sensor data and generates a Microsoft Team's Adaptive Card.
-# """
+"""
+Teams_card_generator.py: Library for generating JSON cards from a template.
+Guide on Message Cards: https://docs.microsoft.com/en-us/adaptive-cards/
+
+This Collects stored sensor data and generates a Microsoft Team's Adaptive Card.
+"""
+# __author__ = "Dan Edens"
+# __version__= "0.4.0"
 
 import json
 
 from env import text
 
-# __author__ = "Dan Edens"
-# __version__= "0.3.0"
 
 global storage
 storage = text.ROOT_DIR + "\\data\\cards\\"
-print(storage)
 
 
 # TODO: Rebuild template model to messagecard

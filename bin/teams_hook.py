@@ -3,6 +3,9 @@ This sends completed cards through a webhook to a specific Team's channel (Team)
 Documentation for Team's Adaptive Cards:
 https://docs.microsoft.com/en-us/adaptive-cards/
 """
+# __author__ = "Dan Edens"
+# __version__= "0.2.0"
+
 import json
 
 import requests

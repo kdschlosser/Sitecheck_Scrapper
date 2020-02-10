@@ -1,4 +1,13 @@
-# Daily Sitecheck Web Scrapper V. 0.5.1
+"""
+Geo-Instruments
+Daily Sitecheck Scanner
+Repository: https://geodev.geo-instruments.com/DanEdens/pyppet_sitecheck_scrapper
+
+
+"""
+# __author__ = "Dan Edens"
+# __version__= "0.5.2"
+
 from __future__ import print_function, unicode_literals
 
 import json
