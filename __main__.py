@@ -194,8 +194,10 @@ class Project_run:
         """
         Checks if a project has a site on Amp, Qv, or               Truelook.
         """
+        # TODO Convert this to unique filename for each run
         if os.path.exists(tcg.storage + self.project.name + '_temp.txt'):
             os.remove(tcg.storage + self.project.name + '_temp.txt')
+            os.remove(tcg.storage + self.project.name + '_temp.json')
         # TODO: Change If to switch for multi-site projects
         if self.project.hassite == 'amp':
             await self.has_amp()
@@ -238,8 +240,7 @@ class Project_run:
         staged_file = tcg.generator(self.project)
         path_to_temp = staged_file.compile_data()
         print(path_to_temp)
-        # SHIP result = await hook.message_factory(self.project.channel, self.project.name, path_to_temp)
-        result = await hook.message_factory('test', self.project.name, path_to_temp)  # BUILD
+        result = await hook.message_factory(self.project.channel, self.project.name, path_to_temp)
         print(result, '\n End of run')
 
 
