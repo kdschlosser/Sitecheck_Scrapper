@@ -35,7 +35,7 @@ class Options:
 
 def project_out_file(self) -> object:
     """
-    Config project to output to the shared run file or it's own seperate file
+    Config project to output to the shared run file or it's own file
 
     Returns:
         object: paths to project's output files
@@ -105,6 +105,15 @@ async def run_controller(project):
 
 
 async def watchdog_processor(diff, sensor_data, project_name, sensor, date):
+    """
+
+    Args:
+        diff:
+        sensor_data:
+        project_name:
+        sensor:
+        date:
+    """
     if diff <= Options.watchdog:
         if Options.verbose:
             sensor_data += '\n' + text.uptoDate
@@ -145,6 +154,12 @@ async def login(self):
 
 
 async def scan_plan_view(parent, thread_pool):
+    """
+
+    Args:
+        parent:
+        thread_pool:
+    """
     print(parent)
     for target_child in range(0, 300):
         parent.target_child = str(target_child)
@@ -233,9 +248,9 @@ class ampWebpage:
         Thread pool for Amp.
     """
 
-    async def goto_plan_view(self):
+    async def goto_plan_view(self) -> object:
         """
-            Navigates to each planview listed in project.planarray and iterates through an array to check possible sensorboxes
+            Navigates to each planview listed in project.planarray and iterates through an array to check possible sensor boxes
         Returns:
 
         """
@@ -361,6 +376,11 @@ class qvWebpage:
 
 
 async def main():
+    """
+        Application Main Thread
+        Retrieves Project information from projects.json
+        Loops through each and sends a card to it's Site-check channel
+    """
     # noinspection PyGlobalUndefined
     global browser
     browser = await launch({"headless": Options.headless, "ignoreHTTPSErrors": True}, args=Options.chrome_args)
