@@ -11,7 +11,7 @@ import requests
 from env import creds, text
 
 
-def top_secret ( channel ):
+def top_secret(channel):
     """
         Converts channel name to url from creds file
               Args:
@@ -24,11 +24,10 @@ def top_secret ( channel ):
         return creds.testhook  # programminghook
     if channel == 'flow-programming':
         print("Sending data to the Programming team through flow")
-        return creds.testhook  #flow_programminghook
+        return creds.testhook  # flow_programminghook
     elif channel == 'west_project':
         print("Sending data to West Project Checks team")
-        return creds.testhook  # BUILD
-        # return creds.westcoasthook # SHIP
+        return creds.testhook  # BUILD  # return creds.westcoasthook # SHIP
     else:
         print(text.no_channel)
         return creds.testhook
@@ -36,13 +35,14 @@ def top_secret ( channel ):
 
 async def message_factory(channel, project_name, path_to_temp):
     """
-    Now that the data is in card format, pass it on to a          Teams channel through a Flow webhook
-    Args:
-        channel(str): Selects the webhook to send too.
-        project_name(str): Name of project
-        path_to_temp(str): Path to file of stored json data
+        Takes data in card format and posts it to Teams channel through a Flow webhook
 
-    Returns:
+        Args:
+            channel(str): Selects the webhook to send too.
+            project_name(str): Name of project
+            path_to_temp(str): Path to file of stored json data
+
+        Returns: Teams Hook Response code.
 
     """
     message = Send_Hook(channel, project_name, path_to_temp)
@@ -57,13 +57,12 @@ class Send_Hook:
 
     def __init__(self, channel, temp_project, temp_file_path):
         """
-                  Args:
-                      channel (str): Which channel(team) to send card to
-                      temp_project (str): Project name and filename
-                      temp_file_path (str): Path to json being Posted
-                  Returns:
-                      (str): Post error message
-                  """
+            Args:
+                channel (str): Which channel(team) to send card to
+                temp_project (str): Project name and filename
+                temp_file_path (str): Path to json being Posted
+            Returns: Teams Hook Response code.
+        """
         self.channel = top_secret(channel)
         self.project = temp_project
         self.file = temp_file_path
@@ -78,18 +77,19 @@ class Send_Hook:
         return await self.send_message()
 
     async def send_message(self):
-        """ Post self.finished_card to url self.channel """
-        response = requests.post(
-                self.channel, data=json.dumps(self.finished_card),
-                headers={'Content-Type': 'application/json'}
-        )
+        """
+            Post self.finished_card to url self.channel
+
+            Returns: Teams Hook Response code.
+
+        """
+        response = requests.post(self.channel, data=json.dumps(self.finished_card),
+                                 headers={'Content-Type': 'application/json'})
         if response.status_code != 200:
             # TODO: Handle response codes
             result = ValueError(
-                    'Request to Teams returned an error %s, the response is:\n%s' % (
-                            response.status_code, response.text))
+                'Request to Teams returned an error %s, the response is:\n%s' % (response.status_code, response.text))
             return result
-        # TODO: Do temp file clean up
 
 
 if __name__ == '__main__':

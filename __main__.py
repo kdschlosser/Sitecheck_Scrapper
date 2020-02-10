@@ -197,6 +197,7 @@ class Project_run:
         # TODO Convert this to unique filename for each run
         if os.path.exists(tcg.storage + self.project.name + '_temp.txt'):
             os.remove(tcg.storage + self.project.name + '_temp.txt')
+        if os.path.exists(tcg.storage + self.project.name + '_temp.json'):
             os.remove(tcg.storage + self.project.name + '_temp.json')
         # TODO: Change If to switch for multi-site projects
         if self.project.hassite == 'amp':
@@ -390,6 +391,6 @@ async def main():
     await browser.close()
 
 
-if __name__ == '__main__':
-    run = asyncio.run(main())
-    print('\n' + text.exitmessage)
+# if __name__ == '__main__':
+asyncio.run(main())
+print('\n' + text.exitmessage)
