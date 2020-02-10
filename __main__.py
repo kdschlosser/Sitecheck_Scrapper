@@ -103,6 +103,27 @@ async def run_controller(project):
     return run_result
 
 
+def watchdog_processor(diff, sensor_data, project_name, sensor, date):
+    if diff <= Options.watchdog:
+        if Options.verbose:
+            sensor_data += '\n' + text.uptoDate
+        data_list = [sensor, 'good', 'Up-to-date', date]
+        tcg.store(project_name, data_list)
+        print(sensor_data)
+    elif Options.watchdog <= diff <= Options.watch_limit:
+        if Options.verbose:
+            sensor_data += '\n' + text.behindDate
+        data_list = [sensor, 'warning', 'Older than 24 hours', date]
+        tcg.store(project_name, data_list)
+        print(sensor_data)
+    else:
+        if Options.verbose:
+            sensor_data += '\n' + text.oldDate
+        data_list = [sensor, 'attention', 'Older than a week', date]
+        tcg.store(project_name, data_list)
+        print(sensor_data)
+
+
 async def login(self):
     """
         # TODO fill this in
@@ -261,27 +282,6 @@ class ampWebpage:
                 watchdog_processor(diff, sensor_data, self.project_name, sensor, date)
 
                 # if diff <= Options.watchdog:  #     if Options.verbose:  #         sensor_data += '\n' + text.uptoDate  #     data_list = [sensor, 'good', 'Up-to-date', date]  #     tcg.store(self.project.name, data_list)  #     print(sensor_data)  # elif Options.watchdog <= diff <= Options.watch_limit:  #     if Options.verbose:  #         sensor_data += '\n' + text.behindDate  #     data_list = [sensor, 'warning', 'Older than 24 hours', date]  #     tcg.store(self.project.name, data_list)  #     print(sensor_data)  # else:  #     if Options.verbose:  #         sensor_data += '\n' + text.oldDate  #     data_list = [sensor, 'attention', 'Older than a week', date]  #     tcg.store(self.project.name, data_list)  #     print(sensor_data)
-
-
-def watchdog_processor(diff, sensor_data, project_name, sensor, date):
-    if diff <= Options.watchdog:
-        if Options.verbose:
-            sensor_data += '\n' + text.uptoDate
-        data_list = [sensor, 'good', 'Up-to-date', date]
-        tcg.store(project_name, data_list)
-        print(sensor_data)
-    elif Options.watchdog <= diff <= Options.watch_limit:
-        if Options.verbose:
-            sensor_data += '\n' + text.behindDate
-        data_list = [sensor, 'warning', 'Older than 24 hours', date]
-        tcg.store(project_name, data_list)
-        print(sensor_data)
-    else:
-        if Options.verbose:
-            sensor_data += '\n' + text.oldDate
-        data_list = [sensor, 'attention', 'Older than a week', date]
-        tcg.store(project_name, data_list)
-        print(sensor_data)
 
 
 class qvWebpage:
