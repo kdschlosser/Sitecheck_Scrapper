@@ -335,6 +335,7 @@ class generator:
             # TODO: this row needs more development, It will house buttons
             # Add the bits to close up the card.
             # TODO: queue or start teams_hook.py
+            # TODO: add project.url to generator
             print(_template.button_row_template1 + 'https://www.google.com/' + _template.button_row_template2,
                   file=gen_file)
             print(_template.Bot_suffix, file=gen_file)
