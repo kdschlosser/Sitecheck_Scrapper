@@ -139,7 +139,7 @@ async def login(self):
             await self.page.type(x.pwcss, x.password)
             await self.page.click(x.loginbutton)
             break
-        except:
+        except PageError:
             pass
     await self.page.waitFor(50)
 
