@@ -5,7 +5,6 @@ https://docs.microsoft.com/en-us/adaptive-cards/
 """
 import json
 
-import asyncio
 import requests
 
 from env import creds, text
@@ -61,6 +60,7 @@ class Send_Hook:
                 channel (str): Which channel(team) to send card to
                 temp_project (str): Project name and filename
                 temp_file_path (str): Path to json being Posted
+
             Returns: Teams Hook Response code.
         """
         self.channel = top_secret(channel)
@@ -91,7 +91,3 @@ class Send_Hook:
                 'Request to Teams returned an error %s, the response is:\n%s' % (response.status_code, response.text))
             return result
 
-
-if __name__ == '__main__':
-    run = asyncio.run(message_factory('flamming', "Test_Project",
-                                      "C:\\Users\\Dan.Edens\\Desktop\\Tree\\the_lab\\Python\\pyppeteer_sitecheck_scrapper\\env\\data\\cards\\audicentralhouston"))
