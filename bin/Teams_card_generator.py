@@ -1,11 +1,7 @@
 # """Teams_card_generator.py: Library for generating JSON cards from a template.
-# Guide on Message Cards: https://poszytek.eu/en/microsoft-en/microsoft-message-cards-the-ultimate-guide/
-# Change Log:
-# 2/2/2020
-# Adds the card_template class
-# Adds the factory class
-# TODO: update all change logs and squash commits
+# Guide on Message Cards: https://docs.microsoft.com/en-us/adaptive-cards/
 #
+# This Collects stored sensor data and generates a Microsoft Team's Adaptive Card.
 # """
 
 import json
