@@ -170,10 +170,7 @@ class Project_run:
         await login(self)
         await ampWebpage.goto_plan_view(self)
         await self.page.close()
-        # After the Site is scanned, the collected data is processed into a
-        # Team's channel card
         print(self.project.name)
-
         staged_file = tcg.generator(self.project)
         path_to_temp = staged_file.compile_data()
         print(path_to_temp)
@@ -187,7 +184,6 @@ class Project_run:
             Creates the new page and gives it a viewport.
             Than handles gathering and output of data for QV scanner.
         """
-        # TODO Update qv run
         self.url = qv.urlstring
         self.page = await browser.newPage()
         await self.page.setViewport({"width": Options.width, "height": Options.height})
@@ -210,7 +206,6 @@ class ampWebpage:
     """
 
     def __init__(self):
-        # TODO Update class structure with my new learns
         pass
 
     async def goto_plan_view(self):
@@ -251,7 +246,6 @@ class ampWebpage:
             if name is None:
                 pass
             else:
-                # TODO When sensor is found, add to list saved to this project for future runs
                 sensor = await self.page.evaluate('(name) => name.textContent', name)
                 value = await self.page.evaluate('(link) => link.textContent', link)
                 date = await self.page.evaluate('(link) => link.title', link)
@@ -264,25 +258,30 @@ class ampWebpage:
                 diff_in_days = parse(text.nowdate) - parse(date)
                 diff = int(diff_in_days.total_seconds())
                 sensor_data += date
+                watchdog_processor(diff, sensor_data, self.project_name, sensor, date)
 
-                if diff <= Options.watchdog:
-                    if Options.verbose:
-                        sensor_data += '\n' + text.uptoDate
-                    data_list = [sensor, 'good', 'Up-to-date', date]
-                    tcg.store(self.project.name, data_list)
-                    print(sensor_data)
-                elif Options.watchdog <= diff <= Options.watch_limit:
-                    if Options.verbose:
-                        sensor_data += '\n' + text.behindDate
-                    data_list = [sensor, 'warning', 'Older than 24 hours', date]
-                    tcg.store(self.project.name, data_list)
-                    print(sensor_data)
-                else:
-                    if Options.verbose:
-                        sensor_data += '\n' + text.oldDate
-                    data_list = [sensor, 'attention', 'Older than a week', date]
-                    tcg.store(self.project.name, data_list)
-                    print(sensor_data)
+                # if diff <= Options.watchdog:  #     if Options.verbose:  #         sensor_data += '\n' + text.uptoDate  #     data_list = [sensor, 'good', 'Up-to-date', date]  #     tcg.store(self.project.name, data_list)  #     print(sensor_data)  # elif Options.watchdog <= diff <= Options.watch_limit:  #     if Options.verbose:  #         sensor_data += '\n' + text.behindDate  #     data_list = [sensor, 'warning', 'Older than 24 hours', date]  #     tcg.store(self.project.name, data_list)  #     print(sensor_data)  # else:  #     if Options.verbose:  #         sensor_data += '\n' + text.oldDate  #     data_list = [sensor, 'attention', 'Older than a week', date]  #     tcg.store(self.project.name, data_list)  #     print(sensor_data)
+
+
+def watchdog_processor(diff, sensor_data, project_name, sensor, date):
+    if diff <= Options.watchdog:
+        if Options.verbose:
+            sensor_data += '\n' + text.uptoDate
+        data_list = [sensor, 'good', 'Up-to-date', date]
+        tcg.store(project_name, data_list)
+        print(sensor_data)
+    elif Options.watchdog <= diff <= Options.watch_limit:
+        if Options.verbose:
+            sensor_data += '\n' + text.behindDate
+        data_list = [sensor, 'warning', 'Older than 24 hours', date]
+        tcg.store(project_name, data_list)
+        print(sensor_data)
+    else:
+        if Options.verbose:
+            sensor_data += '\n' + text.oldDate
+        data_list = [sensor, 'attention', 'Older than a week', date]
+        tcg.store(project_name, data_list)
+        print(sensor_data)
 
 
 class qvWebpage:
@@ -346,46 +345,22 @@ class qvWebpage:
             await self.page.hover(sensor)
             link = await self.page.J(qv.hoverbox)
             txt = await self.page.evaluate('(link) => link.innerHTML', link)
+        except:
+            # raise PageError('No node found for selector: ' + selector)
+            # pyppeteer.errors.PageError: No node found for selector: #objects > img:nth-child(0)
+            pass
             value = 'In Development'
             split_date = txt.split('<br>')
-            print(split_date)
             sensor = split_date[0]
-            print(sensor, split_date[1])
             sensor_data = '\nSensor name: ' + sensor
-            if Options.getvalue:
-                print('In Development')
-                # sensor_data += '\nCurrent value: ' + value
+            # if Options.getvalue: sensor_data += '\nCurrent value: ' + value
             date = split_date[3].split("data: ").pop()
             sensor_data += '\nLatest data on QV: '
 
             diff_in_days = parse(text.nowdate) - parse(date)
             diff = (diff_in_days.total_seconds())
             sensor_data += date
-
-            if diff <= Options.watchdog:
-                if Options.verbose:
-                    sensor_data += '\n' + text.uptoDate
-                data_list = [sensor, 'good', 'Up-to-date', date]
-                tcg.store(self.project.name, data_list)
-                print(sensor_data)
-            elif Options.watchdog <= diff <= Options.watch_limit:
-                if Options.verbose:
-                    sensor_data += '\n' + text.behindDate
-                data_list = [sensor, 'warning', 'Older than 24 hours', date]
-                tcg.store(self.project.name, data_list)
-                print(sensor_data)
-            else:
-                if Options.verbose:
-                    sensor_data += '\n' + text.oldDate
-                data_list = [sensor, 'attention', 'Older than a week', date]
-                tcg.store(self.project.name, data_list)
-                print(sensor_data)
-        except:
-            # TODO: build proper exception for not finding selector on page
-            # This exception allows selector values not present on the current page to be ignored. Tag - future optimizations
-            pass
-        # TODO: Add check if data is empty to re-try with longer page load wait
-        return
+            watchdog_processor(diff, sensor_data, self.project_name, sensor, date)
 
 
 async def main():
