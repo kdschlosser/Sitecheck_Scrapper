@@ -6,25 +6,25 @@
     "proj": "null",
     "planarray": "143,124,127",
     "hassite": "amp",
-    "channel": "west_project"
+    "channel": "test"
   },
   {
     "skip": "true",
     "group": "true",
     "name": "audicentralhouston",
     "proj": "null",
-    "planarray": "124,125,126",
+    "planarray": "126",
     "hassite": "amp",
-    "channel": "west_project"
+    "channel": "test"
   },
   {
     "skip": "false",
     "group": "false",
     "name": "425riverside",
     "proj": "3",
-    "planarray": "0,1",
+    "planarray": "0",
     "hassite": "qv",
-    "channel": "west_project"
+    "channel": "test"
   },
   {
     "skip": "true",
@@ -33,7 +33,7 @@
     "proj": "null",
     "planarray": "4,5,6",
     "hassite": "amp",
-    "channel": "west_project"
+    "channel": "test"
   },
   {
     "skip": "true",
@@ -42,7 +42,7 @@
     "proj": "null",
     "planarray": "124,125",
     "hassite": "amp",
-    "channel": "west_project"
+    "channel": "test"
   },
   {
     "skip": "true",
@@ -51,7 +51,7 @@
     "proj": "null",
     "planarray": "124",
     "hassite": "amp",
-    "channel": "west_project"
+    "channel": "test"
   },
   {
     "skip": "true",
@@ -60,7 +60,7 @@
     "proj": "null",
     "planarray": "124",
     "hassite": "amp",
-    "channel": "west_project"
+    "channel": "test"
   },
   {
     "skip": "true",
@@ -69,7 +69,7 @@
     "proj": "null",
     "planarray": "1",
     "hassite": "amp",
-    "channel": "west_project"
+    "channel": "test"
   },
   {
     "skip": "true",
@@ -78,7 +78,7 @@
     "proj": "null",
     "planarray": "2,3",
     "hassite": "amp",
-    "channel": "west_project"
+    "channel": "test"
   },
   {
     "skip": "true",
@@ -87,7 +87,7 @@
     "proj": "null",
     "planarray": "6,7",
     "hassite": "amp",
-    "channel": "west_project"
+    "channel": "test"
   },
   {
     "skip": "true",
@@ -96,7 +96,7 @@
     "proj": "null",
     "planarray": "124,125,127",
     "hassite": "amp",
-    "channel": "west_project"
+    "channel": "test"
   },
   {
     "skip": "true",
@@ -105,7 +105,7 @@
     "proj": "2",
     "planarray": "0,3",
     "hassite": "qv",
-    "channel": "west_project"
+    "channel": "test"
   },
   {
     "skip": "true",
@@ -114,7 +114,7 @@
     "proj": "22",
     "planarray": "0,1,2,3",
     "hassite": "qv",
-    "channel": "west_project"
+    "channel": "test"
   },
   {
     "skip": "true",
@@ -123,7 +123,7 @@
     "proj": "14",
     "planarray": "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15",
     "hassite": "qv",
-    "channel": "west_project"
+    "channel": "test"
   },
   {
     "skip": "true",
@@ -132,6 +132,6 @@
     "proj": "24",
     "planarray": "2",
     "hassite": "qv",
-    "channel": "west_project"
+    "channel": "test"
   }
 ]

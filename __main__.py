@@ -8,6 +8,7 @@ import pathlib
 import asyncio
 from dateutil.parser import parse
 from pyppeteer import launch
+from pyppeteer.errors import PageError
 from pyxtension.Json import Json
 
 # noinspection PyPep8Naming
@@ -249,10 +250,12 @@ class ampWebpage:
 
     async def get_last_update(self):
         """
-            Collects Amp Sensor data from the current Planview
+            Collects Sensor data for the provided sensor ID (self.target_child)
 
         Args:
-            target_child(str): Sensor to Scan
+            self.page(obj): Page Context
+            self.project.name(str): Project name
+            self.target_child(str): Sensor to Scan
 
         Returns: (none)
 
@@ -278,8 +281,6 @@ class ampWebpage:
                 diff = int(diff_in_days.total_seconds())
                 sensor_data += date
                 await watchdog_processor(diff, sensor_data, self.project.name, sensor, date)
-
-                # if diff <= Options.watchdog:  #     if Options.verbose:  #         sensor_data += '\n' + text.uptoDate  #     data_list = [sensor, 'good', 'Up-to-date', date]  #     tcg.store(self.project.name, data_list)  #     print(sensor_data)  # elif Options.watchdog <= diff <= Options.watch_limit:  #     if Options.verbose:  #         sensor_data += '\n' + text.behindDate  #     data_list = [sensor, 'warning', 'Older than 24 hours', date]  #     tcg.store(self.project.name, data_list)  #     print(sensor_data)  # else:  #     if Options.verbose:  #         sensor_data += '\n' + text.oldDate  #     data_list = [sensor, 'attention', 'Older than a week', date]  #     tcg.store(self.project.name, data_list)  #     print(sensor_data)
 
 
 class qvWebpage:
@@ -324,13 +325,19 @@ class qvWebpage:
 
     async def get_last_update(self):
         """
-             Collects QV Sensor data from the current Planview
+             Collects Sensor data for the provided sensor ID (self.target_child)
 
         Args:
-            target_child(str): Sensor to Scan
+            self.page(obj): Page Context
+            self.project.name(str): Project name
+            self.target_child(str): Sensor to Scan
 
         Returns: (none)
 
+        Exception handles:
+            Passes over non-existent sensors during view scan.
+            raise PageError('No node found for selector: ' + selector)
+            pyppeteer.errors.PageError: No node found for selector: #objects > img:nth-child(0)
         """
         sensor = '#objects > img:nth-child(' + self.target_child + ')'
         # noinspection PyBroadException
@@ -349,10 +356,7 @@ class qvWebpage:
             diff = (diff_in_days.total_seconds())
             sensor_data += date
             await watchdog_processor(diff, sensor_data, self.project.name, sensor, date)
-        except:
-            # raise PageError('No node found for selector: ' + selector)
-            print(sensor)
-            # pyppeteer.errors.PageError: No node found for selector: #objects > img:nth-child(0)
+        except PageError:
             pass
 
 
