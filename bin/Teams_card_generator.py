@@ -264,7 +264,8 @@ class sensor_data:
 
 class generator:
     """
-            # TODO fill this in
+        After the Site is scanned, the collected data is processed into a
+        Team's channel card
     """
     def __init__(self, current_project):
         """

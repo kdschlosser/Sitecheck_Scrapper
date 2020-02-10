@@ -8,6 +8,7 @@ import pathlib
 import asyncio
 from dateutil.parser import parse
 from pyppeteer import launch
+from pyppeteer.errors import PageError
 from pyxtension.Json import Json
 
 # noinspection PyPep8Naming
@@ -20,7 +21,7 @@ amp = sites.amp
 
 class Options:
     """This class contains the browser's configurable options"""
-    headless = True
+    headless = False
     # TODO: Setup .args
     chrome_args = ['--start-maximized', ' --user-data-dir=' + text.ROOT_data]
     width = text.width
@@ -103,11 +104,57 @@ async def run_controller(project):
     return run_result
 
 
+async def watchdog_processor(diff, sensor_data, project_name, sensor, date):
+    if diff <= Options.watchdog:
+        if Options.verbose:
+            sensor_data += '\n' + text.uptoDate
+        data_list = [sensor, 'good', 'Up-to-date', date]
+        tcg.store(project_name, data_list)
+        print(sensor_data)
+    elif Options.watchdog <= diff <= Options.watch_limit:
+        if Options.verbose:
+            sensor_data += '\n' + text.behindDate
+        data_list = [sensor, 'warning', 'Older than 24 hours', date]
+        tcg.store(project_name, data_list)
+        print(sensor_data)
+    else:
+        if Options.verbose:
+            sensor_data += '\n' + text.oldDate
+        data_list = [sensor, 'attention', 'Older than a week', date]
+        tcg.store(project_name, data_list)
+        print(sensor_data)
+
+
+async def login(self):
+    """
+        # TODO fill this in
+    Returns:
+
+    """
+    await self.page.goto(self.url)
+    await self.page.waitFor(1000)
+    for x in [amp, qv]:
+        try:
+            await self.page.type(x.logincss, x.username)
+            await self.page.type(x.pwcss, x.password)
+            await self.page.click(x.loginbutton)
+            break
+        except:
+            pass
+    await self.page.waitFor(50)
+
+
+async def scan_plan_view(parent, thread_pool):
+    print(parent)
+    for target_child in range(0, 300):
+        parent.target_child = str(target_child)
+        await thread_pool.get_last_update(parent)
+
+
 class Project_run:
     """
     Controller class for a project.
     After initiation by run_controller, The Project's skip value is checked and canceled if true
-    (TODO: fix case sensitive).
     If False, the run begins.
     """
 
@@ -116,7 +163,7 @@ class Project_run:
 
     async def evaluate_site(self):
         """
-        after initiation by run_controller, The Project's             skip value is checked and canceled if true (case              sensitive).
+        after initiation by run_controller, The Project's skip value is checked and canceled if true (case sensitive).
         If false, the run begins.
         """
         if self.project.skip == 'true':
@@ -124,13 +171,16 @@ class Project_run:
                 print('Skipping project: ' + self.project.name)
             pass
         else:
-            print(text.fileheader + self.project.name)
+            if Options.verbose:
+                print(text.fileheader + self.project.name)
             await self.filter_site()
 
     async def filter_site(self):
         """
         Checks if a project has a site on Amp, Qv, or               Truelook.
         """
+        if os.path.exists(tcg.storage + self.project.name + '_temp.txt'):
+            os.remove(tcg.storage + self.project.name + '_temp.txt')
         # TODO: Change If to switch for multi-site projects
         if self.project.hassite == 'amp':
             await self.has_amp()
@@ -141,40 +191,41 @@ class Project_run:
         """
             Main Thread function of the Amp scanner.
             Creates the new page and gives it a viewport.
-            Than handles gathering and outputing the data                 from Amp.
+            Than handles gathering and output of data for Amp scanner.
         """
         self.url = 'https://' + self.project.name + '.geo-instruments.com/index.php'
         self.page = await browser.newPage()
         await self.page.setViewport({"width": Options.width, "height": Options.height})
-        await ampWebpage.login(self)
-        await self.page.waitFor(50)
+        await login(self)
         await ampWebpage.goto_plan_view(self)
         await self.page.close()
-        # After the Site is scanned, the collected data is processed into a
-        # Team's channel card
         print(self.project.name)
-
         staged_file = tcg.generator(self.project)
         path_to_temp = staged_file.compile_data()
         print(path_to_temp)
-        # result = await hook.message_factory(self.project.channel, self.project.name, path_to_temp)
-        result = await hook.message_factory('test', self.project.name, path_to_temp)
+        result = await hook.message_factory(self.project.channel, self.project.name, path_to_temp)
         print(result, '\n End of run')
 
     async def has_QV(self):
         """
-            # TODO fill this in
+            Main Thread function of the QV scanner.
+            Creates the new page and gives it a viewport.
+            Than handles gathering and output of data for QV scanner.
         """
-        # TODO Update qv run
         self.url = qv.urlstring
         self.page = await browser.newPage()
         await self.page.setViewport({"width": Options.width, "height": Options.height})
-        await qvWebpage.login(self)
-        await self.page.waitFor(50)
+        await login(self)
         await qvWebpage.goto_project(self)
         await self.page.waitFor(50)
         await qvWebpage.goto_plan_view(self)
         await self.page.close()
+        staged_file = tcg.generator(self.project)
+        path_to_temp = staged_file.compile_data()
+        print(path_to_temp)
+        # SHIP result = await hook.message_factory(self.project.channel, self.project.name, path_to_temp)
+        result = await hook.message_factory('test', self.project.name, path_to_temp)  # BUILD
+        print(result, '\n End of run')
 
 
 class ampWebpage:
@@ -182,50 +233,32 @@ class ampWebpage:
         Thread pool for Amp.
     """
 
-    def __init__(self):
-        # TODO Update class structure with my new learns
-        pass
-
-    async def login(self):
-        """
-        Navigates through authentication, and removes                 past run data from temp files. This will be                   rearranged in final optimization.
-        Args(object): Self.
-            Requires ID of current Page context.
-            TODO: test with just recieving self.page
-        Returns: (None)
-
-        """
-        await self.page.goto(self.url)
-        await self.page.waitFor(1000)
-        await wait_type(self.page, amp.logincss, creds.username)
-        await wait_type(self.page, amp.pwcss, creds.password)
-        await wait_click(self.page, amp.loginbutton)
-        # TODO move to cleanup function, add name_temp.json
-        if os.path.exists(tcg.storage + self.project.name + '_temp.txt'):
-            os.remove(tcg.storage + self.project.name + '_temp.txt')
-        return
-
     async def goto_plan_view(self):
         """
             Navigates to each planview listed in project.planarray and iterates through an array to check possible sensorboxes
         Returns:
 
         """
-        print(text.scanplan + self.project.planarray)
+        if Options.verbose:
+            print(text.scanplan + self.project.planarray)
         plan_array = self.project.planarray.split(",")
         for view in plan_array:
             if Options.verbose:
                 print(view)
             await self.page.goto(self.url + amp.planview + view)
-            for target_child in range(0, 300):
-                # noinspection PyAttributeOutsideInit
-                self.target_child = str(target_child)
-                await ampWebpage.get_last_update(self)
-        return self
+            await scan_plan_view(self, ampWebpage)
 
     async def get_last_update(self):
         """
-            # TODO fill this in
+            Collects Sensor data for the provided sensor ID (self.target_child)
+
+        Args:
+            self.page(obj): Page Context
+            self.project.name(str): Project name
+            self.target_child(str): Sensor to Scan
+
+        Returns: (none)
+
         """
         for type_of_sensor_box in amp.label:
             name_sel = str(
@@ -237,65 +270,23 @@ class ampWebpage:
             if name is None:
                 pass
             else:
-                # TODO When sensor is found, add to list saved to this project for future runs
                 sensor = await self.page.evaluate('(name) => name.textContent', name)
                 value = await self.page.evaluate('(link) => link.textContent', link)
                 date = await self.page.evaluate('(link) => link.title', link)
-                print(sensor, value)
-                data = '\nSensor name: ' + sensor
+                sensor_data = '\nSensor name: ' + sensor
                 if Options.getvalue:
-                    # TODO Add get value option to card generator
-                    data += '\nCurrent value: ' + value
-                data += '\nLast Updated on AMP: '
+                    sensor_data += '\nCurrent value: ' + value
+                sensor_data += '\nLatest data on AMP: '
                 diff_in_days = parse(text.nowdate) - parse(date)
                 diff = int(diff_in_days.total_seconds())
-                if diff <= Options.watchdog:
-                    data += date
-                    if Options.verbose:
-                        data += '\n' + text.uptoDate
-                    print(data)
-                    # data = [name, color, status, time]
-                    data_list = [sensor, 'good', 'Up-to-date', date]
-                    tcg.store(self.project.name, data_list)
-                elif Options.watchdog <= diff <= Options.watch_limit:
-                    data += date
-                    if Options.verbose:
-                        data += '\n' + text.behindDate
-                    if Options.check:
-                        # TODO: Build check module, Entry point here
-                        pass
-                    print(data)
-                    data_list = [sensor, 'warning', 'Older than 24 hours', date]
-                    tcg.store(self.project.name, data_list)
-                else:
-                    data += date
-                    if Options.verbose:
-                        data += '\n' + text.oldDate
-                    print(data)
-                    data_list = [sensor, 'attention', 'Older than a week', date]
-                    tcg.store(self.project.name, data_list)
+                sensor_data += date
+                await watchdog_processor(diff, sensor_data, self.project.name, sensor, date)
 
 
 class qvWebpage:
     """
-            # TODO fill this in
+            Thread Pool for QV
     """
-
-    def __init__(self):
-        # TODO Update qv run
-        pass
-
-    async def login(self):
-        """
-            # TODO fill this in
-        Returns:
-
-        """
-        await self.page.goto(self.url)
-        await wait_type(self.page, qv.logincss, creds.qvuser)
-        await wait_type(self.page, qv.pwcss, creds.qvpass)
-        await wait_click(self.page, qv.loginbutton)
-        return
 
     async def goto_project(self):
         """
@@ -306,7 +297,6 @@ class qvWebpage:
         await wait_click(self.page, qv.projects)
         await wait_hover(self.page, qv.scrollbar)
         await self.page.waitFor(500)
-        # print(str(self.project.proj))
         self.namenum = str(self.project.proj)
         self.page = await wait_click(self.page, qv.proj_pre + self.namenum + qv.proj_post)
         return self
@@ -317,6 +307,8 @@ class qvWebpage:
         Returns:
             object:
         """
+        if Options.verbose:
+            print(text.scanplan + self.project.planarray)
         views = self.project.planarray.split(",")
         for view in views:
             print(view)
@@ -329,51 +321,43 @@ class qvWebpage:
                 await self.page.waitFor(400)
                 await wait_click(self.page, qv.thumb + view)
             await self.page.waitFor(2000)
-            for target_child in range(0, 300):
-                await qvWebpage.get_last_update(self, target_child)  # return
+            await scan_plan_view(self, qvWebpage)
 
-    async def get_last_update(self, target_child):
+    async def get_last_update(self):
         """
-            # TODO fill this in
+             Collects Sensor data for the provided sensor ID (self.target_child)
+
         Args:
-            target_child:
+            self.page(obj): Page Context
+            self.project.name(str): Project name
+            self.target_child(str): Sensor to Scan
 
-        Returns:
+        Returns: (none)
 
+        Exception handles:
+            Passes over non-existent sensors during view scan.
+            raise PageError('No node found for selector: ' + selector)
+            pyppeteer.errors.PageError: No node found for selector: #objects > img:nth-child(0)
         """
-        sensor = '#objects > img:nth-child(' + str(target_child) + ')'
+        sensor = '#objects > img:nth-child(' + self.target_child + ')'
         # noinspection PyBroadException
         try:
             await self.page.hover(sensor)
-            link = await self.page.querySelector(qv.hoverbox)
+            link = await self.page.J(qv.hoverbox)
             txt = await self.page.evaluate('(link) => link.innerHTML', link)
+            value = 'In Development'
             split_date = txt.split('<br>')
-            sensor_data = '\nSensor name: ' + split_date[0]
+            sensor = split_date[0]
+            sensor_data = '\nSensor name: ' + sensor
+            # if Options.getvalue: sensor_data += '\nCurrent value: ' + value
             date = split_date[3].split("data: ").pop()
-            sensor_data = sensor_data + ' \nDate:' + date + '\n'
+            sensor_data += '\nLatest data on QV: '
             diff_in_days = parse(text.nowdate) - parse(date)
             diff = (diff_in_days.total_seconds())
-            if diff <= Options.watchdog:
-                sensor_data += date
-                if Options.verbose:
-                    sensor_data += '\n' + text.uptoDate
-                print(sensor_data)
-            elif Options.watchdog <= diff <= Options.watch_limit:
-                sensor_data += date
-                if Options.verbose:
-                    sensor_data += '\n' + text.behindDate
-                print(sensor_data)
-            else:
-                sensor_data += date
-                if Options.verbose:
-                    sensor_data += '\n' + text.oldDate
-                print(sensor_data)
-        except:
-            # TODO: build proper exception for not finding selector on page
-            # This exception allows selector values not present on the current page to be ignored. Tag - future optimizations
+            sensor_data += date
+            await watchdog_processor(diff, sensor_data, self.project.name, sensor, date)
+        except PageError:
             pass
-        # TODO: Add check if data is empty to re-try with longer page load wait
-        return
 
 
 async def main():

@@ -1,3 +1,4 @@
+from env import creds
 
 outputfile = '_sitecheck.txt'
 watchdog = 86400000
@@ -6,13 +7,20 @@ parallel = 1
 
 # class selectors:
 class ampAdmin:
+	name = 'ampAdmin'
+	username = creds.ampadminuser
+	password = creds.ampadminpass
+	logincss = ''
+	pwcss = ''
 	url: "http =//ampadmin.geo-instruments.com/geoadmin.php"
 
 class amp:
 	name = 'amp'
-	urlstring = '.geo-instruments.com/index.php'
+	username = creds.ampuser
+	password = creds.amppass
 	logincss = '#s_text_login_name'
 	pwcss = '#s_password_login_password'
+	urlstring = '.geo-instruments.com/index.php'
 	loginbutton = 'body > div > form > input.button'
 	planview = '?s_cat=project&i_project=17&i_planview='
 	all_pre = 'body > div:nth-child('
@@ -25,9 +33,11 @@ class amp:
 
 class qv:
 		name = 'qv'
-		urlstring = 'https://quickview.geo-instruments.com/login.php'
+		username = creds.qvuser
+		password = creds.qvpass
 		logincss = '#user'
 		pwcss = '#pass'
+		urlstring = 'https://quickview.geo-instruments.com/login.php'
 		loginbutton = '#login > form > button'
 		projects = '#menuProjects > a > i'
 		proj_pre = 'div#projectList div:nth-child('
