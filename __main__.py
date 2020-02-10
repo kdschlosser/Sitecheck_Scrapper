@@ -103,7 +103,7 @@ async def run_controller(project):
     return run_result
 
 
-def watchdog_processor(diff, sensor_data, project_name, sensor, date):
+async def watchdog_processor(diff, sensor_data, project_name, sensor, date):
     if diff <= Options.watchdog:
         if Options.verbose:
             sensor_data += '\n' + text.uptoDate
@@ -141,6 +141,13 @@ async def login(self):
         except:
             pass
     await self.page.waitFor(50)
+
+
+async def scan_plan_view(parent, thread_pool):
+    print(parent)
+    for target_child in range(0, 300):
+        parent.target_child = str(target_child)
+        await thread_pool.get_last_update(parent)
 
 
 class Project_run:
@@ -195,8 +202,7 @@ class Project_run:
         staged_file = tcg.generator(self.project)
         path_to_temp = staged_file.compile_data()
         print(path_to_temp)
-        # SHIP result = await hook.message_factory(self.project.channel, self.project.name, path_to_temp)
-        result = await hook.message_factory('test', self.project.name, path_to_temp)  # BUILD
+        result = await hook.message_factory(self.project.channel, self.project.name, path_to_temp)
         print(result, '\n End of run')
 
     async def has_QV(self):
@@ -226,9 +232,6 @@ class ampWebpage:
         Thread pool for Amp.
     """
 
-    def __init__(self):
-        pass
-
     async def goto_plan_view(self):
         """
             Navigates to each planview listed in project.planarray and iterates through an array to check possible sensorboxes
@@ -242,10 +245,7 @@ class ampWebpage:
             if Options.verbose:
                 print(view)
             await self.page.goto(self.url + amp.planview + view)
-            for target_child in range(0, 300):
-                # noinspection PyAttributeOutsideInit
-                self.target_child = str(target_child)
-                await ampWebpage.get_last_update(self)
+            await scan_plan_view(self, ampWebpage)
 
     async def get_last_update(self):
         """
@@ -270,16 +270,14 @@ class ampWebpage:
                 sensor = await self.page.evaluate('(name) => name.textContent', name)
                 value = await self.page.evaluate('(link) => link.textContent', link)
                 date = await self.page.evaluate('(link) => link.title', link)
-
                 sensor_data = '\nSensor name: ' + sensor
                 if Options.getvalue:
                     sensor_data += '\nCurrent value: ' + value
                 sensor_data += '\nLatest data on AMP: '
-
                 diff_in_days = parse(text.nowdate) - parse(date)
                 diff = int(diff_in_days.total_seconds())
                 sensor_data += date
-                watchdog_processor(diff, sensor_data, self.project_name, sensor, date)
+                await watchdog_processor(diff, sensor_data, self.project.name, sensor, date)
 
                 # if diff <= Options.watchdog:  #     if Options.verbose:  #         sensor_data += '\n' + text.uptoDate  #     data_list = [sensor, 'good', 'Up-to-date', date]  #     tcg.store(self.project.name, data_list)  #     print(sensor_data)  # elif Options.watchdog <= diff <= Options.watch_limit:  #     if Options.verbose:  #         sensor_data += '\n' + text.behindDate  #     data_list = [sensor, 'warning', 'Older than 24 hours', date]  #     tcg.store(self.project.name, data_list)  #     print(sensor_data)  # else:  #     if Options.verbose:  #         sensor_data += '\n' + text.oldDate  #     data_list = [sensor, 'attention', 'Older than a week', date]  #     tcg.store(self.project.name, data_list)  #     print(sensor_data)
 
@@ -298,7 +296,6 @@ class qvWebpage:
         await wait_click(self.page, qv.projects)
         await wait_hover(self.page, qv.scrollbar)
         await self.page.waitFor(500)
-        # print(str(self.project.proj))
         self.namenum = str(self.project.proj)
         self.page = await wait_click(self.page, qv.proj_pre + self.namenum + qv.proj_post)
         return self
@@ -323,10 +320,7 @@ class qvWebpage:
                 await self.page.waitFor(400)
                 await wait_click(self.page, qv.thumb + view)
             await self.page.waitFor(2000)
-            for target_child in range(0, 300):
-                # noinspection PyAttributeOutsideInit
-                self.target_child = str(target_child)
-                await qvWebpage.get_last_update(self)  # return
+            await scan_plan_view(self, qvWebpage)
 
     async def get_last_update(self):
         """
@@ -344,10 +338,6 @@ class qvWebpage:
             await self.page.hover(sensor)
             link = await self.page.J(qv.hoverbox)
             txt = await self.page.evaluate('(link) => link.innerHTML', link)
-        except:
-            # raise PageError('No node found for selector: ' + selector)
-            # pyppeteer.errors.PageError: No node found for selector: #objects > img:nth-child(0)
-            pass
             value = 'In Development'
             split_date = txt.split('<br>')
             sensor = split_date[0]
@@ -355,11 +345,15 @@ class qvWebpage:
             # if Options.getvalue: sensor_data += '\nCurrent value: ' + value
             date = split_date[3].split("data: ").pop()
             sensor_data += '\nLatest data on QV: '
-
             diff_in_days = parse(text.nowdate) - parse(date)
             diff = (diff_in_days.total_seconds())
             sensor_data += date
-            watchdog_processor(diff, sensor_data, self.project_name, sensor, date)
+            await watchdog_processor(diff, sensor_data, self.project.name, sensor, date)
+        except:
+            # raise PageError('No node found for selector: ' + selector)
+            print(sensor)
+            # pyppeteer.errors.PageError: No node found for selector: #objects > img:nth-child(0)
+            pass
 
 
 async def main():
