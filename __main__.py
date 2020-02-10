@@ -70,18 +70,18 @@ def load_projects():
 
 async def wait_type(page, selector, txt):
     """
-    Wait for a selector to load than type supplied text.
-    Returns page in case entering text changes the context.
+        Wait for a selector to load than type supplied text.
+        Returns page in case entering text changes the context.
     """
-    await page.waitForSelector(selector),
+    await page.waitForSelector(selector)
     await page.type(selector, txt)
     return page
 
 
 async def wait_click(page, selector):
     """
-    Wait for a selector to load than clicks on it.
-    Returns page in case this changes the context.
+        Wait for a selector to load than clicks on it.
+        Returns page in case this changes the context.
     """
     await page.waitForSelector(selector),
     await page.click(selector)
@@ -90,8 +90,8 @@ async def wait_click(page, selector):
 
 async def wait_hover(page, selector):
     """
-    Wait for a selector to load than hover over it.
-    Returns page in case this changes the context.
+        Wait for a selector to load than hover over it.
+        Returns page in case this changes the context.
     """
     await page.waitForSelector(selector),
     await page.hover(selector)
