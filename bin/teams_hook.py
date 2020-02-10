@@ -106,3 +106,6 @@ class Send_Hook:
         if response.status_code != 200:
             return ValueError(
                 'Request to Teams returned an error %s, the response is:\n%s' % (response.status_code, response.text))
+
+
+if __name__ == "__main__":

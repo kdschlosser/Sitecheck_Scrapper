@@ -282,9 +282,7 @@ class ampWebpage:
             self.page(obj): Page Context
             self.project.name(str): Project name
             self.target_child(str): Sensor to Scan
-
         Returns: (none)
-
         """
         for type_of_sensor_box in amp.label:
             name_sel = str(
