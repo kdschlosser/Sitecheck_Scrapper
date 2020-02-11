@@ -2,11 +2,9 @@
 Geo-Instruments
 Daily Sitecheck Scanner
 Repository: https://geodev.geo-instruments.com/DanEdens/pyppet_sitecheck_scrapper
-
-
 """
 # __author__ = "Dan Edens"
-# __version__= "0.5.2"
+# __version__= "0.5.3"
 
 from __future__ import print_function, unicode_literals
 
@@ -415,4 +413,4 @@ async def main():
 
 
 asyncio.run(main())
-print('\n'+text.exitmessage)
+print('\n'+text.exit_message)
