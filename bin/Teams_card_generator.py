@@ -214,16 +214,16 @@ class _template:
 	}'''
 
 
-def store ( project, data_list ):
+def store(project, data_list):
     """
-            Args:
-                project (str): from self.project.name
-                data_list (list): ['IP2', 'good', 'Okay', '2020-01-16 08:00:00']
-
-            Returns:
-                none
-            """
-    file_path = storage + project + '_temp.txt'
+        Args:
+            project (str): Project name
+            data_list (list): Sensor data in list format
+                Examples: ['IP2', 'good', 'Okay', '2020-01-16 08:00:00']
+        Returns:
+            (none)
+    """
+    file_path = storage+project+'_temp.txt'
     with open(file_path, 'a') as file:
         if file.tell() == 0:
             file.write('[')
@@ -236,24 +236,28 @@ class sensor_data:
     """
             # TODO fill this in
     """
+
     def __init__(self, name, color, status, time):
         """
-		        Args:
-		            name (str):
-		            color (str): 'good','attention','warning'
-		            status (str): 'Okay', 'Behind', 'Older than a week'
-		            time (str) '2020-01-14 08:00:00'
-		        Returns:
-		        	string
-		        """
+            Args:
+                name (str): Sensor ID
+                color (str):
+                    Examples:'good','attention','warning'
+                status (str):
+                    Examples:'Okay', 'Behind', 'Older than a week'
+                time (str):
+                    Examples: '2020-01-14 08:00:00'
+            Returns (str): (sudo json)
+                Sensor data in Card format block
+        """
         self.name = name
         self.color = color
         self.status = status
         self.time = time
 
-    def __str__ ( self ):
+    def __str__(self):
         # Formats the Sensor_data into table rows
-        data_line = _template.st1 + self.name + _template.st2 + self.status + _template.st3 + self.color + _template.st4 + self.time + _template.st5
+        data_line = _template.st1+self.name+_template.st2+self.status+_template.st3+self.color+_template.st4+self.time+_template.st5
         return str(data_line)
 
 
@@ -261,24 +265,22 @@ class generator:
     """
         After the Site is scanned, the collected data is processed into a
         Team's channel card
+            Args:
+                current_project (obj): Project Object
     """
+
     def __init__(self, current_project):
         """
-		        Args:
-		            current_project (object):
-		            list_of_sensor_data (list):
-
-		        """
-        # Name to display at top of card
+            Creates (self):
+                project (str): Name to display at top of card
+                store_path (str): Location of staged output. It will than be picked up by the Teams_hook.py
+                generator_output (str): File path of output file
+                url (str): Card button 'Website" link target
+		"""
         self.project = current_project.name
-        # File path of output file
-        # Location of staged output. It will than be picked up by the Teams_hook.py
-        # On card button click
-        self.store_path = storage + current_project.name + '_temp.txt'
-        self.generator_output = storage + current_project.name + "_card.json"
-        self.url = current_project.url
-        # this is the list each sensor's data was appended to while scanning
-        # self.data = list_of_sensor_data
+        self.store_path = storage+current_project.name+'_temp.txt'
+        self.generator_output = storage+current_project.name+"_card.json"
+        self.url = current_project.url  # this is the list each sensor's data was appended to while scanning  # self.data = list_of_sensor_data
 
     def compile_data(self):
         """
@@ -312,7 +314,7 @@ class generator:
             # Traditional methods of Json formatting do not preserve the template's syntax
             # Add the sensor table section goes above the sensors,
             # For each current_project held in data, add a line to the card containing it's data
-            print(_template.Top_prefix1 + self.project + _template.Top_prefix2, file=gen_file)
+            print(_template.Top_prefix1+self.project+_template.Top_prefix2, file=gen_file)
             print(_template.sensor_prefix, file=gen_file)
             _run = len(card_list)
             _loop = 0
@@ -322,19 +324,18 @@ class generator:
                 _loop += 1
                 if _loop != _run:
                     # Add each sensor to the card and add a comma between them.
-                    print(str(data_info) + ',', file=gen_file)
+                    print(str(data_info)+',', file=gen_file)
                 else:
                     # Once the last item is added it will add without the final comma
                     # Add the bits to close up the table.
                     print(data_info, file=gen_file)
             print(_template.sensor_suffix, file=gen_file)
             # TODO: this row needs more development, It will house links to troubleshooting tools
-            print(_template.Link_row_Template1 + self.project + _template.Link_row_Template2,
-                  file=gen_file)
+            print(_template.Link_row_Template1+self.project+_template.Link_row_Template2, file=gen_file)
             # TODO: this row needs more development, It will house buttons
             # Add the bits to close up the card.
             # TODO: queue or start teams_hook.py
-            print(_template.button_row_template1 + 'https://www.google.com/' + _template.button_row_template2,
+            print(_template.button_row_template1+'https://www.google.com/'+_template.button_row_template2,
                   file=gen_file)
             print(_template.Bot_suffix, file=gen_file)
         return gen_file.name
