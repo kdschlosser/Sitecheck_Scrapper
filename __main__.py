@@ -42,6 +42,17 @@ class Options:
     watch_limit = watchdog * 7
 
 
+def verbose(verbose_text):
+    """
+    Verbose Mode print function
+
+    Args:
+        verbose_text(str): Text to print
+    """
+    if Options.verbose:
+        print(verbose_text)
+
+
 def project_out_file(self) -> object:
     """
     Config project to output to the shared run file or it's own file
@@ -61,7 +72,7 @@ def project_out_file(self) -> object:
 def load_projects():
     """
         Returns: project object
-        """
+    """
     with open('env/projects.json') as user_data:
         data = user_data.read()
         projects = json.loads(data)
@@ -104,49 +115,50 @@ async def run_controller(project):
     Args:
         project: Object containing all project data:
                  group, hassite, name, playarray, proj, skip
-
     Returns: Todo: setup promise return hook result
-
     """
     run_result = Project_run(project)
-    await run_result.evaluate_site()
+    await run_result.skip_site()
     return run_result
 
 
 async def watchdog_processor(diff, sensor_data, project_name, sensor, date):
     """
+        Handles sorting sensor watchdog status.
+            Up-to-date, Behind, Old
 
-    Args:
-        diff:
-        sensor_data:
-        project_name:
-        sensor:
-        date:
+        Args:
+            diff (int): Time since last reading
+            sensor_data (str): Text block that is rinted to console
+            project_name(str): Name of Project
+            sensor (str): Sensor ID
+            date (str): Formatted Date string
     """
     if diff <= Options.watchdog:
         if Options.verbose:
             sensor_data += '\n' + text.uptoDate
+            print(sensor_data)
         data_list = [sensor, 'good', 'Up-to-date', date]
         tcg.store(project_name, data_list)
-        print(sensor_data)
     elif Options.watchdog <= diff <= Options.watch_limit:
         if Options.verbose:
             sensor_data += '\n' + text.behindDate
+            print(sensor_data)
         data_list = [sensor, 'warning', 'Older than 24 hours', date]
         tcg.store(project_name, data_list)
-        print(sensor_data)
     else:
         if Options.verbose:
             sensor_data += '\n' + text.oldDate
+            print(sensor_data)
         data_list = [sensor, 'attention', 'Older than a week', date]
         tcg.store(project_name, data_list)
-        print(sensor_data)
 
 
 async def login(self):
     """
-        # TODO fill this in
-    Returns:
+        Handles Authenticating Project websites
+
+        Returns: (none)
 
     """
     await self.page.goto(self.url)
@@ -156,6 +168,7 @@ async def login(self):
             await self.page.type(x.logincss, x.username)
             await self.page.type(x.pwcss, x.password)
             await self.page.click(x.loginbutton)
+            verbose(text.postloginmessage)
             break
         except PageError:
             pass
@@ -177,31 +190,26 @@ async def scan_plan_view(parent, thread_pool):
 
 class Project_run:
     """
-    Controller class for a project.
-    After initiation by run_controller, The Project's skip value is checked and canceled if true
-    If False, the run begins.
+    Controller class for project
     """
 
     def __init__(self, project):
         self.project = Json(project)
 
-    async def evaluate_site(self):
+    async def skip_site(self):
         """
-        after initiation by run_controller, The Project's skip value is checked and canceled if true (case sensitive).
-        If false, the run begins.
+        Cancels run if project.skip is true
         """
         if self.project.skip == 'true':
-            if Options.verbose:
-                print('Skipping project: ' + self.project.name)
+            verbose('Skipping project: ' + self.project.name)
             pass
         else:
-            if Options.verbose:
-                print(text.fileheader + self.project.name)
+            verbose(text.fileheader + self.project.name)
             await self.filter_site()
 
     async def filter_site(self):
         """
-        Checks if a project has a site on Amp, Qv, or               Truelook.
+        Checks if a project is housed on Amp, Qv, and/or Truelook.
         """
         # TODO Convert this to unique filename for each run
         if os.path.exists(tcg.storage + self.project.name + '_temp.txt'):
@@ -213,10 +221,12 @@ class Project_run:
             await self.has_amp()
         elif self.project.hassite == 'qv':
             await self.has_QV()  # TODO rebuild truelook support
+        elif self.project.hassite == 'truelook':
+            verbose('In Development')
 
     async def has_amp(self):
         """
-            Main Thread function of the Amp scanner.
+            Main Thread of the Amp scanner.
             Creates the new page and gives it a viewport.
             Than handles gathering and output of data for Amp scanner.
         """
@@ -226,16 +236,16 @@ class Project_run:
         await login(self)
         await ampWebpage.goto_plan_view(self)
         await self.page.close()
-        print(self.project.name)
+        verbose(self.project.name)
         staged_file = tcg.generator(self.project)
         path_to_temp = staged_file.compile_data()
-        print(path_to_temp)
+        verbose(path_to_temp)
         result = await hook.message_factory(self.project.channel, self.project.name, path_to_temp)
-        print(result, '\n End of run')
+        verbose(result, '\n End of run')
 
     async def has_QV(self):
         """
-            Main Thread function of the QV scanner.
+            Main Thread of the QV scanner.
             Creates the new page and gives it a viewport.
             Than handles gathering and output of data for QV scanner.
         """
@@ -249,9 +259,9 @@ class Project_run:
         await self.page.close()
         staged_file = tcg.generator(self.project)
         path_to_temp = staged_file.compile_data()
-        print(path_to_temp)
+        verbose(path_to_temp)
         result = await hook.message_factory(self.project.channel, self.project.name, path_to_temp)
-        print(result, '\n End of run')
+        verbose(result, '\n End of run')
 
 
 class ampWebpage:
@@ -265,12 +275,10 @@ class ampWebpage:
         Returns:
 
         """
-        if Options.verbose:
-            print(text.scanplan + self.project.planarray)
+        verbose(text.scanplan + self.project.planarray)
         plan_array = self.project.planarray.split(",")
         for view in plan_array:
-            if Options.verbose:
-                print(view)
+            verbose(view)
             await self.page.goto(self.url + amp.planview + view)
             await scan_plan_view(self, ampWebpage)
 
@@ -331,8 +339,7 @@ class qvWebpage:
         Returns:
             object:
         """
-        if Options.verbose:
-            print(text.scanplan + self.project.planarray)
+        verbose(text.scanplan + self.project.planarray)
         views = self.project.planarray.split(",")
         for view in views:
             print(view)
@@ -398,6 +405,5 @@ async def main():
     await browser.close()
 
 
-# if __name__ == '__main__':
 asyncio.run(main())
 print('\n' + text.exitmessage)
