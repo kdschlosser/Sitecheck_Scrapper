@@ -109,8 +109,8 @@ class Send_Hook:
         response = requests.post(self.channel, data=json.dumps(self.finished_card),
                                  headers={'Content-Type': 'application/json'})
         if response.status_code != 200:
-            return ValueError(
-                'Request to Teams returned an error %s, the response is:\n%s' % (response.status_code, response.text))
+            return ValueError('Request to Teams returned an error %s, the response is:\n%s' % (
+            response.status_code, response.text))
 
 
 if __name__ == "__main__":
