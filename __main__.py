@@ -92,7 +92,7 @@ async def wait_hover(page, selector):
 async def run_controller(project):
     """
         Args:
-            project: Object containing all project data:
+            project: Object containing project data:
                      group, hassite, name, playarray, proj, skip
         Returns:
             Todo: setup promise return hook result
@@ -315,21 +315,25 @@ class qvWebpage:
 
     async def goto_project(self):
         """
-            # TODO fill this in
-            Returns:
-
+            Navigates to project as defined by project.proj and
+            iterates through project views
+                Returns:
+                    (none)
         """
         await wait_click(self.page, qv.projects)
         await wait_hover(self.page, qv.scrollbar)
         await self.page.waitFor(500)
         self.namenum = str(self.project.proj)
         self.page = await wait_click(self.page, qv.proj_pre+self.namenum+qv.proj_post)
-        return self
+
 
     async def goto_plan_view(self) -> object:
         """
-            Returns:
-                object:
+            Navigates to each planview listed in project.planarray and
+            iterates through hoving on each sensor, gathering data from the
+            loaded Hoverbox
+                Returns:
+                    (none)
         """
         verbose(text.scanplan+self.project.planarray)
         views = self.project.planarray.split(",")
