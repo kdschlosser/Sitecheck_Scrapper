@@ -1,8 +1,19 @@
+"""
+    This file removes non-human readable code from __main__
+    Provides a consolidated reference for debugging Webpage navigation
+
+    Currently Supported Sites:
+    Amp - <project.name>.geo-instruments.com/index.php
+    Quickview - https://quickview.geo-instruments.com/login.php
+    Truelook (currently unstable) - https://app.truelook.com/<project specific>
+"""
+
 from env import creds
 
 
 class amp:
-    """ Text values for use in Amp-specific Events
+    """
+    Text values for use in Amp-specific Events
     type: (str)
     username, password, label, logincss, pwcss,
     urlstring, loginbutton, planview,
@@ -25,7 +36,8 @@ class amp:
 
 
 class qv:
-    """ Text values for use in QV-specific Events
+    """
+    Text values for use in QV-specific Events
     type: (str)
     username, password, logincss, pwcss, urlstring,
     loginbutton, projects, proj_pre, proj_post, views,
@@ -48,7 +60,8 @@ class qv:
 
 
 class truelook:
-    """ Text values for use in Truelook-specific Events
+    """
+    Text values for use in Truelook-specific Events
     type: (str)
     urlstring, planview,
     logincss, pwcss, loginbutton,
