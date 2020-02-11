@@ -10,7 +10,6 @@ from __future__ import print_function, unicode_literals
 
 import json
 import os
-import pathlib
 
 import asyncio
 from dateutil.parser import parse
@@ -20,7 +19,7 @@ from pyxtension.Json import Json
 
 # noinspection PyPep8Naming
 from bin import Teams_card_generator as tcg, teams_hook as hook
-from env import sites, text, creds
+from env import sites, text
 
 qv = sites.qv
 amp = sites.amp
@@ -33,7 +32,6 @@ class Options:
     chrome_args = ['--start-maximized', ' --user-data-dir='+text.ROOT_data]
     width = text.width
     height = text.height-200
-    # TODO: update Verbose mode
     verbose = True
     getvalue = True
     watchdog = 86400
@@ -49,22 +47,6 @@ def verbose(verbose_text):
     """
     if Options.verbose:
         print(verbose_text)
-
-
-def project_out_file(self) -> object:
-    """
-    Config project to output to the shared run file or it's own file
-
-    Returns:
-        object: paths to project's output files
-    """
-    check_path = '\\users\\'+creds.user+'\\dailychecks\\'+text.filedate+'\\'
-    pathlib.Path(check_path).mkdir(parents=True, exist_ok=True)
-    if self.project.group:
-        output_pre = str(check_path)+'all_'
-    else:
-        output_pre = str(check_path)+str(self.project.name)+'_'
-    return [output_pre+text.outputfile, output_pre+text.Oldfile, output_pre+text.Warnfile]
 
 
 def load_projects():
