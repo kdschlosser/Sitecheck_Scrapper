@@ -40,10 +40,10 @@ class Options:
 
 def verbose(verbose_text):
     """
-    Verbose Mode print function
+        Verbose Mode print function
 
-    Args:
-        verbose_text(str): Text to print
+        Args:
+            verbose_text(str): Text to print
     """
     if Options.verbose:
         print(verbose_text)
@@ -91,11 +91,10 @@ async def wait_hover(page, selector):
 
 async def run_controller(project):
     """
-
-    Args:
-        project: Object containing all project data:
-                 group, hassite, name, playarray, proj, skip
-    Returns: Todo: setup promise return hook result
+        Args:
+            project: Object containing all project data:
+                     group, hassite, name, playarray, proj, skip
+        Returns: Todo: setup promise return hook result
     """
     run_result = Project_run(project)
     await run_result.skip_site()
