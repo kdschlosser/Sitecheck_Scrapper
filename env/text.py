@@ -4,14 +4,11 @@ import os
 import sys
 from datetime import *
 
-from dateutil.parser import *
-
 width = ctypes.windll.user32.GetSystemMetrics(0)
 height = ctypes.windll.user32.GetSystemMetrics(1)
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 ROOT_data = ROOT_DIR + "\\data\\"
-now = parse("Sat Oct 11 17:13:46 UTC 2003")
 today = datetime.utcnow()
 nowdate = today.strftime("%Y-%m-%d %H:%M:%S")
 filedate = today.strftime("%Y-%m-%d")
@@ -27,15 +24,14 @@ Warnfile = '_WatchdogFile.txt'
 oldDate = 'Reading has been missing for over a week\n'
 Oldfile = '_Watchdog_Old.txt'
 
-postloginmessage = 'Login Successful.'
+loginmessage = 'Login Successful.'
 scanplan = '\nScanning plan views:'
+exitmessage = 'Scan completed.'
+
 project_argdesc = 'project=<projectname> Project to scan'
 output_argdesc = "output=<_filename.txt> output file name. \nOutput file Default value is: \'_sitecheck.txt\'"
 setup_argdesc = 'Input project name from the Amp URL. <--projectname=newtreehouse> <--other options to add later when i make generator>'
 debug_argdesc = 'Run tests without web requests and redirect from file output to console.'
-watchlisttxt = "Watchdog alert list:\n"
-oldlisttxt = "Watchdog alert items older than a week:\n"
 usage_argdesc = 'Usage: --debug=[1,2,3] -p <project> -o %date_<filename>.txt'
 help_argdesc = ''
 version_argdesc = 'Version: '
-exitmessage = 'Scan completed.'
