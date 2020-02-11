@@ -11,12 +11,11 @@ import json
 
 from env import text
 
-
 global storage
-storage = text.ROOT_DIR + "\\data\\cards\\"
+storage = text.ROOT_card
 
 
-# TODO: Rebuild template model to messagecard
+# TODO: Rebuild cosmetics and add button options to template model
 class _template:
     Top_prefix1 = '''{
     		"hideOriginalBody": true,
@@ -285,7 +284,7 @@ class generator:
         """
             # TODO fill this in
         Returns:
-
+            gen_file.name - name of generated file
         """
         # Adds the end bracket to finish list of lists
         with open(self.store_path, 'a') as file:
@@ -302,10 +301,10 @@ class generator:
         """
             # TODO fill this in
         Args:
-            card_list:
+            card_list (list): List of sensor data in card template format
 
-        Returns:
-
+        Returns (str):
+            gen_file.name - name of generated file
         """
         with open(self.generator_output, 'w') as gen_file:
             # print(gen_file.name)

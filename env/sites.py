@@ -13,14 +13,15 @@ from env import creds
 
 class amp:
     """
-    Text values for use in Amp-specific Events
-    type: (str)
-    username, password, label, logincss, pwcss,
-    urlstring, loginbutton, planview,
-    csspath, title, sensor
+        Text values for use in Amp-specific Events
 
-    *username and password are called from here before creds
-    to maintain loop consistency with QV during login()
+        type: (str)
+        username, password, label, logincss, pwcss,
+        urlstring, loginbutton, planview,
+        csspath, title, sensor
+
+        *username and password are called from here before creds
+        to maintain loop consistency with QV during login()
     """
     username = creds.ampuser
     password = creds.amppass
@@ -37,11 +38,12 @@ class amp:
 
 class qv:
     """
-    Text values for use in QV-specific Events
-    type: (str)
-    username, password, logincss, pwcss, urlstring,
-    loginbutton, projects, proj_pre, proj_post, views,
-    thumb, scrollbar, scrollbar2, hoverbox
+        Text values for use in QV-specific Events
+
+        type: (str)
+        username, password, logincss, pwcss, urlstring,
+        loginbutton, projects, proj_pre, proj_post, views,
+        thumb, scrollbar, scrollbar2, hoverbox
     """
     username = creds.qvuser
     password = creds.qvpass
@@ -61,10 +63,11 @@ class qv:
 
 class truelook:
     """
-    Text values for use in Truelook-specific Events
-    type: (str)
-    urlstring, planview,
-    logincss, pwcss, loginbutton,
+        Text values for use in Truelook-specific Events
+
+        type: (str)
+        urlstring, planview,
+        logincss, pwcss, loginbutton,
     """
     urlstring = '.geo-instruments.com/index.php'
     logincss = 'input#tl_login_username'

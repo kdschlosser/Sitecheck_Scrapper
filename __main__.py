@@ -1,7 +1,7 @@
 """
-Geo-Instruments
-Daily Sitecheck Scanner
-Repository: https://geodev.geo-instruments.com/DanEdens/pyppet_sitecheck_scrapper
+    Geo-Instruments
+    Daily Sitecheck Scanner
+    Repository: https://geodev.geo-instruments.com/DanEdens/pyppet_sitecheck_scrapper
 """
 # __author__ = "Dan Edens"
 # __version__= "0.5.3"
@@ -94,7 +94,8 @@ async def run_controller(project):
         Args:
             project: Object containing all project data:
                      group, hassite, name, playarray, proj, skip
-        Returns: Todo: setup promise return hook result
+        Returns:
+            Todo: setup promise return hook result
     """
     run_result = Project_run(project)
     await run_result.skip_site()
@@ -137,7 +138,8 @@ async def login(self):
     """
         Handles Url Navigation and Login Authentication.
 
-        Returns: (none)
+        Returns:
+            (none)
 
     """
     await self.page.goto(self.url)
@@ -173,11 +175,11 @@ async def scan_plan_view(parent, thread_pool):
 
 class Project_run:
     """
-    Controller class for project
+        Controller class for project
 
-    Json is ``dict`` subclass to represent a Json object
-    For more information see [Pytenshion](https://pypi.org/project/pyxtension/)
-    This gives the
+        Json is ``dict`` subclass to represent a Json object
+        For more information see [Pytenshion](https://pypi.org/project/pyxtension/)
+        This gives the
     """
 
     def __init__(self, project):
@@ -185,7 +187,7 @@ class Project_run:
 
     async def skip_site(self):
         """
-        Cancels run if project.skip is true
+            Cancels run if project.skip is true
         """
         if self.project.skip == 'true':
             verbose('Skipping project: '+self.project.name)
@@ -196,7 +198,7 @@ class Project_run:
 
     async def filter_site(self):
         """
-        Checks if a project is housed on Amp, Qv, and/or Truelook.
+            Checks if a project is housed on Amp, Qv, and/or Truelook.
         """
         # TODO Convert this to unique filename for each run
         if os.path.exists(tcg.storage+self.project.name+'_temp.txt'):
@@ -260,10 +262,12 @@ class ampWebpage:
         """
             Navigates to each planview listed in project.planarray and
             iterates through an array to check over sensor boxes
-        Args:
-            self.project.planarray(list):
-        Returns: (none)
 
+            Args:
+                self.project.planarray(list):
+
+            Returns:
+                (none)
         """
         verbose(text.scanplan+self.project.planarray)
         plan_array = self.project.planarray.split(",")
@@ -280,7 +284,8 @@ class ampWebpage:
                 self.page(obj): Page Context
                 self.project.name(str): Project name
                 self.target_child(str): Sensor to Scan
-            Returns: (none)
+            Returns:
+                (none)
         """
         for type_of_sensor_box in amp.label:
             name_sel = str('body '+amp.csspath+type_of_sensor_box+')'+amp.csspath+self.target_child+amp.title)
@@ -305,13 +310,13 @@ class ampWebpage:
 
 class qvWebpage:
     """
-            Thread Pool for QV
+        Thread Pool for QV
     """
 
     async def goto_project(self):
         """
             # TODO fill this in
-        Returns:
+            Returns:
 
         """
         await wait_click(self.page, qv.projects)
@@ -323,9 +328,8 @@ class qvWebpage:
 
     async def goto_plan_view(self) -> object:
         """
-
-        Returns:
-            object:
+            Returns:
+                object:
         """
         verbose(text.scanplan+self.project.planarray)
         views = self.project.planarray.split(",")
@@ -346,17 +350,18 @@ class qvWebpage:
         """
              Collects Sensor data for the provided sensor ID (self.target_child)
 
-        Args:
-            self.page(obj): Page Context
-            self.project.name(str): Project name
-            self.target_child(str): Sensor to Scan
+                Args:
+                    self.page(obj): Page Context
+                    self.project.name(str): Project name
+                    self.target_child(str): Sensor to Scan
 
-        Returns: (none)
+                Exception handles:
+                    Passes over non-existent sensors during view scan.
+                    raise PageError('No node found for selector: ' + selector)
+                    pyppeteer.errors.PageError: No node found for selector: #objects > img:nth-child(0)
 
-        Exception handles:
-            Passes over non-existent sensors during view scan.
-            raise PageError('No node found for selector: ' + selector)
-            pyppeteer.errors.PageError: No node found for selector: #objects > img:nth-child(0)
+                Returns:
+                    (none)
         """
         sensor = '#objects > img:nth-child('+self.target_child+')'
         # noinspection PyBroadException

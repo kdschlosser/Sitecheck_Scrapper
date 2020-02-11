@@ -19,6 +19,7 @@ width = ctypes.windll.user32.GetSystemMetrics(0)
 height = ctypes.windll.user32.GetSystemMetrics(1)
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 ROOT_data = ROOT_DIR+"\\data\\"
+ROOT_card = ROOT_data+"cards\\"
 today = datetime.utcnow()
 nowdate = today.strftime("%Y-%m-%d %H:%M:%S")
 filedate = today.strftime("%Y-%m-%d")
