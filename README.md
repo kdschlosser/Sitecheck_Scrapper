@@ -1,126 +1,117 @@
-# MobileActivity
+![](Documentation/email-signature-graphic176.png)
+# Daily Site-check Scanner
+### This tool is designed for Geo-Instruments Internal use only.
+---
 
-Mobile application to assist field techs with setting up Job activities in the Vortex app on Quickbase.
+This tool is designed to scan client project sites and provide convenient
+and interactive assistance to field technicans.
 
-## Devolpment cycle:
-
-#### Phase 1: Build scanner
- 1. Using inidivually created profiles for each job, query user for remaining information to create new activity with.
- 2. Create a record on quickbase with user data
- 3. Packaged Android 10 APK
-
-#### Phase 2:
- 1. Add option to update previously created records
- 2. Add verfication-of-record-creation notice from quickbase
- 3. Add local fallback wait-for-wifi options and failure call backs.
- 4. Packaged iOS 13.3 IPA
-
-#### Phase 3:
- 1. Test Android 9, iOS 12, and below OSs
- 2. Add user to log in and use stored profile data.
- 3. Use the quickbase API to query Customer/Jobs/SO#s and autofill these fields for input
- 4. Implement security options to protect sensitive data
-
-#### Phase 4: Experimental goals
- 1. Timesheet modual
- 2. Teams intergration
- 3. Retrieve/edit job-assigned asset entries
-
-
-
-## Getting Started
-
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
-
-### Prerequisites
-
-What things you need to install the software and how to install them.
+To accomplish this, It makes use of Pyppeteer, a [Python port](https://miyakogi.github.io/pyppeteer/index.html) of Google's Headless browser automation library [Puppeteer](https://pptr.dev/)
+If interested, you can [try it out here](https://try-puppeteer.appspot.com/_) or by running:
+```
+python3 -m pip install pyppeteer
+```
+# The Why
+This is largely a convience tool, an automated approach to what AmpAdmin already provides,
+Built for flexabilty as our platform pool contuines to grow.
 
 ```
-Required:
-    Suggested:
-
-```
-
-### Installing
-
-A step by step series of examples that tell you how to get a development env running
-
-Say what the step will be
-
-```
-Give the example
-```
-
-And repeat
-
-```
-until finished
-```
-
-End with an example of getting some data out of the system or using it for a little demo
-
-## Running the tests
-
-Explain how to run the automated tests for this system
-
-### Break down into end to end tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-## Comments on style
-Functions are styled in snake_case.  
-```
-login()
-scan_plan_view()  
-watchdog_processor()  
-```
-Classes are styled using CapWords
-```
-Project_Run
-Amp_website
-QV_website
+This is not intended to replace the built-in watchdog alarms, nor do I suggest shying away from checking over the sites manually.
 ```
 
 
-### And coding style tests
+##  The benefits of this method are intended as the following:
+1. Check if data is visible from the clients perspective.
+The final version will compare data gathered using both Admin and User credentials.
 
-Explain what these tests test and why
+2. Convient infomation cards provided to teams for field tech convienence
+Checking websites manually in the field can lead to missing warning flags when they appear.
+I hope to use Power Automate's AI builder for data trend detections and predictions in later verions
+
+3. Provide a convient overview product to region managers.
+After a daily check-in time, Region channels can be sent a status report,
+optionally delieved to the team channel or through a Flowbot private message.
+Currently planned options include:
+    1. per-project missing sensors list
+    2. more lightweight update of which projects have been checked.
+
+4. Supports Quickview, Truelook, and weather reports.
+
+Sensors status is rated as one of these three categories:
+```
+1. Up-to-date: 		Timestamp is within 24 hours.
+2. Warning list: 	Timestamp is older than 24 hours.
+3. Old list: 		Timestamp is older than a week.
+```
+
+Card delivery is currently focused at Regional Sitecheck channels.
+Another availble option is to send to a private chat channel per tech.
+
+# Known Issues and Critical missing features:
+```
+QV side panels longer than window size currently not supported (Only known case is The Vegas project)
+```
+---
+## TODO:
+```
+1. Finish Optimization and documentation update.
+	1. Finish Refactoring style
+    2. Finish docstring and type hinting
+	3. Finish creating Project Documents and API refrence
+	4. Tree shake variables
+```
+```
+2. Finish dev build script.
+	1. Create 1 click development install
+	2. Build config manager for setting up userdata
+    3. Build Bug report handler and Feedback form
+	3. Generate Enduser package
+```
+```
+3. Build check mode.
+	1. Headfull navigation that prompts user input on Watchdog event.
+	2. Choose an option for overlaying information onto project site.
+    3. Intergrate Screenshot support
+	4. Intergrate card preview sdk
+```
+```
+4. Rebuild Team's card.
+    1. Cosmetic overhaul of Cards.
+    . Intergrate Sensor value data
+
+    . Intergrate Weather data
 
 ```
-Give an example
 ```
-## Deployment
+5. Interactive mode.
+	1. Build Cli module
+    2. Re-apply previously availble command line args
+    3. Directed checks on single projects or plan views.
+    4. Screenshots through SMS
+    5. Command line compatiable classes
+    6.
+```
+```
+6. Build Power_Automate backend controller
+	1. Build response listener
+    2. Convert local generator to Flow template generator
+	3. Create framework for Manager update card
+```
 
-TODO: Add additional notes about how to deploy this on a live system
+```
+6. Testing
+    1. Alpha Test period completed - Delivery automated cards for personal projects for 14 day
+       contiguous period
+    2. Run forced error trials with findings and add all possible exception handles
+    3. Run beta with non-code savy techs
+```
+---
+# Completed Milestones
+1. Functional version of Amp scanner and QV scanner have been built in both Nodejs and Python.
+    Intially the project sololy utlizied NodeJS and Puppeteer,  converted once I realized it had potential to be used by other techs.
 
-## Built With
-
-[Python v3.8.1](https://docs.python.org/3.8/)  
-[Pyppeteer v0.2.5](https://miyakogi.github.io/pyppeteer/)   
-
-
-## Contributing
-
-Please read [CONTRIBUTING.md](https://geodev.geo-instruments.com/DanEdens/mobileactivity/blob/master/CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
-
-## Versioning
-
-Project repository can be found at [MobileActivity](https://geodev.geo-instruments.com/DanEdens/pyppet_sitecheck_scrapper).
-
-## Author
-
-* **Dan Edens** - [Dan.Edens](https://github.com/DanEdens)
-
-
-## License
-
-TODO:
-
-## Acknowledgments
-
-* etc
+The following websites have been successfully scanned and output data in Team's card format:
+```
+Captiolcomplex, AudicentralHouston, 425Riverside, Unioncityintermodal, Redbeach, Santabarbaratjwall, Beverlyhillshigh, Isabelladam, 755fig, Haieng, Tesolongbeach8485, Natoma, Harbour Bridge, TarzanaMed, texasinternational, and Sherridan Hills
+```
+Cards have been successfully recieved on Teams.
