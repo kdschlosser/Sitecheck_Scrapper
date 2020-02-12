@@ -118,7 +118,7 @@ async def watchdog_processor(diff, sensor_data, project_name, sensor, date):
         if Options.verbose:
             sensor_data += '\n' + text.uptoDate
         data_list = [sensor, 'good', 'Up-to-date', date]
-        tcg.store(project_name, data_list)
+        # tcg.store(project_name, data_list)
         print(sensor_data)
     elif Options.watchdog <= diff <= Options.watch_limit:
         if Options.verbose:
@@ -130,7 +130,7 @@ async def watchdog_processor(diff, sensor_data, project_name, sensor, date):
         if Options.verbose:
             sensor_data += '\n' + text.oldDate
         data_list = [sensor, 'attention', 'Older than a week', date]
-        tcg.store(project_name, data_list)
+        # tcg.store(project_name, data_list)
         print(sensor_data)
 
 
