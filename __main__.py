@@ -49,6 +49,24 @@ def project_out_file(self) -> object:
     return [output_pre + text.outputfile, output_pre + text.Oldfile, output_pre + text.Warnfile]
 
 
+def disable_timeout_pyppeteer():
+    """
+        Allows Browser to be left open indefinitely
+        Keeps Session open longer than 20 seconds.
+
+        :return:
+    """
+    import pyppeteer.connection
+    original_method = pyppeteer.connection.websockets.client.connect
+
+    def new_method(*args, **kwargs):
+        kwargs['ping_interval'] = None
+        kwargs['ping_timeout'] = None
+        return original_method(*args, **kwargs)
+
+    pyppeteer.connection.websockets.client.connect = new_method
+
+
 def load_projects():
     """
         Returns: project object
@@ -373,7 +391,7 @@ class qvWebpage:
             diff = (diff_in_days.total_seconds())
             sensor_data += date
             await watchdog_processor(diff, sensor_data, self.project.name, sensor, date)
-        except PageError:
+        except (PageError, IndexError):
             pass
 
 
@@ -392,5 +410,6 @@ async def main():
 
 
 # if __name__ == '__main__':
+disable_timeout_pyppeteer()
 asyncio.run(main())
 print('\n' + text.exitmessage)
