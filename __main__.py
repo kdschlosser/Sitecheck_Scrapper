@@ -18,7 +18,7 @@ from pyppeteer.errors import PageError
 from pyxtension.Json import Json
 
 # noinspection PyPep8Naming
-from bin import Teams_card_generator as tcg, teams_hook as hook
+from bin import teams_card_generator as tcg, teams_hook as hook
 from env import sites, text
 
 qv = sites.qv
@@ -165,7 +165,7 @@ async def scan_plan_view(parent, thread_pool):
             'body >' + amp.csspath + type_of_sensor_box + ') ' + amp.csspath + self.target_child + amp.title
         Args:
             parent: <__main__.Project_run object at ** >
-            thread_pool: <class '__main__.ampWebpage'>
+            thread_pool: <class '__main__.Amp_Webpage'>
     """
     print(parent)
     for target_child in range(0, 300):
@@ -223,10 +223,10 @@ class Project_run:
         self.page = await browser.newPage()
         await self.page.setViewport({"width": Options.width, "height": Options.height})
         await login(self)
-        await ampWebpage.goto_plan_view(self)
+        await Amp_Webpage.goto_plan_view(self)
         await self.page.close()
         verbose(self.project.name)
-        staged_file = tcg.generator(self.project)
+        staged_file = tcg.Generator(self.project)
         path_to_temp = staged_file.compile_data()
         verbose(path_to_temp)
         result = await hook.message_factory(self.project.channel, self.project.name, path_to_temp)
@@ -242,18 +242,18 @@ class Project_run:
         self.page = await browser.newPage()
         await self.page.setViewport({"width": Options.width, "height": Options.height})
         await login(self)
-        await qvWebpage.goto_project(self)
+        await Qv_Webpage.goto_project(self)
         await self.page.waitFor(50)
-        await qvWebpage.goto_plan_view(self)
+        await Qv_Webpage.goto_plan_view(self)
         await self.page.close()
-        staged_file = tcg.generator(self.project)
+        staged_file = tcg.Generator(self.project)
         path_to_temp = staged_file.compile_data()
         verbose(path_to_temp)
         result = await hook.message_factory(self.project.channel, self.project.name, path_to_temp)
         verbose(result, '\n End of run')
 
 
-class ampWebpage:
+class Amp_Webpage:
     """
         Thread pool for Amp.
     """
@@ -274,7 +274,7 @@ class ampWebpage:
         for view in plan_array:
             verbose(view)
             await self.page.goto(self.url+amp.planview+view)
-            await scan_plan_view(self, ampWebpage)
+            await scan_plan_view(self, Amp_Webpage)
 
     async def get_last_update(self):
         """
@@ -308,7 +308,7 @@ class ampWebpage:
                 await watchdog_processor(diff, sensor_data, self.project.name, sensor, date)
 
 
-class qvWebpage:
+class Qv_Webpage:
     """
         Thread Pool for QV
     """
@@ -348,7 +348,7 @@ class qvWebpage:
                 await self.page.waitFor(300)
                 await wait_click(self.page, qv.thumb+view)
             await self.page.waitFor(2000)
-            await scan_plan_view(self, qvWebpage)
+            await scan_plan_view(self, Qv_Webpage)
 
     async def get_last_update(self):
         """
@@ -377,7 +377,7 @@ class qvWebpage:
             split_date = txt.split('<br>')
             sensor = split_date[0]
             sensor_data = '\nSensor name: '+sensor
-            # if Options.getvalue: sensor_data += '\nCurrent value: ' + value
+            # if Options.getvalue: Sensor_Data += '\nCurrent value: ' + value
             date = split_date[3].split("data: ").pop()
             sensor_data += '\nLatest data on QV: '
             diff_in_days = parse(text.nowdate)-parse(date)

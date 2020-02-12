@@ -8,7 +8,7 @@
             nowdate = today.strftime("%Y-%m-%d %H:%M:%S")
         Predefined Paths (str):
             ROOT_DIR: location of __main__.py
-            ROOT_data: Location of Chrome and Card-generator Userdata
+            ROOT_data: Location of Chrome and Card-Generator Userdata
 """
 
 import ctypes
