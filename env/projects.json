@@ -6,25 +6,25 @@
     "proj": "null",
     "planarray": "143,124,127",
     "hassite": "amp",
-    "channel": "test"
+    "channel": "west_project"
   },
   {
     "skip": "false",
     "group": "true",
     "name": "audicentralhouston",
     "proj": "null",
-    "planarray": "126",
+    "planarray": "124,125,126",
     "hassite": "amp",
-    "channel": "test"
+    "channel": "west_project"
   },
   {
     "skip": "false",
     "group": "false",
     "name": "425riverside",
     "proj": "3",
-    "planarray": "0",
+    "planarray": "0,1",
     "hassite": "qv",
-    "channel": "test"
+    "channel": "west_project"
   },
   {
     "skip": "true",

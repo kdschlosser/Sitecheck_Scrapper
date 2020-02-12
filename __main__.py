@@ -49,6 +49,24 @@ def verbose(verbose_text):
         print(verbose_text)
 
 
+def disable_timeout_pyppeteer():
+    """
+        Allows Browser to be left open indefinitely
+        Keeps Session open longer than 20 seconds.
+
+        :return:
+    """
+    import pyppeteer.connection
+    original_method = pyppeteer.connection.websockets.client.connect
+
+    def new_method(*args, **kwargs):
+        kwargs['ping_interval'] = None
+        kwargs['ping_timeout'] = None
+        return original_method(*args, **kwargs)
+
+    pyppeteer.connection.websockets.client.connect = new_method
+
+
 def load_projects():
     """
         Returns: project object
@@ -119,7 +137,8 @@ async def watchdog_processor(diff, sensor_data, project_name, sensor, date):
             sensor_data += '\n'+text.uptoDate
             print(sensor_data)
         data_list = [sensor, 'good', 'Up-to-date', date]
-        tcg.store(project_name, data_list)
+        # tcg.store(project_name, data_list)
+        print(sensor_data)
     elif Options.watchdog <= diff <= Options.watch_limit:
         if Options.verbose:
             sensor_data += '\n'+text.behindDate
@@ -131,7 +150,8 @@ async def watchdog_processor(diff, sensor_data, project_name, sensor, date):
             sensor_data += '\n'+text.oldDate
             print(sensor_data)
         data_list = [sensor, 'attention', 'Older than a week', date]
-        tcg.store(project_name, data_list)
+        # tcg.store(project_name, data_list)
+        print(sensor_data)
 
 
 async def login(self):
@@ -384,7 +404,7 @@ class Qv_Webpage:
             diff = (diff_in_days.total_seconds())
             sensor_data += date
             await watchdog_processor(diff, sensor_data, self.project.name, sensor, date)
-        except PageError:
+        except (PageError, IndexError):
             pass
 
 
@@ -402,5 +422,7 @@ async def main():
     await browser.close()
 
 
+# if __name__ == '__main__':
+disable_timeout_pyppeteer()
 asyncio.run(main())
 print('\n'+text.exit_message)

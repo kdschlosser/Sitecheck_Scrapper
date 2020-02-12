@@ -33,12 +33,9 @@ def top_secret(channel):
     if channel == 'programming':
         print("Sending data to the Programming team")
         return creds.testhook  # SHIP programminghook
-    if channel == 'flow-programming':
-        print("Sending data to the Programming team through flow")
-        return creds.testhook  # SHIP flow_programminghook
     elif channel == 'west_project':
         print("Sending data to West Project Checks team")
-        return creds.testhook  # SHIP creds.westcoasthook
+        return creds.westcoasthook  # BUILD  # return creds.westcoasthook # SHIP
     else:
         print(text.no_channel)
         return creds.testhook
