@@ -32,10 +32,10 @@ def top_secret(channel):
     """
     if channel == 'programming':
         print("Sending data to the Programming team")
-        return creds.testhook  # SHIP programminghook
+        return creds.programminghook
     elif channel == 'west_project':
         print("Sending data to West Project Checks team")
-        return creds.westcoasthook  # BUILD  # return creds.westcoasthook # SHIP
+        return creds.westcoasthook
     else:
         print(text.no_channel)
         return creds.testhook
@@ -62,7 +62,6 @@ class Send_Hook:
         Send json data through a webhook to the Team's channel
         Call init as Object before calling object.draft_message() for aync factory
     """
-
     def __init__(self, channel, temp_project, temp_file_path):
         """
            Load Card.json for use in message functions.
