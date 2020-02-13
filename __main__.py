@@ -176,7 +176,7 @@ async def login(self):
     await self.page.waitFor(50)
 
 
-async def scan_plan_view(parent, thread_pool):
+async def scan_plan_view(parent, operator):
     """
         Iterate through Array of possible Sensor selectors on current planview.
             Absolute selector:
@@ -185,12 +185,12 @@ async def scan_plan_view(parent, thread_pool):
             'body >' + amp.csspath + type_of_sensor_box + ') ' + amp.csspath + self.target_child + amp.title
         Args:
             parent: <__main__.Project_run object at ** >
-            thread_pool: <class '__main__.Amp_Webpage'>
+            operator: <class '__main__.Amp_Webpage'>
     """
     print(parent)
     for target_child in range(0, 300):
         parent.target_child = str(target_child)
-        await thread_pool.get_last_update(parent)
+        await operator.get_last_update(parent)
 
 
 class Project_run:
@@ -235,7 +235,7 @@ class Project_run:
 
     async def has_amp(self):
         """
-            Main Thread of the Amp scanner.
+            Main Operator of the Amp scanner.
             Creates the new page and gives it a viewport.
             Than handles gathering and output of data for Amp scanner.
         """
@@ -254,7 +254,7 @@ class Project_run:
 
     async def has_QV(self):
         """
-            Main Thread of the QV scanner.
+            Main Operator of the QV scanner.
             Creates the new page and gives it a viewport.
             Than handles gathering and output of data for QV scanner.
         """
@@ -275,7 +275,7 @@ class Project_run:
 
 class Amp_Webpage:
     """
-        Thread pool for Amp.
+        Operator pool for Amp.
     """
 
     async def goto_plan_view(self) -> object:
@@ -330,7 +330,7 @@ class Amp_Webpage:
 
 class Qv_Webpage:
     """
-        Thread Pool for QV
+        Operator Pool for QV
     """
 
     async def goto_project(self):
@@ -410,7 +410,7 @@ class Qv_Webpage:
 
 async def main():
     """
-        Application Main Thread
+        Application Main Operator
         Retrieves Project information from projects.json
         Loops through each and sends a card to it's Site-check channel
     """
