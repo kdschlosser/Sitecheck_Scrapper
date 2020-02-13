@@ -5,7 +5,9 @@ Guide on Message Cards: https://docs.microsoft.com/en-us/adaptive-cards/
 This Collects stored sensor data and generates a Microsoft Team's Adaptive Card.
 """
 # __author__ = "Dan Edens"
-# __version__= "0.4.1"
+# __email__ = "Dan.Edens@Geo-Instruments.com"
+# __status__ = "Overhaul"
+# __version__= "0.4.2"
 
 import json
 

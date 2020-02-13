@@ -221,10 +221,10 @@ class Project_run:
             Checks if a project is housed on Amp, Qv, and/or Truelook.
         """
         # TODO Convert this to unique filename for each run
-        if os.path.exists(tcg.storage+self.project.name+'_temp.txt'):
-            os.remove(tcg.storage+self.project.name+'_temp.txt')
-        if os.path.exists(tcg.storage+self.project.name+'_temp.json'):
-            os.remove(tcg.storage+self.project.name+'_temp.json')
+        if os.path.exists(text.ROOT_card+self.project.name+'_temp.txt'):
+            os.remove(text.ROOT_card+self.project.name+'_temp.txt')
+        if os.path.exists(text.ROOT_card+self.project.name+'_temp.json'):
+            os.remove(text.ROOT_card+self.project.name+'_temp.json')
         # TODO: Change If to switch for multi-site projects
         if self.project.hassite == 'amp':
             await self.has_amp()
@@ -244,7 +244,7 @@ class Project_run:
         await self.page.setViewport({"width": Options.width, "height": Options.height})
         await login(self)
         await Amp_Webpage.goto_plan_view(self)
-        await self.page.close()
+        # await self.page.close()
         verbose(self.project.name)
         staged_file = tcg.Generator(self.project)
         path_to_temp = staged_file.compile_data()

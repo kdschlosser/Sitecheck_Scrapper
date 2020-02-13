@@ -7,10 +7,10 @@
     Documentation for Power Automate: Adaptive cards in Microsoft Teams
     https://docs.microsoft.com/en-us/power-automate/create-adaptive-cards-teams
 """
-# __version__= "0.2.0"
+# __version__= "0.3.0"
 # __author__ = "Dan Edens"
 # __email__ = "Dan.Edens@Geo-Instruments.com"
-# __status__ = "Production"
+# __status__ = "pre-build"
 
 import json
 
