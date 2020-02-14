@@ -202,7 +202,8 @@ class Project_run:
             Than handles gathering and output of data for QV scanner.
         """
         self.url = qv.urlstring
-        self.page = await browser.newPage()
+        pages = await browser.pages()
+        self.page = pages[0]
         await self.page.setViewport({"width": Options.width, "height": Options.height})
         await login(self)
         await Qv_Webpage.goto_project(self)
