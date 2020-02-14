@@ -14,7 +14,7 @@ import os
 import asyncio
 from dateutil.parser import parse
 from pyppeteer import launch
-from pyppeteer.errors import PageError
+from pyppeteer.errors import PageError, ElementHandleError
 from pyxtension.Json import Json
 
 # noinspection PyPep8Naming
@@ -404,7 +404,7 @@ class Qv_Webpage:
             diff = (diff_in_days.total_seconds())
             sensor_data += date
             await watchdog_processor(diff, sensor_data, self.project.name, sensor, date)
-        except (PageError, IndexError):
+        except (ElementHandleError, PageError, IndexError):
             pass
 
 
