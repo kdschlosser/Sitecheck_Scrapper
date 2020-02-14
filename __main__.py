@@ -250,7 +250,7 @@ class Project_run:
         path_to_temp = staged_file.compile_data()
         verbose(path_to_temp)
         result = await hook.message_factory(self.project.channel, self.project.name, path_to_temp)
-        verbose(result, '\n End of run')
+        verbose(result+'\n End of run')
 
     async def has_QV(self):
         """
