@@ -56,24 +56,19 @@ MileStones and Issues
 ---
 
 [Optimization](https://geodev.geo-instruments.com/DanEdens/pyppet_sitecheck_scrapper/-/milestones/5) and [Documentation](https://geodev.geo-instruments.com/DanEdens/pyppet_sitecheck_scrapper/issues/37) update.  
-    
- 1. Finish [Label refactoring and version](https://geodev.geo-instruments.com/DanEdens/pyppet_sitecheck_scrapper/issues/34) tagging  
- 2. Finish [docstring]((https://geodev.geo-instruments.com/DanEdens/pyppet_sitecheck_scrapper/issues/9)) and type hints  
- 3. Finish creating [Project Documents and API reference](https://geodev.geo-instruments.com/DanEdens/pyppet_sitecheck_scrapper/issues/17) 
- 4. [Tree shake](https://geodev.geo-instruments.com/DanEdens/pyppet_sitecheck_scrapper/issues/11) variables  
 
-Build Module for version [Release v1.0.0](https://geodev.geo-instruments.com/DanEdens/pyppet_sitecheck_scrapper/-/milestones/8)
-
- 1. Create [build script](https://geodev.geo-instruments.com/DanEdens/pyppet_sitecheck_scrapper/issues/15)
- 2. Build [config manager](https://geodev.geo-instruments.com/DanEdens/pyppet_sitecheck_scrapper/issues/38) for setting up userdata
- 3. Build [Error handler](https://geodev.geo-instruments.com/DanEdens/pyppet_sitecheck_scrapper/issues/39)
- 4. Build [Docker](https://geodev.geo-instruments.com/DanEdens/pyppet_sitecheck_scrapper/issues/36) image
- 5. Generate End user [package](https://geodev.geo-instruments.com/DanEdens/pyppet_sitecheck_scrapper/issues/16)
+ . <s> Catch [Qv up to Amp rewrite](https://geodev.geo-instruments.com/DanEdens/pyppet_sitecheck_scrapper/issues/6)</s>  
+ . <s>[Caching assets](https://geodev.geo-instruments.com/DanEdens/pyppet_sitecheck_scrapper/issues/1) to reduce system load</s>  
+ . Finish [Label refactoring and version](https://geodev.geo-instruments.com/DanEdens/pyppet_sitecheck_scrapper/issues/34) tagging    
+ . Finish [docstring]((https://geodev.geo-instruments.com/DanEdens/pyppet_sitecheck_scrapper/issues/9)) and type hints    
+ . Finish creating [Project Documents and API reference](https://geodev.geo-instruments.com/DanEdens/pyppet_sitecheck_scrapper/issues/17)   
+ . [Tree shake](https://geodev.geo-instruments.com/DanEdens/pyppet_sitecheck_scrapper/issues/11) variables    
 
 [Adaptive card](https://geodev.geo-instruments.com/DanEdens/pyppet_sitecheck_scrapper/-/milestones/15) Template upate.
 
  1. Integrate ['Get-Value' option](https://geodev.geo-instruments.com/DanEdens/pyppet_sitecheck_scrapper/issues/32)
- 3. Cosmetic overhaul of Cards.
+ 2. [Cosmetic overhaul](https://geodev.geo-instruments.com/DanEdens/pyppet_sitecheck_scrapper/issues/43) of Cards.
+ 3. Convert card generator to [Power Automate Live template](https://geodev.geo-instruments.com/DanEdens/pyppet_sitecheck_scrapper/issues/45)
 
 Interactive mode.  
 
@@ -92,10 +87,27 @@ Build [Check mode](https://geodev.geo-instruments.com/DanEdens/pyppet_sitecheck_
 Build backend of ['Power Automate'](https://geodev.geo-instruments.com/DanEdens/pyppet_sitecheck_scrapper/-/milestones/14) controller
 
  1. Build response listener  
- 2. Convert local generator to Flow template generator  
+ 2. 
  3. Create framework for [Manager update](https://geodev.geo-instruments.com/DanEdens/pyppet_sitecheck_scrapper/-/milestones/14) card  
 
-Testing
+[AMP Admin](https://geodev.geo-instruments.com/DanEdens/pyppet_sitecheck_scrapper/-/milestones/4) update
+
+. Build Operator to   
+.  
+.  
+.  
+.  
+Build Module for version [Release v1.0.0](https://geodev.geo-instruments.com/DanEdens/pyppet_sitecheck_scrapper/-/milestones/8)
+
+ 1. Create [build script](https://geodev.geo-instruments.com/DanEdens/pyppet_sitecheck_scrapper/issues/15)
+ 2. Build [config manager](https://geodev.geo-instruments.com/DanEdens/pyppet_sitecheck_scrapper/issues/38) for setting up userdata
+ 3. Build [Error handler](https://geodev.geo-instruments.com/DanEdens/pyppet_sitecheck_scrapper/issues/39)
+ 4. Build [Docker](https://geodev.geo-instruments.com/DanEdens/pyppet_sitecheck_scrapper/issues/36) image
+ 5. Generate End user [package](https://geodev.geo-instruments.com/DanEdens/pyppet_sitecheck_scrapper/issues/16)
+
+
+
+# Testing
 
  1. Alpha Test - Delivery automated cards for personal projects for 14 day
     contiguous period
