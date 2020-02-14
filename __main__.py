@@ -4,12 +4,13 @@
     Repository: https://geodev.geo-instruments.com/DanEdens/pyppet_sitecheck_scrapper
 """
 # __author__ = "Dan Edens"
-# __version__= "0.5.3"
+# __version__= "0.5.6"
 
 from __future__ import print_function, unicode_literals
 
 import json
 import os
+import argparse
 
 from dateutil.parser import parse
 from pyppeteer import launch
@@ -19,7 +20,6 @@ from pyxtension.Json import Json
 # noinspection PyPep8Naming
 from bin import teams_card_generator as tcg, teams_hook as hook, ultis as u
 from env import sites, text
-
 
 qv = sites.qv
 amp = sites.amp
@@ -36,6 +36,18 @@ class Options:
     getvalue = True
     watchdog = 86400
     watch_limit = watchdog * 7
+
+
+class arguments:
+    parser = argparse.ArgumentParser(prog='Sitecheck Scanner',
+                                     description='Preform automated Sitecheck scan for projects configured in env/projects.json')
+    parser.add_argument('--debug', metavar='-d', type=int, default='0',
+                        help='Prints additional information to assist troubleshooting.')
+    # parser.add_argument('--sum', dest='accumulate', action='store_const', const=sum, default=max,
+    #                     help='sum the integers (default: find the max)')
+
+    args = parser.parse_args()
+    print(args.accumulate(args.integers))
 
 
 def load_projects():
