@@ -11,15 +11,15 @@ from __future__ import print_function, unicode_literals
 import json
 import os
 
-import asyncio
 from dateutil.parser import parse
 from pyppeteer import launch
 from pyppeteer.errors import PageError, ElementHandleError
 from pyxtension.Json import Json
 
 # noinspection PyPep8Naming
-from bin import teams_card_generator as tcg, teams_hook as hook
+from bin import teams_card_generator as tcg, teams_hook as hook, ultis as u
 from env import sites, text
+
 
 qv = sites.qv
 amp = sites.amp
@@ -38,35 +38,6 @@ class Options:
     watch_limit = watchdog * 7
 
 
-def verbose(verbose_text):
-    """
-        Verbose Mode print function
-
-        Args:
-            verbose_text(str): Text to print
-    """
-    if Options.verbose:
-        print(verbose_text)
-
-
-def disable_timeout_pyppeteer():
-    """
-        Allows Browser to be left open indefinitely
-        Keeps Session open longer than 20 seconds.
-
-        :return:
-    """
-    import pyppeteer.connection
-    original_method = pyppeteer.connection.websockets.client.connect
-
-    def new_method(*args, **kwargs):
-        kwargs['ping_interval'] = None
-        kwargs['ping_timeout'] = None
-        return original_method(*args, **kwargs)
-
-    pyppeteer.connection.websockets.client.connect = new_method
-
-
 def load_projects():
     """
         Returns: project object
@@ -75,36 +46,6 @@ def load_projects():
         data = user_data.read()
         projects = json.loads(data)
     return projects
-
-
-async def wait_type(page, selector, txt):
-    """
-        Wait for a selector to load than type supplied text.
-        Returns page in case entering text changes the context.
-    """
-    await page.waitForSelector(selector)
-    await page.type(selector, txt)
-    return page
-
-
-async def wait_click(page, selector):
-    """
-        Wait for a selector to load than clicks on it.
-        Returns page in case this changes the context.
-    """
-    await page.waitForSelector(selector),
-    await page.click(selector)
-    return page
-
-
-async def wait_hover(page, selector):
-    """
-        Wait for a selector to load than hover over it.
-        Returns page in case this changes the context.
-    """
-    await page.waitForSelector(selector),
-    await page.hover(selector)
-    return page
 
 
 async def run_controller(project):
@@ -116,6 +57,7 @@ async def run_controller(project):
             Todo: setup promise return hook result
     """
     run_result = Project_run(project)
+    u.debug(run_result.channel)
     await run_result.skip_site()
     return run_result
 
@@ -169,7 +111,7 @@ async def login(self):
             await self.page.type(x.logincss, x.username)
             await self.page.type(x.pwcss, x.password)
             await self.page.click(x.loginbutton)
-            verbose(text.loginmessage)
+            u.verbose(text.loginmessage)
             break
         except PageError:
             pass
@@ -210,10 +152,10 @@ class Project_run:
             Cancels run if project.skip is true
         """
         if self.project.skip == 'true':
-            verbose('Skipping project: '+self.project.name)
+            u.verbose('Skipping project: '+self.project.name)
             pass
         else:
-            verbose(text.fileheader+self.project.name)
+            u.verbose(text.fileheader+self.project.name)
             await self.filter_site()
 
     async def filter_site(self):
@@ -231,7 +173,7 @@ class Project_run:
         elif self.project.hassite == 'qv':
             await self.has_QV()  # TODO rebuild truelook support
         elif self.project.hassite == 'truelook':
-            verbose('In Development')
+            u.verbose('In Development')
 
     async def has_amp(self):
         """
@@ -245,12 +187,13 @@ class Project_run:
         await login(self)
         await Amp_Webpage.goto_plan_view(self)
         # await self.page.close()
-        verbose(self.project.name)
+        await self.page.close()
+        u.verbose(self.project.name)
         staged_file = tcg.Generator(self.project)
         path_to_temp = staged_file.compile_data()
-        verbose(path_to_temp)
+        u.verbose(path_to_temp)
         result = await hook.message_factory(self.project.channel, self.project.name, path_to_temp)
-        verbose(result+'\n End of run')
+        u.verbose(result+'\n End of run')
 
     async def has_QV(self):
         """
@@ -268,9 +211,9 @@ class Project_run:
         await self.page.close()
         staged_file = tcg.Generator(self.project)
         path_to_temp = staged_file.compile_data()
-        verbose(path_to_temp)
+        u.verbose(path_to_temp)
         result = await hook.message_factory(self.project.channel, self.project.name, path_to_temp)
-        verbose(result, '\n End of run')
+        u.verbose(result, '\n End of run')
 
 
 class Amp_Webpage:
@@ -289,10 +232,10 @@ class Amp_Webpage:
             Returns:
                 (none)
         """
-        verbose(text.scanplan+self.project.planarray)
+        u.verbose(text.scanplan+self.project.planarray)
         plan_array = self.project.planarray.split(",")
         for view in plan_array:
-            verbose(view)
+            u.verbose(view)
             await self.page.goto(self.url+amp.planview+view)
             await scan_plan_view(self, Amp_Webpage)
 
@@ -340,12 +283,11 @@ class Qv_Webpage:
                 Returns:
                     (none)
         """
-        await wait_click(self.page, qv.projects)
-        await wait_hover(self.page, qv.scrollbar)
+        await u.wait_click(self.page, qv.projects)
+        await u.wait_hover(self.page, qv.scrollbar)
         await self.page.waitFor(500)
         self.namenum = str(self.project.proj)
-        self.page = await wait_click(self.page, qv.proj_pre+self.namenum+qv.proj_post)
-
+        self.page = await u.wait_click(self.page, qv.proj_pre+self.namenum+qv.proj_post)
 
     async def goto_plan_view(self) -> object:
         """
@@ -355,18 +297,18 @@ class Qv_Webpage:
                 Returns:
                     (none)
         """
-        verbose(text.scanplan+self.project.planarray)
+        u.verbose(text.scanplan+self.project.planarray)
         views = self.project.planarray.split(",")
         for view in views:
             print(view)
             if view == '0':
                 pass
             else:
-                await wait_click(self.page, qv.views)
+                await u.wait_click(self.page, qv.views)
                 await self.page.waitFor(500)
-                await wait_hover(self.page, qv.scrollbar2)
+                await u.wait_hover(self.page, qv.scrollbar2)
                 await self.page.waitFor(300)
-                await wait_click(self.page, qv.thumb+view)
+                await u.wait_click(self.page, qv.thumb+view)
             await self.page.waitFor(2000)
             await scan_plan_view(self, Qv_Webpage)
 
@@ -423,6 +365,6 @@ async def main():
 
 
 # if __name__ == '__main__':
-disable_timeout_pyppeteer()
+u.disable_timeout_pyppeteer()
 asyncio.run(main())
 print('\n'+text.exit_message)
