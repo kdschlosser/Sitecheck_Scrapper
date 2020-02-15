@@ -16,28 +16,24 @@ import json
 
 import requests
 
-from env import creds, text
+from env import creds
 
 
 def top_secret(channel):
     """
         Converts channel name to Webhook url from creds file
-        These Urls need to be kept internal. RISK: LOW
-        Chance of a compromised link being spammed is very low, but possible.
 
             Args:
                 channel (str): Name of project's target Team's channel
             Returns:
-                webhook(str): URL to channels webhook
+                hook(str): URL to channels webhook
     """
+    print("Sending data to "+channel)
     if channel == 'programming':
-        print("Sending data to the Programming team")
         return creds.programminghook
     elif channel == 'west_project':
-        print("Sending data to West Project Checks team")
         return creds.westcoasthook
     else:
-        print(text.no_channel)
         return creds.testhook
 
 
