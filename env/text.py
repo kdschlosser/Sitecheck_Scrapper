@@ -34,3 +34,15 @@ Oldfile = '_Watchdog_Old.txt'
 loginmessage = 'Login Successful.'
 scanplan = '\nScanning plan views:'
 exit_message = 'Scan completed.'
+
+
+class arg_text:
+    main = 'Automated Sitecheck scanner for projects configured in env/projects.json'
+    debug = 'Print extra information about website navigation and browser events when tracing issues'
+    verbose = 'Print verbose information about senor status and data'
+    weather = 'Include local weather data in status report'
+    eval = 'Shows a browser during scan to evaluate overdue sensors. '
+    usage = ''
+    project = ''
+    plan = ''
+    get_value = ''

@@ -39,13 +39,16 @@ class Options:
 
 
 class arguments:
-    parser = argparse.ArgumentParser(prog='Sitecheck Scanner',
-                                     description='Preform automated Sitecheck scan for projects configured in env/projects.json')
-    parser.add_argument('--debug', metavar='-d', type=int, default='0',
-                        help='Prints additional information to assist troubleshooting.')
-    # parser.add_argument('--sum', dest='accumulate', action='store_const', const=sum, default=max,
-    #                     help='sum the integers (default: find the max)')
+    arg_text = text.arg_text
+    parser = argparse.ArgumentParser(prog='Sitecheck Scanner', description=arg_text.main)
+    # parser.add_argument('eval', metavar='e', help=arg_text.eval)
+    parser.add_argument('--debug', metavar='-d', type=int, default='0', help=arg_text.debug)
+    parser.add_argument('--verbose', metavar='v', help=arg_text.verbose)
 
+    # parser.add_argument('eval', help=arg_text.get_value)
+    # parser.add_argument('weather', metavar='-w', help=arg_text.weather)
+    # parser.add_argument('
+    # ', metavar='e', help=arg_text.
     args = parser.parse_args()
     print(args.accumulate(args.integers))
 
@@ -254,7 +257,24 @@ class Amp_Webpage:
 
     async def get_last_update(self):
         """
-            Collects Sensor data for the provided sensor ID (self.target_child)
+            get_last_update this is a disc
+
+                Paramaters:
+                    type_of_sensor_box ():
+                    type_of_sensor_box ():
+                    type_of_sensor_box ():
+
+                Returns:
+
+                    ():
+
+                    Usage:
+
+
+
+        """
+        """
+
 
             Args: TODO trim methods
                 self.page(obj): Page Context
@@ -286,7 +306,7 @@ class Amp_Webpage:
 
 class Qv_Webpage:
     """
-        Operator Pool for QV
+        Operator pool for QV
     """
 
     async def goto_project(self):

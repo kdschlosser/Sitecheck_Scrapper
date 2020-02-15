@@ -10,10 +10,8 @@
 # __version__= "0.3.0"
 # __author__ = "Dan Edens"
 # __email__ = "Dan.Edens@Geo-Instruments.com"
-# __status__ = "pre-build"
 
 import json
-
 import requests
 
 from env import creds
@@ -40,7 +38,7 @@ def top_secret(channel):
 async def message_factory(channel, project_name, path_to_temp):
     """
         Takes gathered data in card format and posts it to Teams channel through a Flow webhook
-        This function acts as an Async factory for draft_message
+        Async factory for draft_message
 
             Args:
                 channel(str): Selects the webhook to send too.
@@ -54,10 +52,7 @@ async def message_factory(channel, project_name, path_to_temp):
 
 
 class Send_Hook:
-    """
-        Send json data through a webhook to the Team's channel
-        Call init as Object before calling object.draft_message() for aync factory
-    """
+    """Send json data through a webhook to the Team's channel"""
     def __init__(self, channel, temp_project, temp_file_path):
         """
            Load Card.json for use in message functions.
@@ -66,6 +61,8 @@ class Send_Hook:
                    channel (str): Which channel(team) to send card to
                    temp_project (str): Project name and filename
                    temp_file_path (str): Path to json being Posted
+                return:
+                    (obJ)
         """
         self.channel = top_secret(channel)
         self.project = temp_project
@@ -104,6 +101,3 @@ class Send_Hook:
             return ValueError('Request to Teams returned an error %s, the response is:\n%s' % (
             response.status_code, response.text))
 
-
-if __name__ == "__main__":
-    pass
