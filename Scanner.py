@@ -50,8 +50,13 @@ class arguments:
         args = parser.parse_args()
 
     def process_args(self):
+        """
+            Modify values received from command line.
+            Returns (obj):
+                Arguments
+        """
         debug(str(args))
-        watchdog = int(args.time * 3600)
+        args.watchdog = int(args.time * 3600)
         return args
 
 
