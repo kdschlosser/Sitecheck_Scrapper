@@ -12,45 +12,47 @@ import json
 import os
 import argparse
 
+import asyncio
 from dateutil.parser import parse
 from pyppeteer import launch
 from pyppeteer.errors import PageError, ElementHandleError
 from pyxtension.Json import Json
 
-# noinspection PyPep8Naming
-from bin import teams_card_generator as tcg, teams_hook as hook, ultis as u
+from bin import teams_card_generator, teams_hook, ultis
 from env import sites, text
 
+# Readablity abbrivations
 qv = sites.qv
 amp = sites.amp
-
-
-class Options:
-    """This class contains the browser's configurable options"""
-    headless = False
-    # TODO: Setup .args
-    chrome_args = ['--start-maximized', ' --user-data-dir='+text.ROOT_data]
-    width = text.width
-    height = text.height-200
-    verbose = True
-    getvalue = True
-    watchdog = 86400
-    watch_limit = watchdog * 7
+tcg = teams_card_generator
+debug = ultis.debug
+verbose = ultis.verbose
 
 
 class arguments:
-    arg_text = text.arg_text
-    parser = argparse.ArgumentParser(prog='Sitecheck Scanner', description=arg_text.main)
-    # parser.add_argument('eval', metavar='e', help=arg_text.eval)
-    parser.add_argument('--debug', metavar='-d', type=int, default='0', help=arg_text.debug)
-    parser.add_argument('--verbose', metavar='v', help=arg_text.verbose)
+    """
+        Command Line argument Parser
+    """
 
-    # parser.add_argument('eval', help=arg_text.get_value)
-    # parser.add_argument('weather', metavar='-w', help=arg_text.weather)
-    # parser.add_argument('
-    # ', metavar='e', help=arg_text.
-    args = parser.parse_args()
-    print(args.accumulate(args.integers))
+    def __init__(self):
+        global args
+        t = text.arg_text
+        parser = argparse.ArgumentParser(prog='Sitecheck Scanner', description=t.main)
+        parser.add_argument('-y', '--y-option', action='store_const', const='enable_y', default='')
+        parser.add_argument('eval', '-e', action='store_true', help=t.eval)
+        parser.add_argument('--debug', '-d', action='store_true', help=t.debug)
+        parser.add_argument('--verbose', '-v', action='store_true', help=t.verbose)
+        parser.add_argument('--disable-headless', '-h', action='store_false', help=t.visual)
+        parser.add_argument('--time', '-t', default='24', type=int, help=t.watchdog)
+        parser.add_argument('--weather', '-w', action='store_true', help=t.weather)
+        parser.add_argument('--add-project', help=t.add_project)
+        parser.add_argument('--edit-project', help=t.edit_project)
+        args = parser.parse_args()
+
+    def process_args(self):
+        debug(str(args))
+        watchdog = int(args.time * 3600)
+        return args
 
 
 def load_projects():
@@ -72,7 +74,7 @@ async def run_controller(project):
             Todo: setup promise return hook result
     """
     run_result = Project_run(project)
-    u.debug(run_result.channel)
+    debug(run_result.channel)
     await run_result.skip_site()
     return run_result
 
@@ -126,7 +128,7 @@ async def login(self):
             await self.page.type(x.logincss, x.username)
             await self.page.type(x.pwcss, x.password)
             await self.page.click(x.loginbutton)
-            u.verbose(text.loginmessage)
+            verbose(text.loginmessage)
             break
         except PageError:
             pass
@@ -167,10 +169,10 @@ class Project_run:
             Cancels run if project.skip is true
         """
         if self.project.skip == 'true':
-            u.verbose('Skipping project: '+self.project.name)
+            verbose('Skipping project: '+self.project.name)
             pass
         else:
-            u.verbose(text.fileheader+self.project.name)
+            verbose(text.fileheader+self.project.name)
             await self.filter_site()
 
     async def filter_site(self):
@@ -188,7 +190,7 @@ class Project_run:
         elif self.project.hassite == 'qv':
             await self.has_QV()  # TODO rebuild truelook support
         elif self.project.hassite == 'truelook':
-            u.verbose('In Development')
+            verbose('In Development')
 
     async def has_amp(self):
         """
@@ -203,12 +205,12 @@ class Project_run:
         await Amp_Webpage.goto_plan_view(self)
         # await self.page.close()
         await self.page.close()
-        u.verbose(self.project.name)
+        verbose(self.project.name)
         staged_file = tcg.Generator(self.project)
         path_to_temp = staged_file.compile_data()
-        u.verbose(path_to_temp)
-        result = await hook.message_factory(self.project.channel, self.project.name, path_to_temp)
-        u.verbose(result+'\n End of run')
+        verbose(path_to_temp)
+        result = await teams_hook.message_factory(self.project.channel, self.project.name, path_to_temp)
+        verbose(result+'\n End of run')
 
     async def has_QV(self):
         """
@@ -219,7 +221,7 @@ class Project_run:
         self.url = qv.urlstring
         pages = await browser.pages()
         self.page = pages[0]
-        await self.page.setViewport({"width": Options.width, "height": Options.height})
+        await self.page.setViewport({"width": text.width, "height": text.height-200})
         await login(self)
         await Qv_Webpage.goto_project(self)
         await self.page.waitFor(50)
@@ -227,9 +229,9 @@ class Project_run:
         await self.page.close()
         staged_file = tcg.Generator(self.project)
         path_to_temp = staged_file.compile_data()
-        u.verbose(path_to_temp)
-        result = await hook.message_factory(self.project.channel, self.project.name, path_to_temp)
-        u.verbose(result, '\n End of run')
+        verbose(path_to_temp)
+        result = await teams_hook.message_factory(self.project.channel, self.project.name, path_to_temp)
+        verbose(result, '\n End of run')
 
 
 class Amp_Webpage:
@@ -248,31 +250,14 @@ class Amp_Webpage:
             Returns:
                 (none)
         """
-        u.verbose(text.scanplan+self.project.planarray)
+        verbose(text.scanplan+self.project.planarray)
         plan_array = self.project.planarray.split(",")
         for view in plan_array:
-            u.verbose(view)
+            verbose(view)
             await self.page.goto(self.url+amp.planview+view)
             await scan_plan_view(self, Amp_Webpage)
 
     async def get_last_update(self):
-        """
-            get_last_update this is a disc
-
-                Paramaters:
-                    type_of_sensor_box ():
-                    type_of_sensor_box ():
-                    type_of_sensor_box ():
-
-                Returns:
-
-                    ():
-
-                    Usage:
-
-
-
-        """
         """
 
 
@@ -330,7 +315,7 @@ class Qv_Webpage:
                 Returns:
                     (none)
         """
-        u.verbose(text.scanplan+self.project.planarray)
+        verbose(text.scanplan+self.project.planarray)
         views = self.project.planarray.split(",")
         for view in views:
             print(view)
@@ -391,13 +376,13 @@ async def main():
     """
     # noinspection PyGlobalUndefined
     global browser
+    Options = arguments.process_args()
+    ultis.disable_timeout_pyppeteer()
     browser = await launch({"headless": Options.headless, "ignoreHTTPSErrors": True}, args=Options.chrome_args)
     projects = load_projects()
     [await (run_controller(project)) for project in projects]
     await browser.close()
+    print('\n'+text.exit_message)
 
 
-# if __name__ == '__main__':
-u.disable_timeout_pyppeteer()
 asyncio.run(main())
-print('\n'+text.exit_message)

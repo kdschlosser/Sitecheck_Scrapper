@@ -1,4 +1,4 @@
-from __main__ import ROOT_DIR
+from Scanner import ROOT_DIR
 
 data = ROOT_DIR + "/env/data/"
 

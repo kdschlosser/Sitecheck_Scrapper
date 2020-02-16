@@ -7,9 +7,11 @@
             filedate = today.strftime("%Y-%m-%d")
             nowdate = today.strftime("%Y-%m-%d %H:%M:%S")
         Predefined Paths (str):
-            ROOT_DIR: location of __main__.py
+            ROOT_DIR: location of Scanner.py
             ROOT_data: Location of Chrome and Card-Generator Userdata
 """
+
+
 
 import ctypes
 import os
@@ -36,13 +38,29 @@ scanplan = '\nScanning plan views:'
 exit_message = 'Scan completed.'
 
 
+class Options:
+    headless = False
+    chrome_args = ['--start-maximized', ' --user-data-dir='+ROOT_data]
+    verbose = True
+    getvalue = True
+    watchdog = 86400
+    watch_limit = watchdog * 7
+
+
 class arg_text:
-    main = 'Automated Sitecheck scanner for projects configured in env/projects.json'
-    debug = 'Print extra information about website navigation and browser events when tracing issues'
+    """
+        Text for --help
+    """
+    watchdog = 'None'
+    main = 'Automated Sitecheck scanner'
+    debug = 'Print verbose information about website navigation and browser events.'
     verbose = 'Print verbose information about senor status and data'
     weather = 'Include local weather data in status report'
     eval = 'Shows a browser during scan to evaluate overdue sensors. '
     usage = ''
-    project = ''
+    add_project = 'Interactive cli to configure a new project'
+    edit_project = 'Interactive cli to edit a projects configuration'
     plan = ''
     get_value = ''
+    time = 'Configure time to check against last update. Default is 24 hours'
+    visual = '--disable-headless enables \'Headfull\' mode for Pyppeteer. \nThis will create a visible browser, allowing the user to follow along with website navigation. \nThis flag is intended for troubleshooting. Use --eval for an Interactive Scan using headfull mode'

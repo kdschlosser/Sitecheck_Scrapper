@@ -8,18 +8,8 @@
 """
 from env import text
 
-
-class Options:
-    """This class contains the browser's configurable options"""
-    headless = False
-    # TODO: Setup .args
-    chrome_args = ['--start-maximized', ' --user-data-dir='+text.ROOT_data]
-    width = text.width
-    height = text.height-200
-    verbose = True
-    getvalue = True
-    watchdog = 86400
-    watch_limit = watchdog * 7
+x = text.Options.headless
+print(x)
 
 
 def verbose(verbose_text):
@@ -28,7 +18,7 @@ def verbose(verbose_text):
             Args:
                 verbose_text(str): Text to print
     """
-    if Options.verbose:
+    if Scanner.verbose:
         print(verbose_text)
 
 
@@ -38,7 +28,7 @@ def debug(debug_text):
             Args:
                 debug_text(str): Text to print
     """
-    if Options.debug:
+    if Scanner.debug:
         print(debug_text)
 
 
