@@ -38,19 +38,11 @@ scanplan = '\nScanning plan views:'
 exit_message = 'Scan completed.'
 
 
-class Options:
-    headless = False
-    chrome_args = ['--start-maximized', ' --user-data-dir='+ROOT_data]
-    verbose = True
-    getvalue = True
-    watchdog = 86400
-    watch_limit = watchdog * 7
-
-
 class arg_text:
     """
         Text for --help
     """
+    project = 'Define a single project to run. Default is \'All\''
     watchdog = 'None'
     main = 'Automated Sitecheck scanner'
     debug = 'Print verbose information about website navigation and browser events.'
@@ -61,6 +53,6 @@ class arg_text:
     add_project = 'Interactive cli to configure a new project'
     edit_project = 'Interactive cli to edit a projects configuration'
     plan = ''
-    get_value = ''
+    value = ''
     time = 'Configure time to check against last update. Default is 24 hours'
     visual = '--disable-headless enables \'Headfull\' mode for Pyppeteer. \nThis will create a visible browser, allowing the user to follow along with website navigation. \nThis flag is intended for troubleshooting. Use --eval for an Interactive Scan using headfull mode'

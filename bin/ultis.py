@@ -6,30 +6,8 @@
     Utilities Package for Scanner
 
 """
-from env import text
-
-x = text.Options.headless
-print(x)
 
 
-def verbose(verbose_text):
-    """
-        Verbose Mode print function
-            Args:
-                verbose_text(str): Text to print
-    """
-    if Scanner.verbose:
-        print(verbose_text)
-
-
-def debug(debug_text):
-    """
-        Debug Mode print function
-            Args:
-                debug_text(str): Text to print
-    """
-    if Scanner.debug:
-        print(debug_text)
 
 
 async def wait_type(page, selector, txt):

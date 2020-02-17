@@ -25,44 +25,58 @@ from env import sites, text
 qv = sites.qv
 amp = sites.amp
 tcg = teams_card_generator
-debug = ultis.debug
-verbose = ultis.verbose
 
 
-class arguments:
+class Options:
     """
         Command Line argument Parser
     """
+    t = text.arg_text
+    parser = argparse.ArgumentParser(prog='Sitecheck Scanner', description=t.main)
+    parser.add_argument('--eval', '-e', action='store_true', default=False, help=t.eval)
+    parser.add_argument('--debug', '-d', action='store_true', default=False, help=t.debug)
+    parser.add_argument('--verbose', '-v', action='store_true', default=False, help=t.verbose)
+    parser.add_argument('--value', default=False, help=t.value)
+    parser.add_argument('--headless', action='store_false', default=True, help=t.visual)
+    parser.add_argument('--time', '-t', default='24', type=int, help=t.watchdog)
+    parser.add_argument('--weather', '-w', action='store_true', help=t.weather)
+    parser.add_argument('--project', '-p', action='append', default='All', help=t.project)
+    parser.add_argument('--add-project', help=t.add_project)
+    parser.add_argument('--edit-project', help=t.edit_project)
+    args = parser.parse_args()
+    project = args.project
+    Debug = args.debug
+    Verbose = args.verbose
+    headless = args.headless
+    watchdog = int(args.time * 3600)
+    watch_limit = watchdog * 7
+    chrome_args = ['--start-maximized', ' --user-data-dir='+text.ROOT_data]
+    getvalue = args.value
 
-    def __init__(self):
-        global args
-        t = text.arg_text
-        parser = argparse.ArgumentParser(prog='Sitecheck Scanner', description=t.main)
-        parser.add_argument('-y', '--y-option', action='store_const', const='enable_y', default='')
-        parser.add_argument('eval', '-e', action='store_true', help=t.eval)
-        parser.add_argument('--debug', '-d', action='store_true', help=t.debug)
-        parser.add_argument('--verbose', '-v', action='store_true', help=t.verbose)
-        parser.add_argument('--disable-headless', '-h', action='store_false', help=t.visual)
-        parser.add_argument('--time', '-t', default='24', type=int, help=t.watchdog)
-        parser.add_argument('--weather', '-w', action='store_true', help=t.weather)
-        parser.add_argument('--add-project', help=t.add_project)
-        parser.add_argument('--edit-project', help=t.edit_project)
-        args = parser.parse_args()
 
-    def process_args(self):
-        """
-            Modify values received from command line.
-            Returns (obj):
-                Arguments
-        """
-        debug(str(args))
-        args.watchdog = int(args.time * 3600)
-        return args
+def verbose(verbose_text):
+    """
+        Verbose Mode print function
+            Args:
+                verbose_text(str): Text to print
+    """
+    if Options.Verbose:
+        print(verbose_text)
+
+
+def debug(debug_text):
+    """
+        Debug Mode print function
+            Args:
+                debug_text(str): Text to print
+    """
+    if Options.Debug:
+        print(debug_text)
 
 
 def load_projects():
     """
-        Returns: project object
+        Returns (obj): project
     """
     with open('env/projects.json') as user_data:
         data = user_data.read()
@@ -177,8 +191,11 @@ class Project_run:
             verbose('Skipping project: '+self.project.name)
             pass
         else:
-            verbose(text.fileheader+self.project.name)
-            await self.filter_site()
+            if Options.project != 'All' & self.project.name != Options.project:
+                pass
+            else:
+                verbose(text.fileheader+self.project.name)
+                await self.filter_site()
 
     async def filter_site(self):
         """
@@ -306,11 +323,11 @@ class Qv_Webpage:
                 Returns:
                     (none)
         """
-        await u.wait_click(self.page, qv.projects)
-        await u.wait_hover(self.page, qv.scrollbar)
+        await ultis.wait_click(self.page, qv.projects)
+        await ultis.wait_hover(self.page, qv.scrollbar)
         await self.page.waitFor(500)
         self.namenum = str(self.project.proj)
-        self.page = await u.wait_click(self.page, qv.proj_pre+self.namenum+qv.proj_post)
+        self.page = await ultis.wait_click(self.page, qv.proj_pre+self.namenum+qv.proj_post)
 
     async def goto_plan_view(self) -> object:
         """
@@ -327,11 +344,11 @@ class Qv_Webpage:
             if view == '0':
                 pass
             else:
-                await u.wait_click(self.page, qv.views)
+                await ultis.wait_click(self.page, qv.views)
                 await self.page.waitFor(500)
-                await u.wait_hover(self.page, qv.scrollbar2)
+                await ultis.wait_hover(self.page, qv.scrollbar2)
                 await self.page.waitFor(300)
-                await u.wait_click(self.page, qv.thumb+view)
+                await ultis.wait_click(self.page, qv.thumb+view)
             await self.page.waitFor(2000)
             await scan_plan_view(self, Qv_Webpage)
 
@@ -381,13 +398,13 @@ async def main():
     """
     # noinspection PyGlobalUndefined
     global browser
-    Options = arguments.process_args()
-    ultis.disable_timeout_pyppeteer()
     browser = await launch({"headless": Options.headless, "ignoreHTTPSErrors": True}, args=Options.chrome_args)
     projects = load_projects()
     [await (run_controller(project)) for project in projects]
     await browser.close()
-    print('\n'+text.exit_message)
 
 
+# Options = arguments.process_args()
+ultis.disable_timeout_pyppeteer()
 asyncio.run(main())
+print('\n'+text.exit_message)
