@@ -27,7 +27,7 @@ amp = sites.amp
 
 class Options:
     """This class contains the browser's configurable options"""
-    headless = False
+    headless = True
     # TODO: Setup .args
     chrome_args = ['--start-maximized', ' --user-data-dir='+text.ROOT_data]
     width = text.width
@@ -249,8 +249,7 @@ class Project_run:
         staged_file = tcg.Generator(self.project)
         path_to_temp = staged_file.compile_data()
         verbose(path_to_temp)
-        result = await hook.message_factory(self.project.channel, self.project.name, path_to_temp)
-        verbose(result+'\n End of run')
+        result = await hook.message_factory(self.project.channel, self.project.name, path_to_temp)  # verbose(result+'\n End of run')
 
     async def has_QV(self):
         """
