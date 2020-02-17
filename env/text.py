@@ -11,8 +11,6 @@
             ROOT_data: Location of Chrome and Card-Generator Userdata
 """
 
-
-
 import ctypes
 import os
 from datetime import *
@@ -42,17 +40,17 @@ class arg_text:
     """
         Text for --help
     """
-    project = 'Define a single project to run. Default is \'All\''
-    watchdog = 'None'
-    main = 'Automated Sitecheck scanner'
+    main = 'Automated Sitecheck scanner. \nSensors are sorted into three categories:\n\nUp-to-date:    '+uptoDate+'Overdue:       '+behindDate+'Old:           '+oldDate+'\nSensors that are behind are set up in an adaptive card and sent to the Regional Sitecheck channel of choice.\nTo follow along with a browser in Evaluate mode, use flag --eval'
+    old = 'Include sensors missing for Longer than a week. \nThis is off by default to prevent unnecessary spam for known issues. \nIt is assumed sensors missing for longer than 7 days have already been discussed.'
+    project = 'Define a single project to run.'
+    watchdog = 'Set number of hours to mark as \'Up-to-date\' \n\'Old\' label is a 7 times multiple of this value'
     debug = 'Print verbose information about website navigation and browser events.'
     verbose = 'Print verbose information about senor status and data'
-    weather = 'Include local weather data in status report'
+    weather = 'Include local weather data in status report.'
     eval = 'Shows a browser during scan to evaluate overdue sensors. '
-    usage = ''
     add_project = 'Interactive cli to configure a new project'
-    edit_project = 'Interactive cli to edit a projects configuration'
+    edit_project = 'Opens projects file in editor.'
     plan = ''
-    value = ''
+    value = 'Include current Sensor data in report'
     time = 'Configure time to check against last update. Default is 24 hours'
-    visual = '--disable-headless enables \'Headfull\' mode for Pyppeteer. \nThis will create a visible browser, allowing the user to follow along with website navigation. \nThis flag is intended for troubleshooting. Use --eval for an Interactive Scan using headfull mode'
+    visual = 'Enables \'Headfull\' mode for Pyppeteer. \nThis will create a visible browser, allowing the user to follow along with website navigation. \nThis flag is intended for troubleshooting. Use --eval for an Interactive Scan using headfull mode'

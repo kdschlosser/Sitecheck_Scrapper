@@ -28,12 +28,15 @@ amp = sites.amp
 tcg = teams_card_generator
 
 
+class Formatter(argparse.ArgumentDefaultsHelpFormatter, argparse.RawDescriptionHelpFormatter): pass
+
+
 class Options:
     """
         Command Line argument Parser
     """
     t = text.arg_text
-    parser = argparse.ArgumentParser(prog='Sitecheck Scanner', description=t.main)
+    parser = argparse.ArgumentParser(prog='Sitecheck Scanner', description=t.main, formatter_class=Formatter)
     parser.add_argument('--eval', '-e', action='store_true', default=False, help=t.eval)
     parser.add_argument('--debug', '-d', action='store_true', default=False, help=t.debug)
     parser.add_argument('--verbose', '-v', action='store_true', default=False, help=t.verbose)
@@ -42,20 +45,28 @@ class Options:
     parser.add_argument('--time', '-t', default='24', type=int, help=t.watchdog)
     parser.add_argument('--weather', '-w', action='store_true', help=t.weather)
     parser.add_argument('--project', '-p', action='append_const', const=str, default='All', help=t.project)
-    parser.add_argument('--edit-project', action='store_true', help=t.edit_project)
+    parser.add_argument('--edit', action='store_true', help=t.edit_project)
+    parser.add_argument('--old', '-o', action='store_true', default=False, help=t.old)
     # parser.add_argument('--add-project', help=t.add_project)
     args = parser.parse_args()
     project = args.project
     Debug = args.debug
+    edit = args.edit
     Verbose = args.verbose
     headless = args.headless
     watchdog = int(args.time * 3600)
     watch_limit = watchdog * 7
     chrome_args = ['--start-maximized', ' --user-data-dir='+text.ROOT_data]
     getvalue = args.value
-    if args.edit-project:
-        edit = subprocess.Popen('notepad.exe env/projects.json')
-        edit.wait(timeout=None)
+
+
+def edit_project():
+    if os.path.exists(text.ROOT_DIR+'/env/projects.json'):
+        pass
+    else:
+        pass  # make file
+    edit = subprocess.Popen('notepad.exe env/projects.json')
+    return edit.wait(timeout=None)
 
 
 def verbose(verbose_text):
@@ -118,9 +129,7 @@ async def watchdog_processor(diff, sensor_data, project_name, sensor, date):
         if Options.verbose:
             sensor_data += '\n'+text.uptoDate
             print(sensor_data)
-        data_list = [sensor, 'good', 'Up-to-date', date]
-        # tcg.store(project_name, data_list)
-        print(sensor_data)
+        data_list = [sensor, 'good', 'Up-to-date', date]  # tcg.store(project_name, data_list)
     elif Options.watchdog <= diff <= Options.watch_limit:
         if Options.verbose:
             sensor_data += '\n'+text.behindDate
@@ -131,9 +140,7 @@ async def watchdog_processor(diff, sensor_data, project_name, sensor, date):
         if Options.verbose:
             sensor_data += '\n'+text.oldDate
             print(sensor_data)
-        data_list = [sensor, 'attention', 'Older than a week', date]
-        # tcg.store(project_name, data_list)
-        print(sensor_data)
+        data_list = [sensor, 'attention', 'Older than a week', date]  # tcg.store(project_name, data_list)
 
 
 async def login(self):
@@ -408,7 +415,8 @@ async def main():
     await browser.close()
 
 
-# Options = arguments.process_args()
+if Options.edit:
+    edit_project()
 ultis.disable_timeout_pyppeteer()
 asyncio.run(main())
 print('\n'+text.exit_message)
