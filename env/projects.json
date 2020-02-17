@@ -18,7 +18,7 @@
     "channel": "west_project"
   },
   {
-    "skip": "false",
+    "skip": "false"
     "group": "false",
     "name": "425riverside",
     "proj": "3",
