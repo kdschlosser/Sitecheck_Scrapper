@@ -9,7 +9,7 @@
     "channel": "west_project"
   },
   {
-    "skip": "true",
+    "skip": "false",
     "group": "true",
     "name": "audicentralhouston",
     "proj": "null",
@@ -18,7 +18,7 @@
     "channel": "west_project"
   },
   {
-    "skip": "true",
+    "skip": "false",
     "group": "false",
     "name": "425riverside",
     "proj": "3",
