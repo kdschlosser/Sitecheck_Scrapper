@@ -10,6 +10,7 @@ from __future__ import print_function, unicode_literals
 
 import json
 import os
+import subprocess
 import argparse
 
 import asyncio
@@ -40,9 +41,9 @@ class Options:
     parser.add_argument('--headless', action='store_false', default=True, help=t.visual)
     parser.add_argument('--time', '-t', default='24', type=int, help=t.watchdog)
     parser.add_argument('--weather', '-w', action='store_true', help=t.weather)
-    parser.add_argument('--project', '-p', action='append', default='All', help=t.project)
-    parser.add_argument('--add-project', help=t.add_project)
-    parser.add_argument('--edit-project', help=t.edit_project)
+    parser.add_argument('--project', '-p', action='append_const', const=str, default='All', help=t.project)
+    parser.add_argument('--edit-project', action='store_true', help=t.edit_project)
+    # parser.add_argument('--add-project', help=t.add_project)
     args = parser.parse_args()
     project = args.project
     Debug = args.debug
@@ -52,6 +53,9 @@ class Options:
     watch_limit = watchdog * 7
     chrome_args = ['--start-maximized', ' --user-data-dir='+text.ROOT_data]
     getvalue = args.value
+    if args.edit-project:
+        edit = subprocess.Popen('notepad.exe env/projects.json')
+        edit.wait(timeout=None)
 
 
 def verbose(verbose_text):
