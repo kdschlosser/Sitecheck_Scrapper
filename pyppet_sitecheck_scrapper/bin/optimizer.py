@@ -1,6 +1,20 @@
-from Scanner import ROOT_DIR
+# -*- coding: utf-8 -*-
+
+"""
+This file is part of the **pyppeteer_sitecheck_scrapper**
+project git@geodev.geo-instruments.com:DanEdens/pyppet_sitecheck_scrapper.git
+
+:platform: Windows
+:license:
+:synopsis: Under Development
+
+.. moduleauthor::  Dan Edens @DanEdens <Dan.Edens@geo-instruments.com>
+"""
+
+from ..Scanner import ROOT_DIR
 
 data = ROOT_DIR + "/env/data/"
+
 
 class Memory:
     def __init__(self, project, view, sensor_id):
@@ -19,6 +33,7 @@ class Memory:
         print(staged_ID, data+self.project+'.txt')
         pass
 
+
 class Recall:
     def __init__(self):
-        Imporxt = data+self.project
+        Imporxt = data + self.project

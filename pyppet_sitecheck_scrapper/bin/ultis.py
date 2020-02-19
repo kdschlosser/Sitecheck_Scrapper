@@ -8,12 +8,10 @@
 """
 
 
-
-
 async def wait_type(page, selector, txt):
     """
-        Wait for a selector to load than type supplied text.
-        Returns page in case entering text changes the context.
+    Wait for a selector to load than type supplied text.
+    Returns page in case entering text changes the context.
     """
     await page.waitForSelector(selector)
     await page.type(selector, txt)
@@ -22,8 +20,8 @@ async def wait_type(page, selector, txt):
 
 async def wait_click(page, selector):
     """
-        Wait for a selector to load than clicks on it.
-        Returns page in case this changes the context.
+    Wait for a selector to load than clicks on it.
+    Returns page in case this changes the context.
     """
     await page.waitForSelector(selector),
     await page.click(selector)
@@ -32,8 +30,8 @@ async def wait_click(page, selector):
 
 async def wait_hover(page, selector):
     """
-        Wait for a selector to load than hover over it.
-        Returns page in case this changes the context.
+    Wait for a selector to load than hover over it.
+    Returns page in case this changes the context.
     """
     await page.waitForSelector(selector),
     await page.hover(selector)
@@ -42,12 +40,11 @@ async def wait_hover(page, selector):
 
 def disable_timeout_pyppeteer():
     """
-        Allows Browser to be left open indefinitely
-        Keeps Session open longer than 20 seconds.
-
-        :return:
+    Allows Browser to be left open indefinitely
+    Keeps Session open longer than 20 seconds.
     """
     import pyppeteer.connection
+
     original_method = pyppeteer.connection.websockets.client.connect
 
     def new_method(*args, **kwargs):

@@ -1,27 +1,36 @@
+# -*- coding: utf-8 -*-
+
 """
-    This file removes non-human readable code from __main__
+This file is part of the **pyppeteer_sitecheck_scrapper**
+project git@geodev.geo-instruments.com:DanEdens/pyppet_sitecheck_scrapper.git
+
+:platform: Windows
+:license:
+:synopsis: This file removes non-human readable code from __main__
     Provides a consolidated reference for debugging Webpage navigation
 
     Currently Supported Sites:
     Amp - <project.name>.geo-instruments.com/index.php
     Quickview - https://quickview.geo-instruments.com/login.php
     Truelook (currently unstable) - https://app.truelook.com/<project specific>
+
+.. moduleauthor::  Dan Edens @DanEdens <Dan.Edens@geo-instruments.com>
 """
 
-from env import creds
+from . import creds
 
 
 class amp:
     """
-        Text values for use in Amp-specific Events
+    Text values for use in Amp-specific Events
 
-        type: (str)
-        username, password, label, logincss, pwcss,
-        urlstring, loginbutton, planview,
-        csspath, title, sensor
+    type: (str)
+    username, password, label, logincss, pwcss,
+    urlstring, loginbutton, planview,
+    csspath, title, sensor
 
-        *username and password are called from here before creds
-        to maintain loop consistency with QV during login()
+    *username and password are called from here before creds
+    to maintain loop consistency with QV during login()
     """
     username = creds.ampuser
     password = creds.amppass
@@ -38,12 +47,12 @@ class amp:
 
 class qv:
     """
-        Text values for use in QV-specific Events
+    Text values for use in QV-specific Events
 
-        type: (str)
-        username, password, logincss, pwcss, urlstring,
-        loginbutton, projects, proj_pre, proj_post, views,
-        thumb, scrollbar, scrollbar2, hoverbox
+    type: (str)
+    username, password, logincss, pwcss, urlstring,
+    loginbutton, projects, proj_pre, proj_post, views,
+    thumb, scrollbar, scrollbar2, hoverbox
     """
     username = creds.qvuser
     password = creds.qvpass
@@ -63,11 +72,11 @@ class qv:
 
 class truelook:
     """
-        Text values for use in Truelook-specific Events
+    Text values for use in Truelook-specific Events
 
-        type: (str)
-        urlstring, planview,
-        logincss, pwcss, loginbutton,
+    type: (str)
+    urlstring, planview,
+    logincss, pwcss, loginbutton,
     """
     urlstring = '.geo-instruments.com/index.php'
     logincss = 'input#tl_login_username'
